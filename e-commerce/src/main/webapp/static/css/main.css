@@ -1,10 +1,10 @@
 :root {
-    --brand-pink: #d63384;      /* Main Action Color */
+    --brand-pink: #da637a;      /* Main Action Color */
     --light-cream: #f8f5f2;     /* Background Color */
     --text-dark: #2d2d2d;       /* Header/Text Color */
     --light-dark:#717171;
 }
-
+/* ******************8 footer style *******************/
 .bg-cream {
     background-color: var(--light-cream) !important;
 }
@@ -16,4 +16,88 @@
 }
 .link-hover:hover {
     color: var(--brand-pink) !important;
+}
+/* Logo Circle Styling */
+.brand-logo-circle {
+    background-color: var(--brand-pink);
+    color: white !important;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    font-size: 1.2rem;
+    flex-shrink: 0;            /
+    margin-right: 12px;
+}
+.brand-logo-circle:hover {
+    transform: scale(1.1);
+    transition: 0.3s ease;
+}
+
+/* ************ header component style ******************** */
+
+.bg-card-glass {
+    background-color: rgba(255, 255, 255, 0.8) !important;
+    backdrop-filter: blur(12px); /* The "backdrop-blur" from your code */
+    -webkit-backdrop-filter: blur(12px);
+}
+
+.border-b {
+    border-bottom: 1px solid #e5e7eb;
+}
+
+.brand-text {
+    color: #1f2937;
+}
+
+
+.btn-icon {
+    width: 36px;
+    height: 36px;
+    padding: 0;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 6px;
+    color: #4b5563;
+    transition: all 0.2s;
+}
+
+.btn-icon:hover {
+    background-color: #f3f4f6;
+    color: #111827;
+}
+
+.max-w-7xl {
+    max-width: 1280px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.hover-dark:hover {
+    color: #111827 !important;
+}
+
+.font-serif {
+    font-family: 'Playfair Display', serif; /* Or your preferred serif font */
+}
+
+
+.navbar-collapse.show, .navbar-collapse.collapsing {
+    flex-basis: 100%;
+    flex-grow: 1;
+    align-items: center;
+}
+
+.navbar {
+    transition: background-color 0.3s ease;
+}
+
+.bg-card-glass {
+    background-color: rgba(255, 255, 255, 0.95) !important;
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid #eee;
 }
