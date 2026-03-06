@@ -1,0 +1,19 @@
+:root {
+    --brand-pink: #d63384;      /* Main Action Color */
+    --light-cream: #f8f5f2;     /* Background Color */
+    --text-dark: #2d2d2d;       /* Header/Text Color */
+    --light-dark:#717171;
+}
+
+.bg-cream {
+    background-color: var(--light-cream) !important;
+}
+.text-main-color {
+    color: var(--brand-pink);
+}
+.text-light-dark {
+    color: var(--light-dark);
+}
+.link-hover:hover {
+    color: var(--brand-pink) !important;
+}
