@@ -1,0 +1,121 @@
+/* =========================================================
+   Profile Page Styles
+========================================================= */
+
+.profile-section {
+    background-color: var(--background);
+    padding: 4rem 0 6rem 0;
+    min-height: 80vh;
+    font-family: var(--font-sans); /* حطينا الخط هنا عشان ميبوظش خطوط الـ Header والـ Footer */
+}
+
+.profile-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2.5rem;
+}
+
+.profile-title {
+    color: var(--foreground);
+    font-family: var(--font-serif);
+    font-size: 2.5rem;
+    font-weight: 700;
+    margin: 0;
+    letter-spacing: -0.02em;
+}
+
+.btn-edit-profile {
+    background-color: var(--background);
+    color: var(--foreground);
+    border: 1px solid var(--border);
+    border-radius: 0.5rem;
+    padding: 0.5rem 1.25rem;
+    font-weight: 500;
+    font-size: 0.95rem;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    transition: all 0.2s ease;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.02);
+}
+
+.btn-edit-profile:hover {
+    background-color: var(--accent);
+    color: var(--accent-foreground);
+}
+
+.profile-card {
+    background-color: var(--card);
+    border-radius: 1rem;
+    border: 1px solid var(--border);
+    padding: 2rem;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.02);
+    height: 100%;
+}
+
+.profile-card-title {
+    color: var(--foreground);
+    font-weight: 600;
+    font-size: 1.15rem;
+    margin-bottom: 1.75rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+/* Personal Info List */
+.info-item {
+    display: flex;
+    gap: 1.25rem;
+    margin-bottom: 1.5rem;
+}
+
+.info-item:last-child {
+    margin-bottom: 0;
+}
+
+.info-icon {
+    color: var(--muted-foreground);
+    font-size: 1.25rem;
+    margin-top: 0.1rem;
+}
+
+.info-content {
+    display: flex;
+    flex-direction: column;
+}
+
+.info-label {
+    color: var(--muted-foreground);
+    font-size: 0.85rem;
+    margin-bottom: 0.25rem;
+}
+
+.info-value {
+    color: var(--foreground);
+    font-weight: 500;
+    font-size: 1rem;
+    margin: 0;
+}
+
+/* Credit Limit Specifics */
+.credit-amount {
+    color: var(--primary);
+    font-size: 3rem;
+    font-weight: 700;
+    margin: 0.5rem 0;
+    line-height: 1;
+}
+
+.credit-desc {
+    color: var(--muted-foreground);
+    font-size: 0.95rem;
+    margin: 0;
+}
+
+.empty-state-text {
+    color: var(--muted-foreground);
+    font-size: 0.95rem;
+    margin: 0;
+}
