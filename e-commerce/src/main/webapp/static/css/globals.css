@@ -62,7 +62,7 @@
 }
 
 /* =========================================================
-   Base Layer Styling (Alternative to Tailwind's @layer base)
+   Base Layer Styling
 ========================================================= */
 body {
     background-color: var(--background);

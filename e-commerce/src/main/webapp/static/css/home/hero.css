@@ -4,10 +4,9 @@
 
 .hero-section {
     background-color: var(--secondary);
-    /* بنطرح حوالي 76px اللي هما ارتفاع الـ Navbar عشان القسم ما يعملش سكرول مخفي */
     min-height: calc(100vh - 76px);
     display: flex;
-    align-items: center; /* بيسنتر المحتوى في نص الشاشة بالطول */
+    align-items: center;
     padding-top: 2rem;
     padding-bottom: 2rem;
 }
@@ -38,7 +37,7 @@
         font-size: 3rem;
     }
     .hero-section {
-        min-height: auto; /* في الموبايل بنسيبه ياخد الارتفاع الطبيعي عشان المحتوى ما يتقصش */
+        min-height: auto;
         padding: 4rem 0;
     }
 }

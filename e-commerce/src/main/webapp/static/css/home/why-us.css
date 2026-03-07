@@ -10,7 +10,7 @@
 .feature-card {
     background-color: var(--card);
     border-radius: 1rem;
-    border: 1px solid var(--border); /* الإطار الخفيف زي الصورة */
+    border: 1px solid var(--border);
     padding: 3.5rem 2rem;
     text-align: center;
     height: 100%;
