@@ -176,3 +176,79 @@ body, p {
     color: var(--light-cream) !important;
     background-color: var(--hover-color) !important;
 }
+
+
+/*   sweet shopping classes  */
+
+/* Custom Grid Aspect Ratio */
+.aspect-square {
+    aspect-ratio: 1 / 1;
+}
+
+.object-cover {
+    object-fit: cover;
+}
+
+/* Card Hover Animation */
+.product-card {
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    cursor: pointer;
+}
+
+.product-card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 10px 25px rgba(0,0,0,0.1) !important;
+}
+
+/* Image Zoom Effect */
+.zoom-hover {
+    transition: transform 0.5s ease;
+}
+
+.product-card:hover .zoom-hover {
+    transform: scale(1.1);
+}
+
+.extra-small {
+    font-size: 0.75rem;
+}
+
+.custom-raduis {
+    border-radius: 10px;
+}
+
+.light-border-color {
+    border-color: var(--light-cream);
+}
+
+/* Container sizing and soft shadow */
+.search-container {
+    filter: drop-shadow(0 2px 4px rgba(0,0,0,0.02));
+}
+
+/* The Input Field */
+.custom-search-input {
+    border: 1px solid #eaddd7 !important; /* Soft warm border matching your image */
+    background-color: #ffffff;
+    font-size: 0.95rem;
+    color: #5a4a42; /* Darker warm text */
+    transition: all 0.2s ease;
+}
+
+/* Placeholder color */
+.custom-search-input::placeholder {
+    color: #a39087;
+}
+
+/* Focus State: Remove blue, use brand pink or warm brown */
+.custom-search-input:focus {
+    border-color: var(--brand-pink) !important; /* Brand Pink */
+    box-shadow: 0 0 0 3px rgba(218, 99, 122, 0.1) !important;
+    outline: none;
+}
+
+/* The Icon Color */
+.custom-search-icon {
+    color: #8b7367 !important; /* Muted brown search icon */
+    font-size: 0.9rem;
+}
