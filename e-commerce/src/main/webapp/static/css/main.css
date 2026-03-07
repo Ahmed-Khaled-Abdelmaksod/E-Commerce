@@ -101,3 +101,80 @@
     backdrop-filter: blur(12px);
     border-bottom: 1px solid #eee;
 }
+/* =========================================================
+   Shadcn UI Theme Variables & Hero Component Styles
+========================================================= */
+
+:root {
+  --background: oklch(0.98 0.005 60);
+  --foreground: oklch(0.25 0.02 50);
+  --card: oklch(1 0 0);
+  --card-foreground: oklch(0.25 0.02 50);
+  --popover: oklch(1 0 0);
+  --popover-foreground: oklch(0.25 0.02 50);
+  --primary: oklch(0.65 0.15 10);
+  --primary-foreground: oklch(1 0 0);
+  --secondary: oklch(0.94 0.01 60);
+  --secondary-foreground: oklch(0.35 0.03 50);
+  --muted: oklch(0.95 0.008 60);
+  --muted-foreground: oklch(0.50 0.02 50);
+  --accent: oklch(0.55 0.10 40);
+  --accent-foreground: oklch(1 0 0);
+  --destructive: oklch(0.577 0.245 27.325);
+  --destructive-foreground: oklch(1 0 0);
+  --border: oklch(0.90 0.015 60);
+  --input: oklch(0.90 0.015 60);
+  --ring: oklch(0.65 0.15 10);
+  --radius: 0.75rem;
+}
+
+/* ************ Hero Component Shadcn Styles ******************** */
+.hero-section-bg {
+    background-color: var(--secondary) !important;
+}
+
+.hero-badge-custom {
+    background-color: oklch(0.65 0.15 10 / 0.1); /* Primary color with 10% opacity */
+    color: var(--primary);
+    font-weight: 500;
+}
+
+.text-foreground-custom {
+    color: var(--foreground) !important;
+}
+
+.text-muted-custom {
+    color: var(--muted-foreground) !important;
+}
+
+.btn-primary-custom {
+    background-color: var(--primary) !important;
+    color: var(--primary-foreground) !important;
+    border: none !important;
+    border-radius: var(--radius) !important;
+    transition: opacity 0.3s ease;
+}
+
+.btn-primary-custom:hover {
+    opacity: 0.9;
+}
+
+.btn-outline-custom {
+    background-color: var(--background) !important;
+    color: var(--foreground) !important;
+    border: 1px solid var(--border) !important;
+    border-radius: var(--radius) !important;
+    box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+    transition: all 0.3s ease;
+}
+
+.btn-outline-custom:hover {
+    background-color: var(--accent) !important;
+    color: var(--accent-foreground) !important;
+}
+
+.hero-img-wrapper {
+    max-width: 450px;
+    aspect-ratio: 1/1;
+    border-radius: calc(var(--radius) + 8px);
+}

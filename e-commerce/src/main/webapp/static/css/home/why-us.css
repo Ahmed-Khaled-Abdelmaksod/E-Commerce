@@ -1,0 +1,45 @@
+/* =========================================================
+   Why Us Component Styles
+========================================================= */
+
+.why-us-section {
+    background-color: var(--background);
+    padding: 5rem 0;
+}
+
+.feature-card {
+    background-color: var(--card);
+    border-radius: 1rem;
+    border: 1px solid var(--border); /* الإطار الخفيف زي الصورة */
+    padding: 3.5rem 2rem;
+    text-align: center;
+    height: 100%;
+}
+
+.feature-icon-wrapper {
+    background-color: color-mix(in oklch, var(--primary) 10%, transparent);
+    color: var(--primary);
+    width: 64px;
+    height: 64px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 1.5rem auto;
+    font-size: 1.5rem;
+}
+
+.feature-title {
+    color: var(--foreground);
+    font-weight: 700;
+    font-size: 1.15rem;
+    margin-bottom: 1rem;
+    font-family: var(--font-sans);
+}
+
+.feature-desc {
+    color: var(--muted-foreground);
+    font-size: 0.95rem;
+    line-height: 1.6;
+    margin: 0;
+}
