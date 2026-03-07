@@ -157,4 +157,20 @@ body, p {
     transition: top 0.3s ease;
 }
 
+/* Ensure sticky summary doesn't hide under the header */
+.custom-sticky {
+    top: 100px !important;
+    align-self: start; /* Prevents column from stretching */
+}
 
+.extra-small {
+    font-size: 0.75rem;
+}
+
+.object-cover {
+    object-fit: cover;
+}
+
+.hover-dark:hover {
+    color: #000 !important;
+}
