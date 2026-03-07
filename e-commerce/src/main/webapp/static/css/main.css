@@ -4,6 +4,7 @@
     --light-cream: #f8f5f2;     /* Background Color */
     --text-dark: #2d2d2d;       /* Header/Text Color */
     --light-dark:#717171;
+    --hover-color:#A65E46;
 }
 /* ******************8 footer style *******************/
 .bg-cream {
@@ -171,6 +172,7 @@ body, p {
     object-fit: cover;
 }
 
-.hover-dark:hover {
-    color: #000 !important;
+.hover-brown:hover {
+    color: var(--light-cream) !important;
+    background-color: var(--hover-color) !important;
 }
