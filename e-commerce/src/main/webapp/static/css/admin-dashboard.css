@@ -1,0 +1,80 @@
+body {
+    font-family: system-ui, -apple-system, sans-serif;
+    background-color: #fdfaf9;
+    color: #3d2c29;
+}
+.navbar {
+    background-color: white;
+    border-bottom: 1px solid #f0e6e4;
+}
+.header-section {
+    background-color: #f4ecea;
+    padding: 3rem 0;
+    border-bottom: 1px solid #f0e6e4;
+}
+.text-brand { color: #3d2c29; }
+.btn-brand {
+    background-color: #d49a89;
+    color: white;
+}
+.btn-brand:hover {
+    background-color: #c48674;
+    color: white;
+}
+
+.nav-tabs {
+    border-bottom: 1px solid #f0e6e4;
+    margin-bottom: 2rem;
+}
+.nav-tabs .nav-link {
+    color: #6c757d;
+    border: none;
+    padding: 1rem 1.5rem;
+    font-weight: 500;
+}
+.nav-tabs .nav-link:hover {
+    border: none;
+    color: #d49a89;
+}
+.nav-tabs .nav-link.active {
+    color: #d49a89;
+    background-color: transparent;
+    border: none;
+    border-bottom: 2px solid #d49a89;
+}
+
+.table-custom td {
+    vertical-align: middle;
+    border-bottom: 1px solid #f0e6e4;
+}
+.stock-badge {
+    background-color: #fce8e6;
+    color: #d49a89;
+    padding: 0.25rem 0.75rem;
+    border-radius: 1rem;
+    font-size: 0.85rem;
+}
+.customer-card {
+    background-color: white;
+    border: 1px solid #f0e6e4;
+    border-radius: 0.75rem;
+    padding: 1.5rem;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+}
+.avatar-circle {
+    width: 40px;
+    height: 40px;
+    background-color: #fce8e6;
+    color: #d49a89;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.product-img-thumbnail {
+    width: 50px;
+    height: 50px;
+    object-fit: cover;
+    border-radius: 4px;
+}
