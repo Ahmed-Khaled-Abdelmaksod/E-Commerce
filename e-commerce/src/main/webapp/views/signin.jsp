@@ -18,12 +18,17 @@
                 <div class="card-body p-0">
                     <h3 class="card-title fw-bold text-brand mb-1">Welcome Back</h3>
                     <p class="text-muted small mb-4">Sign in to your Sweet Delights account</p>
+                    <c:if test="${param.success == 'accountCreated'}">
+                        <div class="alert alert-success">
+                            Registration successful! Please log in to start shopping.
+                        </div>
+                    </c:if>
                     <div id="error-container" class="alert alert-danger ${empty requestScope.errorMessage ? 'd-none' : ''} small py-2" role="alert">
                         <c:if test="${not empty requestScope.errorMessage}">
                             ${requestScope.errorMessage}
                         </c:if>
                     </div>
-                    <form action="${pageContext.request.contextPath}/login" method="POST">
+                    <form action="${pageContext.request.contextPath}/auth/login" method="POST">
                         <div class="mb-3">
                             <label for="email" class="form-label small fw-medium text-brand">Email</label>
                             <input type="email" class="form-control form-control-sm py-2" id="email" name="email" placeholder="you@example.com" required>
@@ -36,7 +41,7 @@
                     </form>
 
                     <div class="text-center mt-4 pt-2">
-                        <p class="small text-muted mb-0">Don't have an account? <a href="signup.jsp" class="link-brand">Sign up</a></p>
+                        <p class="small text-muted mb-0">Don't have an account? <a href="${pageContext.request.contextPath}/auth/register" class="link-brand">Sign up</a></p>
                     </div>
                 </div>
             </div>

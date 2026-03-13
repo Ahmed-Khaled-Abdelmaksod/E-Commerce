@@ -13,7 +13,7 @@ import java.io.IOException;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 
-@WebServlet("/auth/signup")
+@WebServlet("/auth/register")
 public class RegisterController extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -29,7 +29,6 @@ public class RegisterController extends HttpServlet {
         String phone = req.getParameter("phoneNo");
         String birthday = req.getParameter("dob");
         LocalDate dob = LocalDate.parse(birthday);
-
         String houseNo = req.getParameter("houseNo");
         String street = req.getParameter("street");
         String area = req.getParameter("area");
@@ -49,8 +48,12 @@ public class RegisterController extends HttpServlet {
         signUpBean.setPhone(phone);
         signUpBean.setFullName(fullName);
         signUpBean.setPassword(password);
-        if(AuthService.getInstance().signUp(signUpBean)) {
-            req.getRequestDispatcher("/auth/login").forward(req,resp);
+        String errorMessage =AuthService.getInstance().signUp(signUpBean);
+        if(errorMessage == null) { // success
+            resp.sendRedirect(req.getContextPath() + "/auth/login?success=accountCreated");
+        }else {
+            req.setAttribute("validationErrorMessage",errorMessage);
+            req.getRequestDispatcher("/views/signup.jsp").forward(req, resp);
         }
     }
 }
