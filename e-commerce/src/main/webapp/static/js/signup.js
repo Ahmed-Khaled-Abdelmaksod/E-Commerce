@@ -46,8 +46,60 @@ emailField.addEventListener("blur", () => {
     }
 
 })
+
+passwordField.addEventListener('blur', () => {
+    if (passwordField.value.length < 8) {
+        showError(passwordField, passwordError, "Password must be at least 8 characters.");
+    } else {
+        showSuccess(passwordField, passwordError);
+    }
+})
 function validate() {
-    
+
+    let isAllValid = true;
+
+
+    if (!nameRegex.test(nameField.value.trim())) {
+        showError(nameField, nameError, "Name must contain only characters");
+        isAllValid = false;
+    }
+
+
+    if (!emailRegex.test(emailField.value.trim()) || emailField.classList.contains('is-invalid')) {
+        showError(emailField, emailError, "Please enter a valid, unregistered email.");
+        isAllValid = false;
+    }
+
+
+    if (passwordField.value.length < 8) {
+        showError(passwordField, passwordError, "Password must be at least 8 characters.");
+        isAllValid = false;
+    } else {
+        showSuccess(passwordField, passwordError);
+    }
+
+    if (passwordField.value !== confirmPasswordField.value || confirmPasswordField.value === "") {
+        showError(confirmPasswordField, matchError, "Passwords do not match.");
+        isAllValid = false;
+    }
+
+    if (!phoneRegex.test(phoneField.value.trim())) {
+        showError(phoneField, phoneError, "Invalid phone number format.");
+        isAllValid = false;
+    }
+
+
+    if (!dobField.classList.contains('is-valid')) {
+        showError(dobField, dobError, "Please enter a valid birth date (13+ years old).");
+        isAllValid = false;
+    }
+
+    if (!isAllValid) {
+        console.log("Validation failed. Form submission blocked.");
+        return false;
+    }
+
+    return true;
 }
 
 confirmPasswordField.addEventListener('input',() => {

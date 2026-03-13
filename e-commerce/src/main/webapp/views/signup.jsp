@@ -7,7 +7,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sweet Delights - Create Account</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link href="../static/css/auth.css" rel="stylesheet">
+    <link href="${pageContext.request.contextPath}/static/css/auth.css" rel="stylesheet">
 </head>
 
 <body>
@@ -23,7 +23,7 @@
                             ${requestScope.validationErrorMessage}
                         </c:if>
                     </div>
-                    <form action="${pageContext.request.contextPath}/auth/register" method="POST">
+                    <form action="${pageContext.request.contextPath}/auth/register" method="POST" onsubmit="return validate()">
 
                         <h6 class="text-brand border-bottom pb-2 mb-3">Personal Information</h6>
                         <div class="row">

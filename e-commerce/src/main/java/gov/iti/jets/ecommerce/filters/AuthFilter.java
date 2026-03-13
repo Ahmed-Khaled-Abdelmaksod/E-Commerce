@@ -9,7 +9,7 @@ import jakarta.servlet.http.HttpSession;
 
 import java.io.IOException;
 
-@WebFilter(urlPatterns = {"/sweets.jsp"}) // add uri of the guarded areas
+@WebFilter(urlPatterns = {"/home.jsp"}) // add uri of the guarded areas
 public class AuthFilter extends HttpFilter {
     protected void doFilter(HttpServletRequest request, HttpServletResponse response, FilterChain chain) throws IOException, ServletException {
         HttpSession session = request.getSession(false);
@@ -18,7 +18,7 @@ public class AuthFilter extends HttpFilter {
             // User is valid!
             chain.doFilter(request, response);
         } else {
-            response.sendRedirect(request.getContextPath() + "/login");
+            response.sendRedirect(request.getContextPath() + "/auth/login");
         }
     }
 }
