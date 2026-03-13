@@ -32,11 +32,11 @@ public class AuthController extends HttpServlet {
         if(userBean.isPresent()) {
             HttpSession session = req.getSession(true);
             session.setAttribute("loggedIn",new String("true"));
-            session.setAttribute("user",userBean);
+            session.setAttribute("user",userBean.get());
             if(userBean.get().getRole() == UserRole.ADMIN) {
                 // TODO forward TO admin dashboard
             }else {
-                resp.sendRedirect(req.getContextPath()+"/home"); // TODO handle the right link
+                resp.sendRedirect(req.getContextPath()+"/views/home.jsp"); // TODO handle the right link
             }
         }else {
             req.setAttribute("errorMessage","Invalid email or password.");
