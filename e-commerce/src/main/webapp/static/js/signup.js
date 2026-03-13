@@ -3,16 +3,18 @@ dobError = document.getElementById("dob-error");
 emailError = document.getElementById("email-error");
 passwordError = document.getElementById("password-error");
 matchError = document.getElementById("match-error");
+nameError = document.getElementById("name-error");
 
 emailField = document.getElementById("email");
 confirmPasswordField = document.getElementById("confirm_password");
 passwordField = document.getElementById("password");
 phoneField = document.getElementById("phone");
 dobField = document.getElementById("dob")
+nameField = document.getElementById("name")
 
 const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
 const phoneRegex = /^(\+20|0)?1[0125]\d{8}$/;
-
+const nameRegex = /^[A-Za-z\s]+$/;
 
 emailField.addEventListener("blur", () => {
     let email = emailField.value.trim();
@@ -69,11 +71,21 @@ phoneField.addEventListener('blur',() => {
         phoneField.classList.add('is-invalid');
         phoneField.classList.remove('is-valid');
         phoneError.classList.remove('d-none');
-
     }
 })
 
 
+nameField.addEventListener('blur', function() {
+    const name = nameField.value.trim();
+
+    if (name === "") {
+        nameField.classList.remove('is-valid', 'is-invalid');
+    } else if (nameRegex.test(name)) {
+        showSuccess(nameField,nameError);
+    } else {
+        showError(nameField,nameError,"Name must contain only characters");
+    }
+});
 dobField.addEventListener('change', function() {
     const birthDate = new Date(this.value);
     const today = new Date();
