@@ -22,6 +22,7 @@ public class DataSourceConfig {
             props.load(input);
 
             HikariConfig config = new HikariConfig(props);
+            config.setDriverClassName("com.mysql.cj.jdbc.Driver");
             dataSource = new HikariDataSource(config);
         } catch (IOException e) {
             System.out.println("Could establish connection with the database.");

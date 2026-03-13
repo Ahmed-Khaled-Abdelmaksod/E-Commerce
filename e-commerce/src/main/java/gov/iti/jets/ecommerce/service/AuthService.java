@@ -1,5 +1,6 @@
 package gov.iti.jets.ecommerce.service;
 
+import gov.iti.jets.ecommerce.beans.SignUpBean;
 import gov.iti.jets.ecommerce.beans.UserBean;
 import gov.iti.jets.ecommerce.config.DataSourceConfig;
 import gov.iti.jets.ecommerce.dao.impl.UserDaoImpl;
@@ -35,6 +36,14 @@ public class AuthService {
             }
         }
         return Optional.empty();
+    }
+    public boolean signUp(SignUpBean signUpBean) {
+        return false;
+    }
+    public boolean isEmailExist(String email) {
+        UserDaoImpl userDao = new UserDaoImpl(DataSourceConfig.getDataSource());
+        Optional<User> user = userDao.findByEmail(email);
+        return user.isPresent();
     }
 
     public static AuthService getInstance() {

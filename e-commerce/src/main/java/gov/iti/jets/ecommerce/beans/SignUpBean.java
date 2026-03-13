@@ -1,50 +1,22 @@
-package gov.iti.jets.ecommerce.entity;
-
-import java.math.BigDecimal;
-import java.sql.Date;
-import java.sql.Timestamp;
-import java.time.LocalDate;
+package gov.iti.jets.ecommerce.beans;
 
 import gov.iti.jets.ecommerce.enums.UserRole;
 
-public class User {
+import java.io.Serializable;
+import java.math.BigDecimal;
+import java.time.LocalDate;
 
-    private int userId;
+public class SignUpBean implements Serializable {
     private String fullName;
     private String email;
-    private String passwordHash;
+    private String password;
     private String phone;
     private LocalDate birthday;
     private String address;
     private UserRole role;
     private BigDecimal creditBalance;
-    private Timestamp createdAt;
 
-    public User() {
-    }
-
-    public User(int userId, String fullName, String email, String passwordHash,
-                 String phone, LocalDate birthday, String address,
-                 UserRole role, BigDecimal creditBalance, Timestamp createdAt) {
-
-        this.userId = userId;
-        this.fullName = fullName;
-        this.email = email;
-        this.passwordHash = passwordHash;
-        this.phone = phone;
-        this.birthday = birthday;
-        this.address = address;
-        this.role = role;
-        this.creditBalance = creditBalance;
-        this.createdAt = createdAt;
-    }
-
-    public int getUserId() {
-        return userId;
-    }
-
-    public void setUserId(int userId) {
-        this.userId = userId;
+    public SignUpBean() {
     }
 
     public String getFullName() {
@@ -63,12 +35,12 @@ public class User {
         this.email = email;
     }
 
-    public String getPasswordHash() {
-        return passwordHash;
+    public String getPassword() {
+        return password;
     }
 
-    public void setPasswordHash(String passwordHash) {
-        this.passwordHash = passwordHash;
+    public void setPassword(String password) {
+        this.password = password;
     }
 
     public String getPhone() {
@@ -109,13 +81,5 @@ public class User {
 
     public void setCreditBalance(BigDecimal creditBalance) {
         this.creditBalance = creditBalance;
-    }
-
-    public Timestamp getCreatedAt() {
-        return createdAt;
-    }
-
-    public void setCreatedAt(Timestamp createdAt) {
-        this.createdAt = createdAt;
     }
 }

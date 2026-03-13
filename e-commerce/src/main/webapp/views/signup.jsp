@@ -18,7 +18,7 @@
                     <h3 class="card-title fw-bold text-brand mb-1">Create Account</h3>
                     <p class="text-muted small mb-4">Join Sweet Delights and start shopping today</p>
 
-                    <form action="register" method="POST">
+                    <form action="${pageContext.request.contextPath}/auth/register" method="POST">
 
                         <h6 class="text-brand border-bottom pb-2 mb-3">Personal Information</h6>
                         <div class="row">
@@ -29,6 +29,7 @@
                             <div class="col-md-6 mb-3">
                                 <label for="dob" class="form-label small fw-medium text-brand">Date of Birth</label>
                                 <input type="date" class="form-control form-control-sm py-2" id="dob" name="dob" required>
+                                <div id="dob-error" class="text-danger small mt-1 d-none">Please provide a valid date.</div>
                             </div>
                         </div>
 
@@ -36,10 +37,12 @@
                             <div class="col-md-6 mb-3">
                                 <label for="email" class="form-label small fw-medium text-brand">Email</label>
                                 <input type="email" class="form-control form-control-sm py-2" id="email" name="email" placeholder="you@example.com" required>
+                                <div id="email-error" class="text-danger small mt-1 d-none"></div>
                             </div>
                             <div class="col-md-6 mb-3">
                                 <label for="phone" class="form-label small fw-medium text-brand">Phone Number</label>
                                 <input type="tel" class="form-control form-control-sm py-2" id="phone" name="phoneNo" placeholder="+123456789" required>
+                                <div id="phone-error" class="text-danger small mt-1 d-none">Invalid phone format.</div>
                             </div>
                         </div>
 
@@ -47,10 +50,12 @@
                             <div class="col-md-6 mb-4">
                                 <label for="password" class="form-label small fw-medium text-brand">Password</label>
                                 <input type="password" class="form-control form-control-sm py-2" id="password" name="password" placeholder="••••••••" required>
+                                <div id="password-error" class="text-danger small mt-1 d-none">Password is too weak.</div>
                             </div>
                             <div class="col-md-6 mb-4">
                                 <label for="confirm_password" class="form-label small fw-medium text-brand">Confirm Password</label>
                                 <input type="password" class="form-control form-control-sm py-2" id="confirm_password" name="confirm_password" placeholder="••••••••" required>
+                                <div id="match-error" class="text-danger small mt-1 d-none">Passwords do not match.</div>
                             </div>
                         </div>
 
@@ -85,12 +90,14 @@
                     </form>
 
                     <div class="text-center mt-4 pt-2">
-                        <p class="small text-muted mb-0">Already have an account? <a href="signin.jsp" class="link-brand">Sign in</a></p>
+                        <p class="small text-muted mb-0">Already have an account? <a href="${pageContext.request.contextPath}/auth/login" class="link-brand">Sign in</a></p>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 </div>
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+<script src="${pageContext.request.contextPath}/static/js/signup.js"></script>
 </body>
 </html>
