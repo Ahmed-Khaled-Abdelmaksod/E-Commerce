@@ -46,7 +46,7 @@ public final class UserDaoImpl implements UserDAO {
             statement.setString(2, user.getEmail());
             statement.setString(3, user.getPasswordHash());
             statement.setString(4, user.getPhone());
-            statement.setDate(5, user.getBirthday());
+            statement.setDate(5, Date.valueOf(user.getBirthday()));
             statement.setString(6, user.getAddress());
             statement.setString(7, user.getRole().name().toLowerCase());
             statement.setBigDecimal(8, user.getCreditBalance());
@@ -132,7 +132,7 @@ public final class UserDaoImpl implements UserDAO {
             statement.setString(2, user.getEmail());
             statement.setString(3, user.getPasswordHash());
             statement.setString(4, user.getPhone());
-            statement.setDate(5, user.getBirthday());
+            statement.setDate(5, Date.valueOf(user.getBirthday()));
             statement.setString(6, user.getAddress());
             statement.setString(7, user.getRole().name().toLowerCase());
             statement.setBigDecimal(8, user.getCreditBalance());
@@ -169,7 +169,7 @@ public final class UserDaoImpl implements UserDAO {
         user.setEmail(rs.getString("email"));
         user.setPasswordHash(rs.getString("password_hash"));
         user.setPhone(rs.getString("phone"));
-        user.setBirthday(rs.getDate("birthday"));
+        user.setBirthday(rs.getDate("birthday").toLocalDate());
         user.setAddress(rs.getString("address"));
 
         String roleValue = rs.getString("role");

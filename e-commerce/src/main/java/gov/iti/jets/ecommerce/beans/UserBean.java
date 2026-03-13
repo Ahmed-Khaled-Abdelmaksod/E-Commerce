@@ -5,13 +5,14 @@ import gov.iti.jets.ecommerce.enums.UserRole;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.sql.Date;
+import java.time.LocalDate;
 
 public class UserBean implements Serializable {
     private int userId;
     private String fullName;
     private String email;
     private String phone;
-    private Date birthday;
+    private LocalDate birthday;
     private String address;
     private UserRole role;
     private BigDecimal creditBalance;
@@ -52,11 +53,11 @@ public class UserBean implements Serializable {
         this.phone = phone;
     }
 
-    public Date getBirthday() {
+    public LocalDate getBirthday() {
         return birthday;
     }
 
-    public void setBirthday(Date birthday) {
+    public void setBirthday(LocalDate birthday) {
         this.birthday = birthday;
     }
 
