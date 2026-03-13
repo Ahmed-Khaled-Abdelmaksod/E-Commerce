@@ -25,6 +25,7 @@
                             <div class="col-md-6 mb-3">
                                 <label for="name" class="form-label small fw-medium text-brand">Full Name</label>
                                 <input type="text" class="form-control form-control-sm py-2" id="name" name="name" placeholder="John Doe" required>
+                                <div id="name-error" class="text-danger small mt-1 d-none"></div>
                             </div>
                             <div class="col-md-6 mb-3">
                                 <label for="dob" class="form-label small fw-medium text-brand">Date of Birth</label>
