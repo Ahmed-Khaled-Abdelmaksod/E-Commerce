@@ -1,3 +1,4 @@
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <!DOCTYPE html>
 <html lang="en">
@@ -17,7 +18,11 @@
                 <div class="card-body p-0">
                     <h3 class="card-title fw-bold text-brand mb-1">Create Account</h3>
                     <p class="text-muted small mb-4">Join Sweet Delights and start shopping today</p>
-
+                    <div id="error-container" class="alert alert-danger ${empty requestScope.validationErrorMessage ? 'd-none' : ''} small py-2" role="alert">
+                        <c:if test="${not empty requestScope.validationErrorMessage}">
+                            ${requestScope.validationErrorMessage}
+                        </c:if>
+                    </div>
                     <form action="${pageContext.request.contextPath}/auth/register" method="POST">
 
                         <h6 class="text-brand border-bottom pb-2 mb-3">Personal Information</h6>
