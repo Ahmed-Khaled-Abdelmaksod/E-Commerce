@@ -1,0 +1,124 @@
+/* Navbar Styling */
+.navbar-brand-logo {
+    width: 35px;
+    height: 35px;
+    background-color: var(--primary);
+    color: white;
+    border-radius: 50%;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    font-size: 1.2rem;
+    margin-right: 8px;
+}
+
+.navbar-nav .nav-link {
+    color: var(--foreground);
+    font-weight: 500;
+}
+
+/* Custom Tabs (Not standard bootstrap pills) */
+.custom-tabs-container {
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 2rem;
+}
+
+.custom-tab {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 20px;
+    color: var(--muted-foreground);
+    font-weight: 500;
+    cursor: pointer;
+    border-bottom: 2px solid transparent;
+    transition: all 0.3s ease;
+}
+
+.custom-tab:hover {
+    color: var(--foreground);
+}
+
+.custom-tab.active {
+    color: var(--primary);
+    border-bottom: 2px solid var(--primary);
+}
+
+/* Buttons */
+.btn-primary-custom {
+    background-color: #df6c7f; /* Match the exact button pink */
+    color: white;
+    border: none;
+    border-radius: var(--radius);
+    padding: 8px 16px;
+    font-weight: 500;
+}
+.btn-primary-custom:hover {
+    background-color: #c95c6f;
+    color: white;
+}
+
+/* Tables */
+.table-custom th {
+    font-weight: 500;
+    color: var(--muted-foreground);
+    border-bottom: 1px solid var(--border);
+    padding-bottom: 10px;
+}
+.table-custom td {
+    vertical-align: middle;
+    border-bottom: 1px solid var(--border);
+    padding: 15px 0;
+}
+.product-img {
+    width: 40px;
+    height: 40px;
+    border-radius: 8px;
+    object-fit: cover;
+    margin-right: 15px;
+    background-color: var(--muted);
+}
+.action-icon {
+    color: var(--muted-foreground);
+    cursor: pointer;
+    margin-left: 10px;
+    transition: color 0.2s;
+}
+.action-icon:hover {
+    color: var(--foreground);
+}
+
+/* Cards (Customers & Orders) */
+.custom-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 20px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.02);
+}
+
+.avatar-circle {
+    width: 45px;
+    height: 45px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: rgba(228, 105, 125, 0.1); /* light pink */
+    color: var(--primary);
+    font-size: 1.2rem;
+}
+
+/* Pills for order items */
+.order-item-pill {
+    background-color: #f3f4f6;
+    color: var(--foreground);
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-size: 0.85rem;
+    font-weight: 500;
+    display: inline-block;
+    margin-right: 8px;
+    margin-bottom: 8px;
+}

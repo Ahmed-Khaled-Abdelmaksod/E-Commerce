@@ -5,7 +5,7 @@ import gov.iti.jets.ecommerce.entity.Categorie;
 import java.util.List;
 import java.util.Optional;
 
-public interface CategorieDAO {
+public interface CategoryDAO {
 
     Categorie insert(Categorie categorie);
 

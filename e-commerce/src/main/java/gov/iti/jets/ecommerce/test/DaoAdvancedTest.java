@@ -22,7 +22,7 @@ public class DaoAdvancedTest {
 
     private static UserDAO userDAO;
     private static ProductDAO productDAO;
-    private static CategorieDAO categorieDAO;
+    private static CategoryDAO categoryDAO;
     private static CartDAO cartDAO;
     private static CartItemDAO cartItemDAO;
     private static OrderDAO orderDAO;
@@ -36,7 +36,7 @@ public class DaoAdvancedTest {
 
         userDAO = new UserDaoImpl(ds);
         productDAO = new ProductDaoImpl(ds);
-        categorieDAO = new CategorieDaoImpl(ds);
+        categoryDAO = new CategoryDaoImpl(ds);
         cartDAO = new CartDaoImpl(ds);
         cartItemDAO = new CartItemDaoImpl(ds);
         orderDAO = new OrderDaoImpl(ds);
@@ -119,18 +119,18 @@ public class DaoAdvancedTest {
         c.setName("Logging Category");
         c.setDescription("Category Test");
 
-        c = categorieDAO.insert(c);
+        c = categoryDAO.insert(c);
         assertLog(c.getCategoryId() > 0, "Insert Category");
 
-        assertLog(categorieDAO.findById(c.getCategoryId()).isPresent(),
+        assertLog(categoryDAO.findById(c.getCategoryId()).isPresent(),
                 "Find Category By ID");
 
-        logger.info("All categories count: {}", categorieDAO.findAll().size());
+        logger.info("All categories count: {}", categoryDAO.findAll().size());
 
         c.setName("Updated Category");
-        assertLog(categorieDAO.update(c), "Update Category");
+        assertLog(categoryDAO.update(c), "Update Category");
 
-        assertLog(categorieDAO.delete(c.getCategoryId()), "Delete Category");
+        assertLog(categoryDAO.delete(c.getCategoryId()), "Delete Category");
     }
 
     // ================= PRODUCT =================
