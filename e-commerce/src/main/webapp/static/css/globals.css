@@ -78,3 +78,15 @@ body {
 .font-serif {
     font-family: var(--font-serif) !important;
 }
+
+.text-primary { color: var(--primary) !important; }
+.bg-primary { background-color: var(--primary) !important; color: var(--primary-foreground) !important; }
+.bg-primary-soft { background-color: rgba(228, 105, 125, 0.1) !important; color: var(--primary) !important; }
+.text-muted-custom { color: var(--muted-foreground) !important; }
+.bg-muted-custom { background-color: var(--muted) !important; }
+.border-custom { border-color: var(--border) !important; }
+
+/* Dashboard Header Background */
+.dash-header-bg {
+    background-color: #F3EFEA; /* Custom off-white/beige from image */
+}

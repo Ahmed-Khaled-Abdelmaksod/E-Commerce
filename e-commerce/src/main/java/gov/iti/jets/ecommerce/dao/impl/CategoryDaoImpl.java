@@ -1,6 +1,6 @@
 package gov.iti.jets.ecommerce.dao.impl;
 
-import gov.iti.jets.ecommerce.dao.CategorieDAO;
+import gov.iti.jets.ecommerce.dao.CategoryDAO;
 import gov.iti.jets.ecommerce.entity.Categorie;
 
 import javax.sql.DataSource;
@@ -9,11 +9,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-public final class CategorieDaoImpl implements CategorieDAO {
+public final class CategoryDaoImpl implements CategoryDAO {
 
     private final DataSource dataSource;
 
-    public CategorieDaoImpl(DataSource dataSource) {
+    public CategoryDaoImpl(DataSource dataSource) {
         this.dataSource = dataSource;
     }
 
