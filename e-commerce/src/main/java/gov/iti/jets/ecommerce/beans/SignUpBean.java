@@ -4,29 +4,19 @@ import gov.iti.jets.ecommerce.enums.UserRole;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
-import java.sql.Date;
 import java.time.LocalDate;
 
-public class UserBean implements Serializable {
-    private int userId;
+public class SignUpBean implements Serializable {
     private String fullName;
     private String email;
+    private String password;
     private String phone;
     private LocalDate birthday;
     private String address;
     private UserRole role;
     private BigDecimal creditBalance;
 
-    public UserBean() {
-
-    }
-
-    public int getUserId() {
-        return userId;
-    }
-
-    public void setUserId(int userId) {
-        this.userId = userId;
+    public SignUpBean() {
     }
 
     public String getFullName() {
@@ -43,6 +33,14 @@ public class UserBean implements Serializable {
 
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
     }
 
     public String getPhone() {

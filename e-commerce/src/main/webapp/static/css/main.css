@@ -1,12 +1,22 @@
 :root {
     --brand-pink: #da637a;      /* Main Action Color */
+    --brand-pink-lighter: #e3879a;
     --light-cream: #f8f5f2;     /* Background Color */
     --text-dark: #2d2d2d;       /* Header/Text Color */
     --light-dark:#717171;
+    --hover-color:#A65E46;
 }
 /* ******************8 footer style *******************/
 .bg-cream {
     background-color: var(--light-cream) !important;
+}
+.bg-brand {
+    background-color: var(--brand-pink);
+}
+.bg-brand:hover {
+    background-color: var(--brand-pink-lighter);
+    border-color: #e3879a;
+    color: var(--light-cream);
 }
 .text-main-color {
     color: var(--brand-pink);
@@ -35,6 +45,10 @@
 .brand-logo-circle:hover {
     transform: scale(1.1);
     transition: 0.3s ease;
+}
+
+.btn-reduis {
+    border-radius: 10px;
 }
 
 /* ************ header component style ******************** */
@@ -100,4 +114,141 @@
     background-color: rgba(255, 255, 255, 0.95) !important;
     backdrop-filter: blur(12px);
     border-bottom: 1px solid #eee;
+}
+
+
+h2, .font-serif {
+    font-family: 'Playfair Display', serif !important;
+    font-weight: 700;
+    color: #111827; /* Darker professional gray */
+}
+body, p {
+    font-family: 'Inter', sans-serif;
+}
+
+/*   cart products elements */
+
+
+.text-brand {
+    color: var(--brand-pink) !important;
+}
+
+.object-cover {
+    object-fit: cover;
+}
+
+
+.text-xs {
+    font-size: 0.75rem;
+}
+
+
+.btn-light.text-danger:hover {
+    background-color: #fee2e2 !important;
+}
+
+
+.custom-sticky-offset {
+    top: 100px !important;
+    z-index: 1010; /* Ensure it stays above other content but below dropdowns */
+}
+
+
+.sticky-top {
+    transition: top 0.3s ease;
+}
+
+/* Ensure sticky summary doesn't hide under the header */
+.custom-sticky {
+    top: 100px !important;
+    align-self: start; /* Prevents column from stretching */
+}
+
+.extra-small {
+    font-size: 0.75rem;
+}
+
+.object-cover {
+    object-fit: cover;
+}
+
+.hover-brown:hover {
+    color: var(--light-cream) !important;
+    background-color: var(--hover-color) !important;
+}
+
+
+/*   sweet shopping classes  */
+
+/* Custom Grid Aspect Ratio */
+.aspect-square {
+    aspect-ratio: 1 / 1;
+}
+
+.object-cover {
+    object-fit: cover;
+}
+
+/* Card Hover Animation */
+.product-card {
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    cursor: pointer;
+}
+
+.product-card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 10px 25px rgba(0,0,0,0.1) !important;
+}
+
+/* Image Zoom Effect */
+.zoom-hover {
+    transition: transform 0.5s ease;
+}
+
+.product-card:hover .zoom-hover {
+    transform: scale(1.1);
+}
+
+.extra-small {
+    font-size: 0.75rem;
+}
+
+.custom-raduis {
+    border-radius: 10px;
+}
+
+.light-border-color {
+    border-color: var(--light-cream);
+}
+
+/* Container sizing and soft shadow */
+.search-container {
+    filter: drop-shadow(0 2px 4px rgba(0,0,0,0.02));
+}
+
+/* The Input Field */
+.custom-search-input {
+    border: 1px solid #eaddd7 !important; /* Soft warm border matching your image */
+    background-color: #ffffff;
+    font-size: 0.95rem;
+    color: #5a4a42; /* Darker warm text */
+    transition: all 0.2s ease;
+}
+
+/* Placeholder color */
+.custom-search-input::placeholder {
+    color: #a39087;
+}
+
+/* Focus State: Remove blue, use brand pink or warm brown */
+.custom-search-input:focus {
+    border-color: var(--brand-pink) !important; /* Brand Pink */
+    box-shadow: 0 0 0 3px rgba(218, 99, 122, 0.1) !important;
+    outline: none;
+}
+
+/* The Icon Color */
+.custom-search-icon {
+    color: #8b7367 !important; /* Muted brown search icon */
+    font-size: 0.9rem;
 }
