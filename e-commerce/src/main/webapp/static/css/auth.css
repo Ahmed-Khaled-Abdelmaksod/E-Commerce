@@ -1,0 +1,35 @@
+body {
+    background-color: #fdfaf9;
+    font-family: system-ui, -apple-system, sans-serif;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    padding: 2rem 0;
+}
+
+.card {
+    border-radius: 0.75rem;
+    border: 1px solid #f0e6e4;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.02);
+}
+
+.text-brand { color: #3d2c29; }
+
+.btn-brand {
+    background-color: #d49a89;
+    color: white;
+    font-weight: 500;
+}
+
+.btn-brand:hover {
+    background-color: #c48674;
+    color: white;
+}
+
+.link-brand {
+    color: #d49a89;
+    text-decoration: none;
+    font-weight: 600;
+}
+
+.link-brand:hover { text-decoration: underline; }
