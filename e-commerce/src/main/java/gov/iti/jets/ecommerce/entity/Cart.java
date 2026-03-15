@@ -1,43 +1,17 @@
 package gov.iti.jets.ecommerce.entity;
 
-import java.sql.Timestamp;
-
+import java.time.LocalDateTime;
 public class Cart {
 
-    private int cartId;
-    private int userId;
-    private Timestamp createdAt;
+    private Integer cartId;
+    private User user;
+    private LocalDateTime createdAt;
 
-    public Cart() {
-    }
-
-    public Cart(int cartId, int userId, Timestamp createdAt) {
-        this.cartId = cartId;
-        this.userId = userId;
-        this.createdAt = createdAt;
-    }
-
-    public int getCartId() {
-        return cartId;
-    }
-
-    public void setCartId(int cartId) {
-        this.cartId = cartId;
-    }
-
-    public int getUserId() {
-        return userId;
-    }
-
-    public void setUserId(int userId) {
-        this.userId = userId;
-    }
-
-    public Timestamp getCreatedAt() {
-        return createdAt;
-    }
-
-    public void setCreatedAt(Timestamp createdAt) {
-        this.createdAt = createdAt;
-    }
+    // Getters and Setters
+    public Integer getCartId() { return cartId; }
+    public void setCartId(Integer cartId) { this.cartId = cartId; }
+    public User getUser() { return user; }
+    public void setUser(User user) { this.user = user; }
+    public LocalDateTime getCreatedAt() { return createdAt; }
+    public void setCreatedAt(LocalDateTime createdAt) { this.createdAt = createdAt; }
 }

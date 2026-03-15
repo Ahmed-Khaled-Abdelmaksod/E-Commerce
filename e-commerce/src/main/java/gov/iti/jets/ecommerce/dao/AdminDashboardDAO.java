@@ -1,6 +1,6 @@
 package gov.iti.jets.ecommerce.dao;
 
-import gov.iti.jets.ecommerce.beans.dashboard.OrderDashboardBean;
+import gov.iti.jets.ecommerce.beans.UserBean;
 import gov.iti.jets.ecommerce.beans.dashboard.ProductDashboardBean;
 import gov.iti.jets.ecommerce.beans.dashboard.UserDashboardBean;
 
@@ -13,7 +13,7 @@ public interface AdminDashboardDAO {
     
     List<UserDashboardBean> getAllUsersForDashboard();
     
-    List<OrderDashboardBean> getAllOrdersForDashboard();
+    List<UserBean> getAllOrdersForDashboard();
     
     // ممكن مستقبلاً تضيف هنا Methods تجيب الإحصائيات (Counts, Total Revenue, etc.)
     // int getTotalProductsCount();
