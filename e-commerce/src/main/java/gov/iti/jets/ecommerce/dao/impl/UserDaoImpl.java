@@ -10,6 +10,7 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+
 public final class UserDaoImpl implements UserDAO {
 
     private final DataSource dataSource;
@@ -18,6 +19,7 @@ public final class UserDaoImpl implements UserDAO {
         this.dataSource = dataSource;
     }
 
+    // --- SQL Queries ---
     private static final String INSERT_SQL =
             "INSERT INTO users (full_name, email, password_hash, phone, birthday, address, role, credit_balance) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
 
@@ -62,7 +64,8 @@ public final class UserDaoImpl implements UserDAO {
             statement.setString(4, user.getPhone());
             statement.setObject(5, user.getBirthday());
             statement.setString(6, user.getAddress());
-            statement.setString(7, user.getRole().name());
+            // Store role in lowercase to match MySQL ENUM('admin', 'customer')
+            statement.setString(7, user.getRole().name().toLowerCase());
             statement.setBigDecimal(8, user.getCreditBalance());
 
             if (statement.executeUpdate() == 0) {
@@ -144,7 +147,8 @@ public final class UserDaoImpl implements UserDAO {
         try (Connection connection = dataSource.getConnection();
              PreparedStatement statement = connection.prepareStatement(SELECT_BY_ROLE_SQL)) {
 
-            statement.setString(1, role.name());
+            // Search using lowercase role name
+            statement.setString(1, role.name().toLowerCase());
             try (ResultSet rs = statement.executeQuery()) {
                 List<User> users = new ArrayList<>();
                 while (rs.next()) {
@@ -186,7 +190,7 @@ public final class UserDaoImpl implements UserDAO {
             statement.setString(4, user.getPhone());
             statement.setObject(5, user.getBirthday());
             statement.setString(6, user.getAddress());
-            statement.setString(7, user.getRole().name());
+            statement.setString(7, user.getRole().name().toLowerCase());
             statement.setBigDecimal(8, user.getCreditBalance());
             statement.setInt(9, user.getUserId());
 
@@ -236,6 +240,8 @@ public final class UserDaoImpl implements UserDAO {
         }
     }
 
+    // --- Helper Methods ---
+
     private static User mapRowToUser(ResultSet rs) throws SQLException {
         User user = new User();
         user.setUserId(rs.getInt("user_id"));
@@ -243,21 +249,27 @@ public final class UserDaoImpl implements UserDAO {
         user.setEmail(rs.getString("email"));
         user.setPasswordHash(rs.getString("password_hash"));
         user.setPhone(rs.getString("phone"));
-        
+
         Date birthday = rs.getDate("birthday");
         if (birthday != null) {
             user.setBirthday(birthday.toLocalDate());
         }
-        
+
         user.setAddress(rs.getString("address"));
-        user.setRole(UserRole.valueOf(rs.getString("role")));
-        user.setCreditBalance(rs.getBigDecimal("credit_balance"));
         
+        // Convert DB lowercase role to Java Uppercase Enum constant
+        String roleFromDb = rs.getString("role");
+        if (roleFromDb != null) {
+            user.setRole(UserRole.valueOf(roleFromDb.toUpperCase()));
+        }
+
+        user.setCreditBalance(rs.getBigDecimal("credit_balance"));
+
         Timestamp createdAt = rs.getTimestamp("created_at");
         if (createdAt != null) {
             user.setCreatedAt(createdAt.toLocalDateTime());
         }
-        
+
         return user;
     }
 }
