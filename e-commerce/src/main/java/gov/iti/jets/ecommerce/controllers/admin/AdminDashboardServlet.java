@@ -1,10 +1,10 @@
 package gov.iti.jets.ecommerce.controllers.admin;
 
 import gov.iti.jets.ecommerce.context.ServiceLocator;
-import gov.iti.jets.ecommerce.service.AdminDashboardService;
-import gov.iti.jets.ecommerce.beans.UserBean;
-import gov.iti.jets.ecommerce.beans.dashboard.ProductDashboardBean;
-import gov.iti.jets.ecommerce.beans.dashboard.UserDashboardBean;
+import gov.iti.jets.ecommerce.service.DashboardService;
+import gov.iti.jets.ecommerce.beans.dashboard.CustomerBean;
+import gov.iti.jets.ecommerce.beans.dashboard.ProductBean;
+import gov.iti.jets.ecommerce.beans.dashboard.OrderBean;
 
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -17,11 +17,12 @@ import java.util.List;
 @WebServlet("/admin/dashboard")
 public class AdminDashboardServlet extends HttpServlet {
 
-    private AdminDashboardService dashboardService;
+    private DashboardService dashboardService;
 
     @Override
     public void init() throws ServletException {
-        dashboardService = ServiceLocator.getInstance().getAdminDashboardService();
+        
+        dashboardService = ServiceLocator.getInstance().getDashboardService();
     }
 
     @Override
@@ -30,12 +31,13 @@ public class AdminDashboardServlet extends HttpServlet {
         
         String tab = request.getParameter("tab");
 
+        // Main dashboard landing page
         if (tab == null || tab.isEmpty()) {
-
             request.getRequestDispatcher("/views/admin/dashboard.jsp").forward(request, response);
             return;
         }
 
+        // Routing to tab-specific logic
         switch (tab) {
             case "products":
                 loadProductsTab(request, response);
@@ -53,7 +55,8 @@ public class AdminDashboardServlet extends HttpServlet {
 
     private void loadProductsTab(HttpServletRequest request, HttpServletResponse response) 
             throws ServletException, IOException {
-        List<ProductDashboardBean> products = dashboardService.getProductsView();
+        // Using the new getAllProductsForDashboard method
+        List<ProductBean> products = dashboardService.getAllProductsForDashboard();
         request.setAttribute("products", products);
 
         request.getRequestDispatcher("/views/admin/fragments/products-tab.jsp").forward(request, response);
@@ -61,7 +64,8 @@ public class AdminDashboardServlet extends HttpServlet {
 
     private void loadCustomersTab(HttpServletRequest request, HttpServletResponse response) 
             throws ServletException, IOException {
-        List<UserDashboardBean> customers = dashboardService.getUsersView();
+        // Using CustomerBean list for the customers tab
+        List<CustomerBean> customers = dashboardService.getAllCustomersForDashboard();
         request.setAttribute("customers", customers);
 
         request.getRequestDispatcher("/views/admin/fragments/customers-tab.jsp").forward(request, response);
@@ -69,7 +73,8 @@ public class AdminDashboardServlet extends HttpServlet {
 
     private void loadOrdersTab(HttpServletRequest request, HttpServletResponse response) 
             throws ServletException, IOException {
-        List<UserBean> orders = dashboardService.getOrdersView();
+        // Using OrderBean list (which contains nested OrderItemBeans)
+        List<OrderBean> orders = dashboardService.getAllOrdersForDashboard();
         request.setAttribute("orders", orders);
 
         request.getRequestDispatcher("/views/admin/fragments/orders-tab.jsp").forward(request, response);
