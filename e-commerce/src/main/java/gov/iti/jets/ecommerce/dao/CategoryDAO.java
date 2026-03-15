@@ -1,19 +1,20 @@
 package gov.iti.jets.ecommerce.dao;
 
-import gov.iti.jets.ecommerce.entity.Categorie;
-
+import gov.iti.jets.ecommerce.entity.Category;
 import java.util.List;
 import java.util.Optional;
 
 public interface CategoryDAO {
 
-    Categorie insert(Categorie categorie);
+    Category insert(Category category);
 
-    List<Categorie> findAll();
+    List<Category> findAll();
 
-    Optional<Categorie> findById(int id);
+    Optional<Category> findById(int id);
 
-    boolean update(Categorie categorie);
+    boolean update(Category category);
 
     boolean delete(int id);
+
+    boolean existsByName(String name);
 }

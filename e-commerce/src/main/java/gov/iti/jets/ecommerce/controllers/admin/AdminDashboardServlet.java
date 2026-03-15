@@ -2,7 +2,7 @@ package gov.iti.jets.ecommerce.controllers.admin;
 
 import gov.iti.jets.ecommerce.context.ServiceLocator;
 import gov.iti.jets.ecommerce.service.AdminDashboardService;
-import gov.iti.jets.ecommerce.beans.dashboard.OrderDashboardBean;
+import gov.iti.jets.ecommerce.beans.UserBean;
 import gov.iti.jets.ecommerce.beans.dashboard.ProductDashboardBean;
 import gov.iti.jets.ecommerce.beans.dashboard.UserDashboardBean;
 
@@ -69,7 +69,7 @@ public class AdminDashboardServlet extends HttpServlet {
 
     private void loadOrdersTab(HttpServletRequest request, HttpServletResponse response) 
             throws ServletException, IOException {
-        List<OrderDashboardBean> orders = dashboardService.getOrdersView();
+        List<UserBean> orders = dashboardService.getOrdersView();
         request.setAttribute("orders", orders);
 
         request.getRequestDispatcher("/views/admin/fragments/orders-tab.jsp").forward(request, response);

@@ -5,11 +5,11 @@ import gov.iti.jets.ecommerce.entity.User;
 import gov.iti.jets.ecommerce.enums.UserRole;
 
 import javax.sql.DataSource;
+import java.math.BigDecimal;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-
 public final class UserDaoImpl implements UserDAO {
 
     private final DataSource dataSource;
@@ -19,7 +19,7 @@ public final class UserDaoImpl implements UserDAO {
     }
 
     private static final String INSERT_SQL =
-            "INSERT INTO users (full_name,email,password_hash,phone,birthday,address,role,credit_balance) VALUES (?,?,?,?,?,?,?,?)";
+            "INSERT INTO users (full_name, email, password_hash, phone, birthday, address, role, credit_balance) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
 
     private static final String SELECT_ALL_SQL =
             "SELECT * FROM users";
@@ -30,15 +30,29 @@ public final class UserDaoImpl implements UserDAO {
     private static final String SELECT_BY_EMAIL_SQL =
             "SELECT * FROM users WHERE email = ?";
 
+    private static final String SELECT_BY_PHONE_SQL =
+            "SELECT * FROM users WHERE phone = ?";
+
+    private static final String SELECT_BY_ROLE_SQL =
+            "SELECT * FROM users WHERE role = ?";
+
+    private static final String SEARCH_BY_NAME_SQL =
+            "SELECT * FROM users WHERE full_name LIKE ?";
+
     private static final String UPDATE_SQL =
-            "UPDATE users SET full_name=?,email=?,password_hash=?,phone=?,birthday=?,address=?,role=?,credit_balance=? WHERE user_id=?";
+            "UPDATE users SET full_name=?, email=?, password_hash=?, phone=?, birthday=?, address=?, role=?, credit_balance=? WHERE user_id=?";
+
+    private static final String UPDATE_BALANCE_SQL =
+            "UPDATE users SET credit_balance = ? WHERE user_id = ?";
 
     private static final String DELETE_SQL =
             "DELETE FROM users WHERE user_id = ?";
 
+    private static final String EXISTS_BY_EMAIL_SQL =
+            "SELECT COUNT(*) FROM users WHERE email = ?";
+
     @Override
     public User insert(User user) {
-
         try (Connection connection = dataSource.getConnection();
              PreparedStatement statement = connection.prepareStatement(INSERT_SQL, Statement.RETURN_GENERATED_KEYS)) {
 
@@ -46,9 +60,9 @@ public final class UserDaoImpl implements UserDAO {
             statement.setString(2, user.getEmail());
             statement.setString(3, user.getPasswordHash());
             statement.setString(4, user.getPhone());
-            statement.setDate(5, user.getBirthday());
+            statement.setObject(5, user.getBirthday());
             statement.setString(6, user.getAddress());
-            statement.setString(7, user.getRole().name().toLowerCase());
+            statement.setString(7, user.getRole().name());
             statement.setBigDecimal(8, user.getCreditBalance());
 
             if (statement.executeUpdate() == 0) {
@@ -60,7 +74,6 @@ public final class UserDaoImpl implements UserDAO {
                     user.setUserId(rs.getInt(1));
                 }
             }
-
             return user;
 
         } catch (SQLException e) {
@@ -70,36 +83,29 @@ public final class UserDaoImpl implements UserDAO {
 
     @Override
     public List<User> findAll() {
-
         try (Connection connection = dataSource.getConnection();
              PreparedStatement statement = connection.prepareStatement(SELECT_ALL_SQL);
              ResultSet rs = statement.executeQuery()) {
 
             List<User> users = new ArrayList<>();
-
             while (rs.next()) {
                 users.add(mapRowToUser(rs));
             }
-
             return users;
-
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
     }
 
     @Override
-    public Optional<User> findById(int id) {
-
+    public Optional<User> findById(int userId) {
         try (Connection connection = dataSource.getConnection();
              PreparedStatement statement = connection.prepareStatement(SELECT_BY_ID_SQL)) {
 
-            statement.setInt(1, id);
-
+            statement.setInt(1, userId);
             try (ResultSet rs = statement.executeQuery()) {
                 return rs.next() ? Optional.of(mapRowToUser(rs)) : Optional.empty();
             }
-
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
@@ -107,16 +113,63 @@ public final class UserDaoImpl implements UserDAO {
 
     @Override
     public Optional<User> findByEmail(String email) {
-
         try (Connection connection = dataSource.getConnection();
              PreparedStatement statement = connection.prepareStatement(SELECT_BY_EMAIL_SQL)) {
 
             statement.setString(1, email);
-
             try (ResultSet rs = statement.executeQuery()) {
                 return rs.next() ? Optional.of(mapRowToUser(rs)) : Optional.empty();
             }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
 
+    @Override
+    public Optional<User> findByPhone(String phone) {
+        try (Connection connection = dataSource.getConnection();
+             PreparedStatement statement = connection.prepareStatement(SELECT_BY_PHONE_SQL)) {
+
+            statement.setString(1, phone);
+            try (ResultSet rs = statement.executeQuery()) {
+                return rs.next() ? Optional.of(mapRowToUser(rs)) : Optional.empty();
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    @Override
+    public List<User> findByRole(UserRole role) {
+        try (Connection connection = dataSource.getConnection();
+             PreparedStatement statement = connection.prepareStatement(SELECT_BY_ROLE_SQL)) {
+
+            statement.setString(1, role.name());
+            try (ResultSet rs = statement.executeQuery()) {
+                List<User> users = new ArrayList<>();
+                while (rs.next()) {
+                    users.add(mapRowToUser(rs));
+                }
+                return users;
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    @Override
+    public List<User> searchByName(String fullName) {
+        try (Connection connection = dataSource.getConnection();
+             PreparedStatement statement = connection.prepareStatement(SEARCH_BY_NAME_SQL)) {
+
+            statement.setString(1, "%" + fullName + "%");
+            try (ResultSet rs = statement.executeQuery()) {
+                List<User> users = new ArrayList<>();
+                while (rs.next()) {
+                    users.add(mapRowToUser(rs));
+                }
+                return users;
+            }
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
@@ -124,7 +177,6 @@ public final class UserDaoImpl implements UserDAO {
 
     @Override
     public boolean update(User user) {
-
         try (Connection connection = dataSource.getConnection();
              PreparedStatement statement = connection.prepareStatement(UPDATE_SQL)) {
 
@@ -132,54 +184,80 @@ public final class UserDaoImpl implements UserDAO {
             statement.setString(2, user.getEmail());
             statement.setString(3, user.getPasswordHash());
             statement.setString(4, user.getPhone());
-            statement.setDate(5, user.getBirthday());
+            statement.setObject(5, user.getBirthday());
             statement.setString(6, user.getAddress());
-            statement.setString(7, user.getRole().name().toLowerCase());
+            statement.setString(7, user.getRole().name());
             statement.setBigDecimal(8, user.getCreditBalance());
             statement.setInt(9, user.getUserId());
 
             return statement.executeUpdate() == 1;
-
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
     }
 
     @Override
-    public boolean delete(int id) {
+    public boolean updateCreditBalance(int userId, BigDecimal newBalance) {
+        try (Connection connection = dataSource.getConnection();
+             PreparedStatement statement = connection.prepareStatement(UPDATE_BALANCE_SQL)) {
 
+            statement.setBigDecimal(1, newBalance);
+            statement.setInt(2, userId);
+
+            return statement.executeUpdate() == 1;
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    @Override
+    public boolean delete(int userId) {
         try (Connection connection = dataSource.getConnection();
              PreparedStatement statement = connection.prepareStatement(DELETE_SQL)) {
 
-            statement.setInt(1, id);
-
+            statement.setInt(1, userId);
             return statement.executeUpdate() == 1;
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
 
+    @Override
+    public boolean existsByEmail(String email) {
+        try (Connection connection = dataSource.getConnection();
+             PreparedStatement statement = connection.prepareStatement(EXISTS_BY_EMAIL_SQL)) {
+
+            statement.setString(1, email);
+            try (ResultSet rs = statement.executeQuery()) {
+                return rs.next() && rs.getInt(1) > 0;
+            }
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
     }
 
     private static User mapRowToUser(ResultSet rs) throws SQLException {
-
         User user = new User();
-
         user.setUserId(rs.getInt("user_id"));
         user.setFullName(rs.getString("full_name"));
         user.setEmail(rs.getString("email"));
         user.setPasswordHash(rs.getString("password_hash"));
         user.setPhone(rs.getString("phone"));
-        user.setBirthday(rs.getDate("birthday"));
-        user.setAddress(rs.getString("address"));
-
-        String roleValue = rs.getString("role");
-        if (roleValue != null) {
-            user.setRole(UserRole.valueOf(roleValue.toUpperCase()));
+        
+        Date birthday = rs.getDate("birthday");
+        if (birthday != null) {
+            user.setBirthday(birthday.toLocalDate());
         }
-
+        
+        user.setAddress(rs.getString("address"));
+        user.setRole(UserRole.valueOf(rs.getString("role")));
         user.setCreditBalance(rs.getBigDecimal("credit_balance"));
-        user.setCreatedAt(rs.getTimestamp("created_at"));
-
+        
+        Timestamp createdAt = rs.getTimestamp("created_at");
+        if (createdAt != null) {
+            user.setCreatedAt(createdAt.toLocalDateTime());
+        }
+        
         return user;
     }
 }
