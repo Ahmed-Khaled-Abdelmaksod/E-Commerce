@@ -1,64 +1,23 @@
 package gov.iti.jets.ecommerce.entity;
-
 import java.math.BigDecimal;
 
 public class OrderItem {
 
-    private int orderItemId;
-    private int orderId;
-    private int productId;
-    private int quantity;
+    private Integer orderItemId;
+    private Order order;
+    private Product product;
+    private Integer quantity;
     private BigDecimal price;
 
-    public OrderItem() {
-    }
-
-    public OrderItem(int orderItemId, int orderId, int productId,
-                      int quantity, BigDecimal price) {
-        this.orderItemId = orderItemId;
-        this.orderId = orderId;
-        this.productId = productId;
-        this.quantity = quantity;
-        this.price = price;
-    }
-
-    public int getOrderItemId() {
-        return orderItemId;
-    }
-
-    public void setOrderItemId(int orderItemId) {
-        this.orderItemId = orderItemId;
-    }
-
-    public int getOrderId() {
-        return orderId;
-    }
-
-    public void setOrderId(int orderId) {
-        this.orderId = orderId;
-    }
-
-    public int getProductId() {
-        return productId;
-    }
-
-    public void setProductId(int productId) {
-        this.productId = productId;
-    }
-
-    public int getQuantity() {
-        return quantity;
-    }
-
-    public void setQuantity(int quantity) {
-        this.quantity = quantity;
-    }
-
-    public BigDecimal getPrice() {
-        return price;
-    }
-
-    public void setPrice(BigDecimal price) {
-        this.price = price;
-    }
+    // Getters and Setters
+    public Integer getOrderItemId() { return orderItemId; }
+    public void setOrderItemId(Integer orderItemId) { this.orderItemId = orderItemId; }
+    public Order getOrder() { return order; }
+    public void setOrder(Order order) { this.order = order; }
+    public Product getProduct() { return product; }
+    public void setProduct(Product product) { this.product = product; }
+    public Integer getQuantity() { return quantity; }
+    public void setQuantity(Integer quantity) { this.quantity = quantity; }
+    public BigDecimal getPrice() { return price; }
+    public void setPrice(BigDecimal price) { this.price = price; }
 }

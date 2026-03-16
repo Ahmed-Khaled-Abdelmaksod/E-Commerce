@@ -1,7 +1,8 @@
 package gov.iti.jets.ecommerce.dao;
 
 import gov.iti.jets.ecommerce.entity.User;
-
+import gov.iti.jets.ecommerce.enums.UserRole;
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 
@@ -11,11 +12,21 @@ public interface UserDAO {
 
     List<User> findAll();
 
-    Optional<User> findById(int id);
+    Optional<User> findById(int userId);
 
     Optional<User> findByEmail(String email);
 
+    Optional<User> findByPhone(String phone);
+
+    List<User> findByRole(UserRole role);
+
+    List<User> searchByName(String fullName);
+
     boolean update(User user);
 
-    boolean delete(int id);
+    boolean updateCreditBalance(int userId, BigDecimal newBalance);
+
+    boolean delete(int userId);
+
+    boolean existsByEmail(String email);
 }

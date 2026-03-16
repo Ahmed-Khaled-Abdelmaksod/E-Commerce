@@ -39,7 +39,7 @@
     justify-content: center;
     font-weight: bold;
     font-size: 1.2rem;
-    flex-shrink: 0;            /
+    flex-shrink: 0;
     margin-right: 12px;
 }
 .brand-logo-circle:hover {

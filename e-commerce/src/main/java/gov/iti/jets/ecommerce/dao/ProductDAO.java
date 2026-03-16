@@ -1,7 +1,6 @@
 package gov.iti.jets.ecommerce.dao;
 
 import gov.iti.jets.ecommerce.entity.Product;
-
 import java.util.List;
 import java.util.Optional;
 
@@ -13,7 +12,9 @@ public interface ProductDAO {
 
     Optional<Product> findById(int id);
 
-    List<Product> findByCategory(int categoryId);
+    List<Product> findByCategoryId(int categoryId);
+
+    List<Product> searchByName(String name);
 
     boolean update(Product product);
 
