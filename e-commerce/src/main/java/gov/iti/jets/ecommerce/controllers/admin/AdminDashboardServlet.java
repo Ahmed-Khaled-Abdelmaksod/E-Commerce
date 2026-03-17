@@ -2,10 +2,10 @@ package gov.iti.jets.ecommerce.controllers.admin;
 
 import gov.iti.jets.ecommerce.context.ServiceLocator;
 import gov.iti.jets.ecommerce.service.DashboardService;
+import gov.iti.jets.ecommerce.DTO.ProductDTO;
+import gov.iti.jets.ecommerce.DTO.CategoryDTO;
 import gov.iti.jets.ecommerce.beans.dashboard.CustomerBean;
-import gov.iti.jets.ecommerce.beans.dashboard.ProductBean;
 import gov.iti.jets.ecommerce.beans.dashboard.OrderBean;
-
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -21,23 +21,29 @@ public class AdminDashboardServlet extends HttpServlet {
 
     @Override
     public void init() throws ServletException {
-        
         dashboardService = ServiceLocator.getInstance().getDashboardService();
     }
 
     @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response) 
+    protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        
-        String tab = request.getParameter("tab");
 
-        // Main dashboard landing page
-        if (tab == null || tab.isEmpty()) {
+        String tab = request.getParameter("tab");
+        String requestedWith = request.getHeader("X-Requested-With");
+        boolean isAjax = "XMLHttpRequest".equals(requestedWith);
+
+        // 1. Handle Full Page Loads (Redirects, Direct URL entry)
+        if (!isAjax) {
+            // This loads the dashboard shell (sidebar, header, CSS)
             request.getRequestDispatcher("/views/admin/dashboard.jsp").forward(request, response);
             return;
         }
 
-        // Routing to tab-specific logic
+        // 2. Handle AJAX Tab Loading
+        if (tab == null || tab.isEmpty()) {
+            tab = "products";
+        }
+
         switch (tab) {
             case "products":
                 loadProductsTab(request, response);
@@ -49,34 +55,32 @@ public class AdminDashboardServlet extends HttpServlet {
                 loadOrdersTab(request, response);
                 break;
             default:
-                response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Invalid tab requested");
+                loadProductsTab(request, response);
+                break;
         }
     }
 
-    private void loadProductsTab(HttpServletRequest request, HttpServletResponse response) 
+    private void loadProductsTab(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        // Using the new getAllProductsForDashboard method
-        List<ProductBean> products = dashboardService.getAllProductsForDashboard();
+        List<ProductDTO> products = dashboardService.getAllProductsForDashboard();
+        List<CategoryDTO> categories = dashboardService.getAllCategoriesForDashboard();
         request.setAttribute("products", products);
-
+        request.setAttribute("categories", categories);
+        // Forward ONLY to the fragment
         request.getRequestDispatcher("/views/admin/fragments/products-tab.jsp").forward(request, response);
     }
 
-    private void loadCustomersTab(HttpServletRequest request, HttpServletResponse response) 
+    private void loadCustomersTab(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        // Using CustomerBean list for the customers tab
         List<CustomerBean> customers = dashboardService.getAllCustomersForDashboard();
         request.setAttribute("customers", customers);
-
         request.getRequestDispatcher("/views/admin/fragments/customers-tab.jsp").forward(request, response);
     }
 
-    private void loadOrdersTab(HttpServletRequest request, HttpServletResponse response) 
+    private void loadOrdersTab(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        // Using OrderBean list (which contains nested OrderItemBeans)
         List<OrderBean> orders = dashboardService.getAllOrdersForDashboard();
         request.setAttribute("orders", orders);
-
         request.getRequestDispatcher("/views/admin/fragments/orders-tab.jsp").forward(request, response);
     }
 }

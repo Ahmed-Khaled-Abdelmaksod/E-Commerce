@@ -126,7 +126,7 @@ public final class OrderItemDaoImpl implements OrderItemDAO {
         product.setStockQuantity(rs.getInt("stock_quantity"));
         product.setImageUrl(rs.getString("image_url"));
         Timestamp pCreated = rs.getTimestamp("p_created_at");
-        if (pCreated != null) product.setCreatedAt(pCreated.toLocalDateTime());
+        if (pCreated != null) product.setCreatedAt(Timestamp.valueOf(pCreated.toLocalDateTime()));
 
         // Category (SET ID ONLY)
         Category category = new Category();
