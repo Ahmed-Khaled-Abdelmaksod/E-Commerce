@@ -42,10 +42,12 @@ public final class CartDaoImpl implements CartDAO {
     }
 
     @Override
-    public Optional<Cart> findByUserId(EntityManager em,int userId) {
-        Cart cart = em.createQuery("from Cart c where c.user.userId = :userId",Cart.class)
-                .setParameter("userId",userId).getSingleResult();
-        return Optional.ofNullable(cart);
+    public Optional<Cart> findCartByUserId(EntityManager em, int userId) {
+        List<Cart> result = em.createQuery(
+                        "from Cart c where c.user.userId = :userId", Cart.class)
+                .setParameter("userId", userId)
+                .getResultList();
+        return result.stream().findFirst();
     }
 
     @Override

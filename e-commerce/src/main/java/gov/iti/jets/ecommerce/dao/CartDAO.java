@@ -14,7 +14,7 @@ public interface CartDAO {
 
     Optional<Cart> findById(EntityManager em,int id);
 
-    Optional<Cart> findByUserId(EntityManager em,int userId);
+    Optional<Cart> findCartByUserId(EntityManager em,int userId);
 
     boolean delete(EntityManager em,int id);
 }
