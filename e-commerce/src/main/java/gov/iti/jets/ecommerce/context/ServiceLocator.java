@@ -16,6 +16,8 @@ public class ServiceLocator {
     private static volatile ServiceLocator instance;
 
     private final DashboardService dashboardService;
+    private final ProductDAO productDAO;
+    private final CategoryDAO categoryDAO;
 
     public static ServiceLocator getInstance() {
         if (instance == null) {
@@ -29,27 +31,30 @@ public class ServiceLocator {
     }
 
     private ServiceLocator() {
-        // Initialize DataSource
         HikariDataSource dataSource = DataSourceConfig.getDataSource();
 
-        // Initialize DAO layer
-        ProductDAO productDAO = new ProductDaoImpl(dataSource);
+        this.productDAO = new ProductDaoImpl();
+        this.categoryDAO = new CategoryDaoImpl();
+
         OrderDAO orderDAO = new OrderDaoImpl(dataSource);
         OrderItemDAO orderItemDAO = new OrderItemDaoImpl(dataSource);
         UserDAO userDAO = new UserDaoImpl(dataSource);
 
-        // Initialize Service layer with its required dependencies
         this.dashboardService = new DashboardServiceImpl(
-            productDAO, 
-            orderDAO, 
-            orderItemDAO, 
-            userDAO
+                productDAO,
+                orderDAO,
+                orderItemDAO,
+                userDAO,
+                categoryDAO
         );
     }
 
     // --- Getters ---
-
     public DashboardService getDashboardService() {
         return dashboardService;
+    }
+
+    public ProductDAO getProductDAO() {
+        return this.productDAO; // Now this works because productDAO is a class field!
     }
 }

@@ -155,7 +155,7 @@ public final class CartItemDaoImpl implements CartItemDAO {
         product.setCategory(category);
         
         Timestamp pCreated = rs.getTimestamp("p.created_at");
-        if (pCreated != null) product.setCreatedAt(pCreated.toLocalDateTime());
+        if (pCreated != null) product.setCreatedAt(Timestamp.valueOf(pCreated.toLocalDateTime()));
         cartItem.setProduct(product);
 
         // 2. Map Cart (With minimal User ID reference)
