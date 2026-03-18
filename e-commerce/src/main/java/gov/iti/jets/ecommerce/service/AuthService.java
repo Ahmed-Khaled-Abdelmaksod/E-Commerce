@@ -3,9 +3,12 @@ package gov.iti.jets.ecommerce.service;
 import gov.iti.jets.ecommerce.beans.SignUpBean;
 import gov.iti.jets.ecommerce.beans.UserBean;
 import gov.iti.jets.ecommerce.config.DataSourceConfig;
+import gov.iti.jets.ecommerce.config.JpaUtil;
 import gov.iti.jets.ecommerce.dao.impl.UserDaoImpl;
 import gov.iti.jets.ecommerce.entity.User;
 import gov.iti.jets.ecommerce.mappers.UserMapper;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EntityManager;
 import org.mindrot.jbcrypt.BCrypt;
 
 import java.util.Optional;
@@ -19,39 +22,45 @@ public class AuthService {
 
     }
     public Optional<UserBean> login(String email, String password) {
-        UserDaoImpl userDao = new UserDaoImpl(DataSourceConfig.getDataSource());
-        Optional<User> user = userDao.findByEmail(email);
-        if(user.isPresent()) {
-            User u = user.get();
-            if(BCrypt.checkpw(password,u.getPasswordHash())) {
-                UserBean userBean = new UserBean();
-                userBean.setUserId(u.getUserId());
-                userBean.setEmail(u.getEmail());
-                userBean.setRole(u.getRole());
-                userBean.setAddress(u.getAddress());
-                userBean.setCreditBalance(u.getCreditBalance());
-                userBean.setBirthday(u.getBirthday());
-                userBean.setFullName(u.getFullName());
-                userBean.setPhone(u.getPhone());
-                return Optional.of(userBean);
+        UserDaoImpl userDao = UserDaoImpl.getInstance();
+        try (EntityManager em = JpaUtil.getEntityManagerFactory().createEntityManager()) {
+            Optional<User> user = userDao.findByEmail(em,email);
+            if(user.isPresent()) {
+                User u = user.get();
+                if(BCrypt.checkpw(password,u.getPasswordHash())) {
+                    UserBean userBean = new UserBean();
+                    userBean.setUserId(u.getUserId());
+                    userBean.setEmail(u.getEmail());
+                    userBean.setRole(u.getRole());
+                    userBean.setAddress(u.getAddress());
+                    userBean.setCreditBalance(u.getCreditBalance());
+                    userBean.setBirthday(u.getBirthday());
+                    userBean.setFullName(u.getFullName());
+                    userBean.setPhone(u.getPhone());
+                    return Optional.of(userBean);
+                }
             }
+            return Optional.empty();
         }
-        return Optional.empty();
     }
     public String signUp(SignUpBean signUpBean) {
-        UserDaoImpl userDao = new UserDaoImpl(DataSourceConfig.getDataSource());
-        String validationMessage = validator(signUpBean);
-        if(validationMessage != null) {
-            return validationMessage;
+        UserDaoImpl userDao = UserDaoImpl.getInstance();
+        try (EntityManager em = JpaUtil.getEntityManagerFactory().createEntityManager()) {
+            String validationMessage = validator(signUpBean);
+            if(validationMessage != null) {
+                return validationMessage;
+            }
+            User user = UserMapper.mapSignUpBeanToUser(signUpBean);
+            userDao.insert(em,user);
+            return null;
         }
-        User user = UserMapper.mapSignUpBeanToUser(signUpBean);
-        userDao.insert(user);
-        return null;
     }
     public boolean isEmailExist(String email) {
-        UserDaoImpl userDao = new UserDaoImpl(DataSourceConfig.getDataSource());
-        Optional<User> user = userDao.findByEmail(email);
-        return user.isPresent();
+        UserDaoImpl userDao = UserDaoImpl.getInstance();
+        try(EntityManager em = JpaUtil.getEntityManagerFactory().createEntityManager()) {
+            Optional<User> user = userDao.findByEmail(em,email);
+            return user.isPresent();
+        }
     }
 
     public static AuthService getInstance() {

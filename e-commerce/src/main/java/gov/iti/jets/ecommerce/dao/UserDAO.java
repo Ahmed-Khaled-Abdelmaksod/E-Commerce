@@ -2,31 +2,32 @@ package gov.iti.jets.ecommerce.dao;
 
 import gov.iti.jets.ecommerce.entity.User;
 import gov.iti.jets.ecommerce.enums.UserRole;
+import jakarta.persistence.EntityManager;
+
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 
 public interface UserDAO {
 
-    User insert(User user);
+    User insert(EntityManager em, User user);
 
-    List<User> findAll();
+    List<User> findAll(EntityManager em);
 
-    Optional<User> findById(int userId);
+    Optional<User> findById(EntityManager em,int userId);
 
-    Optional<User> findByEmail(String email);
+    Optional<User> findByEmail(EntityManager em,String email);
 
-    Optional<User> findByPhone(String phone);
 
-    List<User> findByRole(UserRole role);
+    List<User> findByRole(EntityManager em,UserRole role);
 
-    List<User> searchByName(String fullName);
+    List<User> searchByName(EntityManager em,String fullName);
 
-    boolean update(User user);
+    boolean update(EntityManager em,User user);
 
-    boolean updateCreditBalance(int userId, BigDecimal newBalance);
+    boolean updateCreditBalance(EntityManager em,int userId, BigDecimal newBalance);
 
-    boolean delete(int userId);
+    boolean delete(EntityManager em,int userId);
 
-    boolean existsByEmail(String email);
+    boolean existsByEmail(EntityManager em,String email);
 }
