@@ -51,7 +51,9 @@ public class AuthService {
                 return validationMessage;
             }
             User user = UserMapper.mapSignUpBeanToUser(signUpBean);
+            em.getTransaction().begin();
             userDao.insert(em,user);
+            em.getTransaction().commit();
             return null;
         }
     }

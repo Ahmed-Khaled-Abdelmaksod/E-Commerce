@@ -38,7 +38,7 @@ public class ServiceLocator {
 
         OrderDAO orderDAO = new OrderDaoImpl(dataSource);
         OrderItemDAO orderItemDAO = new OrderItemDaoImpl(dataSource);
-        UserDAO userDAO = new UserDaoImpl(dataSource);
+        UserDAO userDAO = UserDaoImpl.getInstance();
 
         this.dashboardService = new DashboardServiceImpl(
                 productDAO,
