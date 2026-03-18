@@ -1,20 +1,22 @@
 package gov.iti.jets.ecommerce.dao;
 
 import gov.iti.jets.ecommerce.entity.CartItem;
+import jakarta.persistence.EntityManager;
+
 import java.util.List;
 import java.util.Optional;
 
 public interface CartItemDAO {
 
-    CartItem insert(CartItem cartItem);
+    CartItem insert(EntityManager em, CartItem cartItem);
 
-    List<CartItem> findByCartId(int cartId);
+    List<CartItem> findByCartId(EntityManager em,int cartId);
 
-    Optional<CartItem> findById(int cartItemId);
+    Optional<CartItem> findById(EntityManager em,int cartItemId);
 
-    boolean updateQuantity(int cartItemId, int quantity);
+    boolean updateQuantity(EntityManager em,int cartItemId, int quantity);
 
-    boolean delete(int cartItemId);
+    boolean delete(EntityManager em,int cartItemId);
 
-    boolean deleteByCartId(int cartId);
+    boolean deleteByCartId(EntityManager em,int cartId);
 }
