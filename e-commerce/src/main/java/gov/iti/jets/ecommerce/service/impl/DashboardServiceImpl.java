@@ -2,10 +2,12 @@ package gov.iti.jets.ecommerce.service.impl;
 
 import gov.iti.jets.ecommerce.beans.dashboard.*;
 import gov.iti.jets.ecommerce.DTO.*;
+import gov.iti.jets.ecommerce.config.JpaUtil;
 import gov.iti.jets.ecommerce.dao.*;
 import gov.iti.jets.ecommerce.entity.*;
 import gov.iti.jets.ecommerce.enums.UserRole;
 import gov.iti.jets.ecommerce.service.DashboardService;
+import jakarta.persistence.EntityManager;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -97,7 +99,8 @@ public class DashboardServiceImpl implements DashboardService {
 
     @Override
     public List<CustomerBean> getAllCustomersForDashboard() {
-        return userDAO.findByRole(UserRole.CUSTOMER).stream()
+        EntityManager em = JpaUtil.getEntityManagerFactory().createEntityManager();
+        return userDAO.findByRole(em,UserRole.CUSTOMER).stream()
                 .map(this::mapToCustomerBean)
                 .collect(Collectors.toList());
     }

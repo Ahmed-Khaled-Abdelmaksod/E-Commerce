@@ -15,7 +15,6 @@ import java.util.Optional;
 
 public final class UserDaoImpl implements UserDAO {
 
-    private final DataSource dataSource;
     private static UserDaoImpl instance;
     static {
         instance = new UserDaoImpl();
@@ -28,48 +27,28 @@ public final class UserDaoImpl implements UserDAO {
 
     @Override
     public User insert(EntityManager em, User user) {
-        EntityTransaction entityTransaction = em.getTransaction();
-        try {
-            entityTransaction.begin();
-            em.persist(user);
-            entityTransaction.commit();
-            return user;
-        }catch (Exception e){
-            if(entityTransaction.isActive()) entityTransaction.rollback();
-            throw new RuntimeException("can't insert the user due to database error" ,e);
-        }
+        em.persist(user);
+        return user;
     }
 
     @Override
     public List<User> findAll(EntityManager em) {
-        EntityTransaction entityTransaction = em.getTransaction();
-        try {
-            return em.createQuery("from User u",User.class).getResultList();
-        }catch (Exception e){
-            if(entityTransaction.isActive()) entityTransaction.rollback();
-            throw new RuntimeException("can't get users due to database error" ,e);
-        }
+        return em.createQuery("from User u",User.class).getResultList();
     }
 
     @Override
     public Optional<User> findById(EntityManager em,int userId) {
-        EntityTransaction entityTransaction = em.getTransaction();
-        try {
-            entityTransaction.begin();
-            User user = em.find(User.class,userId);
-            entityTransaction.commit();
-            return Optional.ofNullable(user);
-        }catch (Exception e){
-            if(entityTransaction.isActive()) entityTransaction.rollback();
-            throw new RuntimeException("can't user with id "+userId +" due to database error" ,e);
-        }
+        User user = em.find(User.class,userId);
+        return Optional.ofNullable(user);
     }
 
     @Override
-    public Optional<User> findByEmail(EntityManager em,String email) {
-        User user = em.createQuery("from User u where u.email = :email",User.class)
-                .setParameter("email",email).getSingleResult();
-            return Optional.ofNullable(user);
+    public Optional<User> findByEmail(EntityManager em, String email) {
+        List<User> result = em.createQuery(
+                        "from User u where u.email = :email", User.class)
+                .setParameter("email", email)
+                .getResultList();
+        return result.stream().findFirst();
     }
 
 
@@ -90,49 +69,25 @@ public final class UserDaoImpl implements UserDAO {
         if (user == null || user.getUserId() == null) {
             return false;
         }
-        EntityTransaction tx = em.getTransaction();
-        try {
-            tx.begin();
-            em.merge(user);
-            tx.commit();
-            return true;
-        } catch (Exception e) {
-            if (tx.isActive()) tx.rollback();
-            return false;
-        }
+        User merged = em.merge(user);
+        return merged != null;
     }
 
     @Override
     public boolean updateCreditBalance(EntityManager em, int userId, BigDecimal newBalance) {
-        EntityTransaction tx = em.getTransaction();
-        try {
-            tx.begin();
-            User user = em.find(User.class, userId);
-            if (user == null) {
-                return false;
-            }
-            user.setCreditBalance(newBalance);
-            tx.commit();
-            return true;
-        } catch (Exception e) {
-            if (tx.isActive()) tx.rollback();
-            return false;
-        }
+        int updated = em.createQuery(
+                        "UPDATE User u SET u.creditBalance = :balance WHERE u.userId = :id")
+                .setParameter("balance", newBalance)
+                .setParameter("id", userId)
+                .executeUpdate();
+        return updated > 0;
     }
     @Override
     public boolean delete(EntityManager em, int userId) {
-        EntityTransaction tx = em.getTransaction();
-        try {
-            tx.begin();
-            int deletedCount = em.createQuery("DELETE FROM User u WHERE u.id = :id")
-                    .setParameter("id", userId)
-                    .executeUpdate();
-            tx.commit();
-            return deletedCount > 0;
-        } catch (Exception e) {
-            if (tx.isActive()) tx.rollback();
-            return false;
-        }
+        int deletedCount = em.createQuery("DELETE FROM User u WHERE u.userId = :id")
+                .setParameter("id", userId)
+                .executeUpdate();
+        return deletedCount > 0;
     }
     @Override
     public boolean existsByEmail(EntityManager em, String email) {
