@@ -1,10 +1,25 @@
 package gov.iti.jets.ecommerce.entity;
 
+import jakarta.persistence.*;
+import org.hibernate.annotations.CreationTimestamp;
+
 import java.time.LocalDateTime;
+
+@Entity
+@Table(name = "carts")
 public class Cart {
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "cart_id")
     private Integer cartId;
+
+    @OneToOne
+    @JoinColumn(name = "user_id",unique = true)
     private User user;
+
+    @CreationTimestamp
+    @Column(name = "created_at")
     private LocalDateTime createdAt;
 
     // Getters and Setters

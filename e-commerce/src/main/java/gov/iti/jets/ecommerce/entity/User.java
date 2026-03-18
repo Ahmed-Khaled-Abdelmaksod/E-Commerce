@@ -1,20 +1,40 @@
 package gov.iti.jets.ecommerce.entity;
 
 import gov.iti.jets.ecommerce.enums.UserRole;
+import jakarta.persistence.*;
+import org.hibernate.annotations.CreationTimestamp;
+
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+@Entity()
+@Table(name = "users")
 public class User {
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer userId;
+
+    @Column(name = "full_name",nullable = false,length = 100)
     private String fullName;
+    @Column(name = "email",nullable = false,unique = true,length = 150)
     private String email;
+    @Column(name = "password_hash",nullable = false)
     private String passwordHash;
+
     private String phone;
     private LocalDate birthday;
     private String address;
+
+    @Enumerated(EnumType.STRING)
+    @Column(columnDefinition = "ENUM('admin','customer')")
     private UserRole role = UserRole.CUSTOMER;
+
+    @Column(name = "credit_balance")
     private BigDecimal creditBalance = BigDecimal.ZERO;
+
+    @CreationTimestamp
+    @Column(name = "created_at",updatable = false)
     private LocalDateTime createdAt;
 
     // Getters and Setters
