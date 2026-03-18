@@ -13,6 +13,7 @@ public class User {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "user_id")
     private Integer userId;
 
     @Column(name = "full_name",nullable = false,length = 100)
@@ -27,7 +28,7 @@ public class User {
     private String address;
 
     @Enumerated(EnumType.STRING)
-    @Column(columnDefinition = "ENUM('admin','customer')")
+    @Column(name = "role", columnDefinition = "ENUM('ADMIN','CUSTOMER')")
     private UserRole role = UserRole.CUSTOMER;
 
     @Column(name = "credit_balance")
