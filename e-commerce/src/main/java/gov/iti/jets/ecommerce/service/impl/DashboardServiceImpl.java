@@ -1,6 +1,7 @@
 package gov.iti.jets.ecommerce.service.impl;
 
 import gov.iti.jets.ecommerce.beans.dashboard.*;
+import gov.iti.jets.ecommerce.DTO.*;
 import gov.iti.jets.ecommerce.dao.*;
 import gov.iti.jets.ecommerce.entity.*;
 import gov.iti.jets.ecommerce.enums.UserRole;
@@ -16,20 +17,48 @@ public class DashboardServiceImpl implements DashboardService {
     private final OrderDAO orderDAO;
     private final OrderItemDAO orderItemDAO;
     private final UserDAO userDAO;
+    private final CategoryDAO categorieDAO;
 
-    public DashboardServiceImpl(ProductDAO productDAO, OrderDAO orderDAO, 
-                                OrderItemDAO orderItemDAO, UserDAO userDAO) {
+    public DashboardServiceImpl(ProductDAO productDAO, OrderDAO orderDAO,
+                                OrderItemDAO orderItemDAO, UserDAO userDAO,
+                                CategoryDAO categorieDAO) {
         this.productDAO = productDAO;
         this.orderDAO = orderDAO;
         this.orderItemDAO = orderItemDAO;
         this.userDAO = userDAO;
+        this.categorieDAO = categorieDAO;
     }
 
     @Override
-    public List<ProductBean> getAllProductsForDashboard() {
+    public List<ProductDTO> getAllProductsForDashboard() {
         return productDAO.findAll().stream()
-                .map(this::mapToProductBean)
+                .map(this::mapToProductDTO)
                 .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<CategoryDTO> getAllCategoriesForDashboard() {
+        return categorieDAO.findAll().stream().map(cat -> {
+            CategoryDTO dto = new CategoryDTO();
+            dto.setCategoryId(cat.getCategoryId());
+            dto.setName(cat.getName());
+            return dto;
+        }).collect(Collectors.toList());
+    }
+
+    private ProductDTO mapToProductDTO(Product entity) {
+        ProductDTO dto = new ProductDTO();
+        dto.setProductId(entity.getProductId());
+        dto.setName(entity.getName());
+        dto.setDescription(entity.getDescription());
+        dto.setPrice(entity.getPrice());
+        dto.setStockQuantity(entity.getStockQuantity());
+        dto.setImageUrl(entity.getImageUrl());
+        if (entity.getCategory() != null) {
+            dto.setCategoryId(entity.getCategory().getCategoryId());
+            dto.setCategoryName(entity.getCategory().getName());
+        }
+        return dto;
     }
 
     @Override
@@ -41,11 +70,11 @@ public class DashboardServiceImpl implements DashboardService {
             OrderBean bean = new OrderBean();
             bean.setOrderId(order.getOrderId());
             bean.setTotalPrice(order.getTotalPrice());
-            
+
             if (order.getOrderDate() != null) {
                 bean.setOrderDate(java.sql.Timestamp.valueOf(order.getOrderDate()));
             }
-            
+
             if (order.getUser() != null) {
                 bean.setCustomerName(order.getUser().getFullName());
             }
@@ -71,21 +100,6 @@ public class DashboardServiceImpl implements DashboardService {
         return userDAO.findByRole(UserRole.CUSTOMER).stream()
                 .map(this::mapToCustomerBean)
                 .collect(Collectors.toList());
-    }
-
-    // --- Private Helper Mapping Methods ---
-
-    private ProductBean mapToProductBean(Product entity) {
-        ProductBean bean = new ProductBean();
-        bean.setProductId(entity.getProductId());
-        bean.setName(entity.getName());
-        bean.setPrice(entity.getPrice());
-        bean.setStockQuantity(entity.getStockQuantity());
-        bean.setImageUrl(entity.getImageUrl());
-        if (entity.getCategory() != null) {
-            bean.setCategoryName(entity.getCategory().getName());
-        }
-        return bean;
     }
 
     private CustomerBean mapToCustomerBean(User entity) {
