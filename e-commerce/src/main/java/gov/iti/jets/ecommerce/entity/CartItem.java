@@ -1,9 +1,22 @@
 package gov.iti.jets.ecommerce.entity;
 
+import jakarta.persistence.*;
+
+@Entity
+@Table(name = "cart_items")
 public class CartItem {
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "cart_item_id")
     private Integer cartItemId;
+
+    @ManyToOne
+    @JoinColumn(name = "cart_id",nullable = false)
     private Cart cart;
+
+    @OneToOne
+    @JoinColumn(name = "product_id",nullable = false)
     private Product product;
     private Integer quantity = 1;
 
