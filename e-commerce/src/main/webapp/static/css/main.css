@@ -252,3 +252,30 @@ body, p {
     color: #8b7367 !important; /* Muted brown search icon */
     font-size: 0.9rem;
 }
+
+.cart-wrapper {
+    width: 42px;
+    height: 42px;
+    background: rgba(var(--light-cream), 0.05); /* Very light brand color background */
+    border-radius: 12px;
+    transition: all 0.3s ease;
+    text-decoration: none;
+    color: #4a4a4a;
+}
+
+.cart-wrapper:hover {
+    background: #fdf2f4; /* A soft pink/cream hover */
+    transform: translateY(-2px);
+    color: var(--brand-color);
+}
+
+.cart-wrapper .badge {
+    font-size: 0.65rem;
+    padding: 0.35em 0.5em;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+/* If you haven't defined --brand-color yet */
+:root {
+    --brand-color: #d63384; /* Example sweet pink */
+}
