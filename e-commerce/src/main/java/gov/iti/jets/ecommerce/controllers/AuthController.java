@@ -3,6 +3,7 @@ package gov.iti.jets.ecommerce.controllers;
 import gov.iti.jets.ecommerce.beans.UserBean;
 import gov.iti.jets.ecommerce.enums.UserRole;
 import gov.iti.jets.ecommerce.service.AuthService;
+import gov.iti.jets.ecommerce.service.CartService;
 import jakarta.servlet.RequestDispatcher;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -36,7 +37,9 @@ public class AuthController extends HttpServlet {
             if(userBean.get().getRole() == UserRole.ADMIN) {
                 // TODO forward TO admin dashboard
             }else {
-                resp.sendRedirect(req.getContextPath()+"/views/home.jsp"); // TODO handle the right link
+                int userCartId = CartService.getInstance().getUserCart(userBean.get().getUserId());
+                session.setAttribute("userCartId",userCartId);
+                resp.sendRedirect(req.getContextPath()+"/user/home");
             }
         }else {
             req.setAttribute("errorMessage","Invalid email or password.");
