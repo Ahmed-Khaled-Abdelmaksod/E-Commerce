@@ -43,12 +43,14 @@ public class DashboardServiceImpl implements DashboardService {
 
     @Override
     public List<CategoryDTO> getAllCategoriesForDashboard() {
-        return categorieDAO.findAll().stream().map(cat -> {
-            CategoryDTO dto = new CategoryDTO();
-            dto.setCategoryId(cat.getCategoryId());
-            dto.setName(cat.getName());
-            return dto;
-        }).collect(Collectors.toList());
+        try(EntityManager em = JpaUtil.getEntityManagerFactory().createEntityManager()){
+            return categorieDAO.findAll(em).stream().map(cat -> {
+                CategoryDTO dto = new CategoryDTO();
+                dto.setCategoryId(cat.getCategoryId());
+                dto.setName(cat.getName());
+                return dto;
+            }).collect(Collectors.toList());
+        }
     }
 
     private ProductDTO mapToProductDTO(Product entity) {
