@@ -6,6 +6,7 @@
   To change this template use File | Settings | File Templates.
 --%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <html>
     <head>
         <title>Title</title>
@@ -29,73 +30,55 @@
                 <div class="container">
                     <div class="d-flex flex-column gap-4 flex-md-row align-items-md-center justify-content-between mb-5">
                         <div class="d-flex flex-wrap gap-2">
-                            <button class="btn btn-primary bg-brand border-0 btn-sm px-3 rounded-pill">All</button>
-                            <button class="btn btn-outline-secondary btn-sm px-3 custom-raduis light-border-color text-dark border-light-subtle shadow-sm bg-white hover-brown">Cupcakes</button>
-                            <button class="btn btn-outline-secondary btn-sm px-3 custom-raduis light-border-color text-dark border-light-subtle shadow-sm bg-white hover-brown">Macarons</button>
-                            <button class="btn btn-outline-secondary btn-sm px-3 custom-raduis light-border-color text-dark border-light-subtle shadow-sm bg-white hover-brown">Cakes</button>
-                            <button class="btn btn-outline-secondary btn-sm px-3 custom-raduis light-border-color text-dark border-light-subtle shadow-sm bg-white hover-brown">Cookies</button>
-                            <button class="btn btn-outline-secondary btn-sm px-3 custom-raduis light-border-color text-dark border-light-subtle shadow-sm bg-white hover-brown">Donuts</button>
+                            <button class="filter-btn btn btn-primary bg-brand border-0 btn-sm px-3 rounded-pill custom-raduis light-border-color border-light-subtle shadow-sm" data-filter="all">All</button>
+                            <button class="filter-btn btn btn-outline-secondary btn-sm px-3 custom-raduis light-border-color text-dark border-light-subtle shadow-sm bg-white hover-brown" data-filter="Cupcakes">Cupcakes</button>
+                            <button class="filter-btn btn btn-outline-secondary btn-sm px-3 custom-raduis light-border-color text-dark border-light-subtle shadow-sm bg-white hover-brown" data-filter="Macarons">Macarons</button>
+                            <button class="filter-btn btn btn-outline-secondary btn-sm px-3 custom-raduis light-border-color text-dark border-light-subtle shadow-sm bg-white hover-brown" data-filter="Cakes">Cakes</button>
+                            <button class="filter-btn btn btn-outline-secondary btn-sm px-3 custom-raduis light-border-color text-dark border-light-subtle shadow-sm bg-white hover-brown" data-filter="Cookies">Cookies</button>
+                            <button class="filter-btn btn btn-outline-secondary btn-sm px-3 custom-raduis light-border-color text-dark border-light-subtle shadow-sm bg-white hover-brown" data-filter="Donuts">Donuts</button>
                         </div>
 
-                        <<div class="position-relative search-container" style="min-width: 260px;">
+                        <div class="position-relative search-container" style="min-width: 260px;" >
                             <i class="bi bi-search position-absolute start-0 top-50 translate-middle-y ms-3 custom-search-icon"></i>
 
                             <input type="text"
                                    class="form-control ps-5 py-2 rounded-pill custom-search-input"
-                                   placeholder="Search products...">
+                                   placeholder="Search products..." id="searchInput">
                         </div>
                     </div>
 
                     <div class="row row-cols-1 row-cols-sm-2 row-cols-lg-3 row-cols-xl-4 g-4">
-
-                        <div class="col">
-                            <div class="card h-100 border-0 shadow-sm rounded-4 product-card overflow-hidden transition-all">
-                                <div class="position-relative overflow-hidden aspect-square bg-light">
-                                    <img src="${pageContext.request.contextPath}/static/images/chocolate-cake.jpg"
-                                         class="card-img-top object-cover h-100 w-100 transition-transform zoom-hover"
-                                         alt="Strawberry Cupcake">
-                                    <div class="position-absolute top-0 start-0 m-3">
-                                        <span class="badge bg-white text-muted fw-medium py-2 px-3 rounded-pill shadow-sm small border">Cupcakes</span>
+                        <jsp:useBean id="products" scope="request" type="java.util.List"/>
+                        <c:forEach var="product" items="${products}">
+                            <div class="col product-item" data-category="${product.categoryName}">
+                                <div class="card h-100 border-0 shadow-sm rounded-4 product-card overflow-hidden transition-all">
+                                    <div class="position-relative overflow-hidden aspect-square bg-light">
+                                        <img src="${pageContext.request.contextPath}/static${product.imageUrl}"
+                                             class="card-img-top object-cover h-100 w-100 transition-transform zoom-hover"
+                                             alt="${product.name}">
+                                        <div class="position-absolute top-0 start-0 m-3">
+                                            <span class="badge bg-white text-muted fw-medium py-2 px-3 rounded-pill shadow-sm small border">${product.categoryName}</span>
+                                        </div>
                                     </div>
-                                </div>
 
-                                <div class="card-body p-4">
-                                    <h3 class="h6 fw-bold text-dark mb-2">Strawberry Cupcake</h3>
-                                    <div class="d-flex align-items-center justify-content-between mt-3">
-                                        <span class="h5 fw-bold text-brand mb-0">$4.99</span>
-                                        <button class="btn btn-primary bg-brand border-0 btn-sm px-3 d-flex align-items-center rounded-3">
-                                            <i class="bi bi-cart-plus me-2"></i> Add
-                                        </button>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="col">
-                            <div class="card h-100 border-0 shadow-sm rounded-4 product-card overflow-hidden">
-                                <div class="position-relative overflow-hidden aspect-square bg-light">
-                                    <img src="${pageContext.request.contextPath}/static/images/chocolate-cake.jpg" class="card-img-top object-cover h-100 w-100 zoom-hover" alt="Macarons">
-                                    <div class="position-absolute top-0 start-0 m-3">
-                                        <span class="badge bg-white text-muted fw-medium py-2 px-3 rounded-pill shadow-sm small border">Macarons</span>
-                                    </div>
-                                </div>
-                                <div class="card-body p-4">
-                                    <h3 class="h6 fw-bold text-dark mb-2">French Macarons</h3>
-                                    <div class="d-flex align-items-center justify-content-between mt-3">
-                                        <span class="h5 fw-bold text-brand mb-0">$12.99</span>
-                                        <button class="btn btn-primary bg-brand border-0 btn-sm px-3 d-flex align-items-center rounded-3">
-                                            <i class="bi bi-cart-plus me-2"></i> Add
-                                        </button>
+                                    <div class="card-body p-4">
+                                        <h3 class="h6 fw-bold text-dark mb-2">${product.categoryName}</h3>
+                                        <div class="d-flex align-items-center justify-content-between mt-3">
+                                            <span class="h5 fw-bold text-brand mb-0">$${product.price}</span>
+                                            <button class="btn btn-primary bg-brand border-0 btn-sm px-3 d-flex align-items-center rounded-3">
+                                                <i class="bi bi-cart-plus me-2"></i> Add
+                                            </button>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
-                        </div>
-
+                        </c:forEach>
                     </div>
                 </div>
             </section>
         </main>
         <%@ include file="/static/html/footer.html"%>
         <script src="${pageContext.request.contextPath}/static/js/bootstrap.js"></script>
+        <script src="${pageContext.request.contextPath}/static/js/sweets.js"></script>
     </body>
 </html>

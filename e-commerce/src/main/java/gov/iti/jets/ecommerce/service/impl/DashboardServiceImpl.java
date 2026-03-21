@@ -33,9 +33,12 @@ public class DashboardServiceImpl implements DashboardService {
 
     @Override
     public List<ProductDTO> getAllProductsForDashboard() {
-        return productDAO.findAll().stream()
-                .map(this::mapToProductDTO)
-                .collect(Collectors.toList());
+        try(EntityManager em = JpaUtil.getEntityManagerFactory().createEntityManager()) {
+            return productDAO.findAll(em).stream()
+                    .map(this::mapToProductDTO)
+                    .collect(Collectors.toList());
+        }
+
     }
 
     @Override
