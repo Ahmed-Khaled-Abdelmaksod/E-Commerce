@@ -18,36 +18,20 @@ public class ProductDaoImpl implements ProductDAO {
     }
 
     @Override
-    public Product insert(Product product) {
-        EntityManager em = JpaUtil.getEntityManagerFactory().createEntityManager();
-        EntityTransaction transaction = em.getTransaction();
-        try {
-            transaction.begin();
+    public Product insert(EntityManager em,Product product) {
             em.persist(product);
-            transaction.commit();
             return product;
-        } catch (Exception e) {
-            if (transaction.isActive()) transaction.rollback();
-            throw new RuntimeException("Failed to insert product", e);
-        } finally {
-            em.close();
-        }
     }
 
     @Override
-    public List<Product> findAll() {
-        try (EntityManager em = JpaUtil.getEntityManagerFactory().createEntityManager()) {
-            return em.createQuery("SELECT p FROM Product p", Product.class).getResultList();
-        }
+    public List<Product> findAll(EntityManager em) {
+        return em.createQuery("SELECT p FROM Product p", Product.class).getResultList();
     }
 
     @Override
-    public Optional<Product> findById(int id) {
-        try (EntityManager em = JpaUtil.getEntityManagerFactory().createEntityManager()) {
-            // Using Integer.valueOf(id) is safe for your int primitive
-            Product product = em.find(Product.class, id);
-            return Optional.ofNullable(product);
-        }
+    public Optional<Product> findById(EntityManager em,int id) {
+        Product product = em.find(Product.class, id);
+        return Optional.ofNullable(product);
     }
 
 //    --- NOT CURRENTLY USED BY DASHBOARD ---
@@ -67,53 +51,30 @@ public class ProductDaoImpl implements ProductDAO {
 //    ------------------------------------------
 
     // This matches your Dashboard logic for filtering products by category
-    public List<Product> findByCategory(int categoryId) {
-        try (EntityManager em = JpaUtil.getEntityManagerFactory().createEntityManager()) {
-            Category categoryRef = em.getReference(Category.class, categoryId);
-            TypedQuery<Product> query = em.createQuery(
-                    "SELECT p FROM Product p WHERE p.category = :catRef", Product.class);
-            query.setParameter("catRef", categoryRef);
+    public List<Product> findByCategory(EntityManager em,int categoryId) {
+        Category categoryRef = em.getReference(Category.class, categoryId);
+        TypedQuery<Product> query = em.createQuery(
+                "SELECT p FROM Product p WHERE p.category = :catRef", Product.class);
+        query.setParameter("catRef", categoryRef);
 
-            return query.getResultList();
-        }
+        return query.getResultList();
+
     }
 
     @Override
-    public boolean update(Product product) {
-        EntityManager em = JpaUtil.getEntityManagerFactory().createEntityManager();
-        EntityTransaction transaction = em.getTransaction();
-        try {
-            transaction.begin();
-            em.merge(product);
-            transaction.commit();
-            return true;
-        } catch (Exception e) {
-            if (transaction.isActive()) transaction.rollback();
+    public boolean update(EntityManager em,Product product) {
+        if (product == null) {
             return false;
-        } finally {
-            em.close();
         }
+        Product merged = em.merge(product);
+        return merged != null;
     }
 
     @Override
-    public boolean delete(int id) {
-        EntityManager em = JpaUtil.getEntityManagerFactory().createEntityManager();
-        EntityTransaction transaction = em.getTransaction();
-        try {
-            transaction.begin();
-            Product product = em.find(Product.class, id);
-            if (product != null) {
-                em.remove(product);
-                transaction.commit();
-                return true;
-            }
-            return false;
-        } catch (Exception e) {
-            if (transaction.isActive()) transaction.rollback();
-            e.printStackTrace();
-            return false;
-        } finally {
-            em.close();
-        }
+    public boolean delete(EntityManager em,int id) {
+        int deletedCount = em.createQuery("DELETE FROM Product p WHERE p.productId = :id")
+                .setParameter("id", id)
+                .executeUpdate();
+        return deletedCount > 0;
     }
 }
