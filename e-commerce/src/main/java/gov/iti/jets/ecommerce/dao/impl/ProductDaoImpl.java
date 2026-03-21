@@ -6,6 +6,7 @@ import gov.iti.jets.ecommerce.entity.Category;
 import gov.iti.jets.ecommerce.entity.Product;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityTransaction;
+import jakarta.persistence.Query;
 import jakarta.persistence.TypedQuery;
 
 import java.util.List;
@@ -51,13 +52,17 @@ public class ProductDaoImpl implements ProductDAO {
 
 //    --- NOT CURRENTLY USED BY DASHBOARD ---
     @Override
-    public List<Product> findByCategoryId(int categoryId) {
-        return List.of();
+    public List<Product> findByCategoryId(EntityManager em,int categoryId) {
+        Query query= em.createQuery("FROM Product p where p.category.categoryId = :categoryId", Product.class);
+        query.setParameter("categoryId",categoryId);
+        return query.getResultList();
     }
 
     @Override
-    public List<Product> searchByName(String name) {
-        return List.of();
+    public List<Product> searchByName(EntityManager em,String name) {
+        Query query= em.createQuery("FROM Product p where p.name = :name", Product.class);
+        query.setParameter("name",name);
+        return query.getResultList();
     }
 //    ------------------------------------------
 
