@@ -31,11 +31,10 @@
                     <div class="d-flex flex-column gap-4 flex-md-row align-items-md-center justify-content-between mb-5">
                         <div class="d-flex flex-wrap gap-2">
                             <button class="filter-btn btn btn-primary bg-brand border-0 btn-sm px-3 rounded-pill custom-raduis light-border-color border-light-subtle shadow-sm" data-filter="all">All</button>
-                            <button class="filter-btn btn btn-outline-secondary btn-sm px-3 custom-raduis light-border-color text-dark border-light-subtle shadow-sm bg-white hover-brown" data-filter="Cupcakes">Cupcakes</button>
-                            <button class="filter-btn btn btn-outline-secondary btn-sm px-3 custom-raduis light-border-color text-dark border-light-subtle shadow-sm bg-white hover-brown" data-filter="Macarons">Macarons</button>
-                            <button class="filter-btn btn btn-outline-secondary btn-sm px-3 custom-raduis light-border-color text-dark border-light-subtle shadow-sm bg-white hover-brown" data-filter="Cakes">Cakes</button>
-                            <button class="filter-btn btn btn-outline-secondary btn-sm px-3 custom-raduis light-border-color text-dark border-light-subtle shadow-sm bg-white hover-brown" data-filter="Cookies">Cookies</button>
-                            <button class="filter-btn btn btn-outline-secondary btn-sm px-3 custom-raduis light-border-color text-dark border-light-subtle shadow-sm bg-white hover-brown" data-filter="Donuts">Donuts</button>
+                            <jsp:useBean id="categories" scope="request" type="java.util.List"/>
+                            <c:forEach var="category" items="${categories}">
+                                <button class="filter-btn btn btn-outline-secondary btn-sm px-3 custom-raduis light-border-color text-dark border-light-subtle shadow-sm bg-white hover-brown" data-filter="${category.name}">${category.name}</button>
+                            </c:forEach>
                         </div>
 
                         <div class="position-relative search-container" style="min-width: 260px;" >
