@@ -1,8 +1,5 @@
 package gov.iti.jets.ecommerce.context;
 
-import com.zaxxer.hikari.HikariDataSource;
-import gov.iti.jets.ecommerce.config.DataSourceConfig;
-
 // --- DAO Imports ---
 import gov.iti.jets.ecommerce.dao.*;
 import gov.iti.jets.ecommerce.dao.impl.*;
@@ -11,13 +8,23 @@ import gov.iti.jets.ecommerce.dao.impl.*;
 import gov.iti.jets.ecommerce.service.DashboardService;
 import gov.iti.jets.ecommerce.service.impl.DashboardServiceImpl;
 
+/**
+ * ServiceLocator follows the Singleton pattern to provide centralized 
+ * access to application services and manages the lifecycle of DAOs.
+ */
 public class ServiceLocator {
 
     private static volatile ServiceLocator instance;
 
+    // Services (The only entry points for the Web Layer)
     private final DashboardService dashboardService;
+
+    // DAOs (Internal dependencies for Services, no public getters)
     private final ProductDAO productDAO;
     private final CategoryDAO categoryDAO;
+    private final OrderDAO orderDAO;
+    private final OrderItemDAO orderItemDAO;
+    private final UserDAO userDAO;
 
     public static ServiceLocator getInstance() {
         if (instance == null) {
@@ -31,15 +38,14 @@ public class ServiceLocator {
     }
 
     private ServiceLocator() {
-        HikariDataSource dataSource = DataSourceConfig.getDataSource();
-
+        // 1. Initialize DAOs as stateless instances
         this.productDAO = new ProductDaoImpl();
         this.categoryDAO = new CategoryDaoImpl();
+        this.orderDAO = new OrderDaoImpl();
+        this.orderItemDAO = new OrderItemDaoImpl();
+        this.userDAO = new UserDaoImpl();
 
-        OrderDAO orderDAO = new OrderDaoImpl(dataSource);
-        OrderItemDAO orderItemDAO = new OrderItemDaoImpl(dataSource);
-        UserDAO userDAO = UserDaoImpl.getInstance();
-
+        // 2. Inject DAOs into Services
         this.dashboardService = new DashboardServiceImpl(
                 productDAO,
                 orderDAO,
@@ -49,12 +55,21 @@ public class ServiceLocator {
         );
     }
 
-    // --- Getters ---
+    // --- Dao Getters (should be removed) ---
+
+    public ProductDAO getProductDAO() {
+        return productDAO;
+    }
+
+    // --- Service Getters ---
+    
+    /**
+     * @return The singleton instance of DashboardService
+     */
     public DashboardService getDashboardService() {
         return dashboardService;
     }
 
-    public ProductDAO getProductDAO() {
-        return this.productDAO; // Now this works because productDAO is a class field!
-    }
+    // Note: DAOs are kept private to enforce using the Service Layer 
+    // for all database interactions.
 }
