@@ -1,6 +1,7 @@
 package gov.iti.jets.ecommerce.controllers.admin;
 
 import gov.iti.jets.ecommerce.config.DataSourceConfig;
+import gov.iti.jets.ecommerce.config.JpaUtil;
 import gov.iti.jets.ecommerce.context.ServiceLocator;
 import gov.iti.jets.ecommerce.dao.CategoryDAO;
 import gov.iti.jets.ecommerce.dao.ProductDAO;
@@ -8,6 +9,7 @@ import gov.iti.jets.ecommerce.dao.impl.CategoryDaoImpl;
 import gov.iti.jets.ecommerce.dao.impl.ProductDaoImpl;
 import gov.iti.jets.ecommerce.entity.Category;
 import gov.iti.jets.ecommerce.entity.Product;
+import jakarta.persistence.EntityManager;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.MultipartConfig;
 import jakarta.servlet.annotation.WebServlet;
@@ -71,13 +73,19 @@ public class AdminProductController extends HttpServlet {
 
         product.setImageUrl(processImageUpload(request.getPart("image")));
 
-        productDao.insert(product);
+        EntityManager em1 = JpaUtil.getEntityManagerFactory().createEntityManager();
+        productDao.insert(em1, product);
+        em1.close();
+
         response.sendRedirect(request.getContextPath() + "/admin/dashboard?tab=products");
     }
 
     private void handleEditProduct(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
         int productId = Integer.parseInt(request.getParameter("productId"));
-        Product product = productDao.findById(productId).orElse(new Product());
+
+        EntityManager em2 = JpaUtil.getEntityManagerFactory().createEntityManager();
+        Product product = productDao.findById(em2, productId).orElse(new Product());
+        em2.close();
 
         product.setName(request.getParameter("name"));
         product.setDescription(request.getParameter("description"));
@@ -93,14 +101,19 @@ public class AdminProductController extends HttpServlet {
             product.setImageUrl(processImageUpload(imagePart));
         }
 
-        productDao.update(product);
+        EntityManager em3 = JpaUtil.getEntityManagerFactory().createEntityManager();
+        productDao.update(em3, product);
+        em3.close();
 
         response.sendRedirect(request.getContextPath() + "/admin/dashboard?tab=products");
     }
 
     private void handleDeleteProduct(HttpServletRequest request, HttpServletResponse response) throws IOException {
         int productId = Integer.parseInt(request.getParameter("productId"));
-        boolean isDeleted = productDao.delete(productId);
+
+        EntityManager em3 = JpaUtil.getEntityManagerFactory().createEntityManager();
+        boolean isDeleted = productDao.delete(em3, productId);
+        em3.close();
 
         response.setContentType("application/json");
         response.setCharacterEncoding("UTF-8");

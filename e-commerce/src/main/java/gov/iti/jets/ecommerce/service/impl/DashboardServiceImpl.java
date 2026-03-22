@@ -19,34 +19,67 @@ public class DashboardServiceImpl implements DashboardService {
     private final OrderDAO orderDAO;
     private final OrderItemDAO orderItemDAO;
     private final UserDAO userDAO;
-    private final CategoryDAO categorieDAO;
+    private final CategoryDAO categoryDAO;
 
     public DashboardServiceImpl(ProductDAO productDAO, OrderDAO orderDAO,
                                 OrderItemDAO orderItemDAO, UserDAO userDAO,
-                                CategoryDAO categorieDAO) {
+                                CategoryDAO categoryDAO) {
         this.productDAO = productDAO;
         this.orderDAO = orderDAO;
         this.orderItemDAO = orderItemDAO;
         this.userDAO = userDAO;
-        this.categorieDAO = categorieDAO;
+        this.categoryDAO = categoryDAO;
     }
 
     @Override
     public List<ProductDTO> getAllProductsForDashboard() {
-        return productDAO.findAll().stream()
-                .map(this::mapToProductDTO)
-                .collect(Collectors.toList());
+        try (EntityManager em = JpaUtil.getEntityManagerFactory().createEntityManager()) {
+            return productDAO.findAll(em).stream()
+                    .map(this::mapToProductDTO)
+                    .collect(Collectors.toList());
+        }
     }
 
     @Override
     public List<CategoryDTO> getAllCategoriesForDashboard() {
-        return categorieDAO.findAll().stream().map(cat -> {
-            CategoryDTO dto = new CategoryDTO();
-            dto.setCategoryId(cat.getCategoryId());
-            dto.setName(cat.getName());
-            return dto;
-        }).collect(Collectors.toList());
+        try (EntityManager em = JpaUtil.getEntityManagerFactory().createEntityManager()) {
+            return categoryDAO.findAll(em).stream()
+                    .map(this::mapToCategoryDTO)
+                    .collect(Collectors.toList());
+        }
     }
+
+    @Override
+    public List<OrderBean> getAllOrdersForDashboard() {
+        try (EntityManager em = JpaUtil.getEntityManagerFactory().createEntityManager()) {
+            List<Order> orders = orderDAO.findAll(em);
+            List<OrderBean> orderBeans = new ArrayList<>();
+
+            for (Order order : orders) {
+                OrderBean bean = mapToOrderBean(order);
+                
+                List<OrderItemBean> itemBeans = orderItemDAO.findByOrderId(em, order.getOrderId())
+                        .stream()
+                        .map(this::mapToOrderItemBean)
+                        .collect(Collectors.toList());
+
+                bean.setOrderItems(itemBeans);
+                orderBeans.add(bean);
+            }
+            return orderBeans;
+        }
+    }
+
+    @Override
+    public List<CustomerBean> getAllCustomersForDashboard() {
+        try (EntityManager em = JpaUtil.getEntityManagerFactory().createEntityManager()) {
+            return userDAO.findByRole(em, UserRole.CUSTOMER).stream()
+                    .map(this::mapToCustomerBean)
+                    .collect(Collectors.toList());
+        }
+    }
+
+    // --- Private Mapper Methods ---
 
     private ProductDTO mapToProductDTO(Product entity) {
         ProductDTO dto = new ProductDTO();
@@ -63,46 +96,32 @@ public class DashboardServiceImpl implements DashboardService {
         return dto;
     }
 
-    @Override
-    public List<OrderBean> getAllOrdersForDashboard() {
-        List<Order> orders = orderDAO.findAll();
-        List<OrderBean> orderBeans = new ArrayList<>();
-
-        for (Order order : orders) {
-            OrderBean bean = new OrderBean();
-            bean.setOrderId(order.getOrderId());
-            bean.setTotalPrice(order.getTotalPrice());
-
-            if (order.getOrderDate() != null) {
-                bean.setOrderDate(java.sql.Timestamp.valueOf(order.getOrderDate()));
-            }
-
-            if (order.getUser() != null) {
-                bean.setCustomerName(order.getUser().getFullName());
-            }
-
-            List<OrderItemBean> itemBeans = orderItemDAO.findByOrderId(order.getOrderId())
-                    .stream()
-                    .map(itemEntity -> {
-                        OrderItemBean itemBean = new OrderItemBean();
-                        itemBean.setProductName(itemEntity.getProduct().getName());
-                        itemBean.setQuantity(itemEntity.getQuantity());
-                        itemBean.setPrice(itemEntity.getPrice());
-                        return itemBean;
-                    }).collect(Collectors.toList());
-
-            bean.setOrderItems(itemBeans);
-            orderBeans.add(bean);
-        }
-        return orderBeans;
+    private CategoryDTO mapToCategoryDTO(Category cat) {
+        CategoryDTO dto = new CategoryDTO();
+        dto.setCategoryId(cat.getCategoryId());
+        dto.setName(cat.getName());
+        return dto;
     }
 
-    @Override
-    public List<CustomerBean> getAllCustomersForDashboard() {
-        EntityManager em = JpaUtil.getEntityManagerFactory().createEntityManager();
-        return userDAO.findByRole(em,UserRole.CUSTOMER).stream()
-                .map(this::mapToCustomerBean)
-                .collect(Collectors.toList());
+    private OrderBean mapToOrderBean(Order order) {
+        OrderBean bean = new OrderBean();
+        bean.setOrderId(order.getOrderId());
+        bean.setTotalPrice(order.getTotalPrice());
+        if (order.getOrderDate() != null) {
+            bean.setOrderDate(java.sql.Timestamp.valueOf(order.getOrderDate()));
+        }
+        if (order.getUser() != null) {
+            bean.setCustomerName(order.getUser().getFullName());
+        }
+        return bean;
+    }
+
+    private OrderItemBean mapToOrderItemBean(OrderItem itemEntity) {
+        OrderItemBean itemBean = new OrderItemBean();
+        itemBean.setProductName(itemEntity.getProduct().getName());
+        itemBean.setQuantity(itemEntity.getQuantity());
+        itemBean.setPrice(itemEntity.getPrice());
+        return itemBean;
     }
 
     private CustomerBean mapToCustomerBean(User entity) {
