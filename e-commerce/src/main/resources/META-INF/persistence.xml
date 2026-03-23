@@ -11,6 +11,9 @@
         <class>gov.iti.jets.ecommerce.entity.Cart</class>
         <class>gov.iti.jets.ecommerce.entity.CartItem</class>
         <class>gov.iti.jets.ecommerce.entity.User</class>
+        <class>gov.iti.jets.ecommerce.entity.Order</class>
+        <class>gov.iti.jets.ecommerce.entity.OrderItem</class>
+        
         <properties>
             <property name="jakarta.persistence.jdbc.driver" value="com.mysql.cj.jdbc.Driver"/>
             <property name="jakarta.persistence.jdbc.url" value="jdbc:mysql://localhost:3306/sweet_delights"/>
