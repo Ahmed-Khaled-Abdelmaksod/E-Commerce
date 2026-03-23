@@ -6,9 +6,9 @@ import gov.iti.jets.ecommerce.config.JpaUtil;
 import gov.iti.jets.ecommerce.dao.*;
 import gov.iti.jets.ecommerce.entity.*;
 import gov.iti.jets.ecommerce.enums.UserRole;
+import gov.iti.jets.ecommerce.mappers.*;
 import gov.iti.jets.ecommerce.service.DashboardService;
 import jakarta.persistence.EntityManager;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -34,18 +34,34 @@ public class DashboardServiceImpl implements DashboardService {
     @Override
     public List<ProductDTO> getAllProductsForDashboard() {
         try (EntityManager em = JpaUtil.getEntityManagerFactory().createEntityManager()) {
-            return productDAO.findAll(em).stream()
-                    .map(this::mapToProductDTO)
+            List<Product> products = productDAO.findAll(em);
+            System.out.println("Service DEBUG: Found " + (products != null ? products.size() : 0) + " products");
+            
+            return products.stream()
+                    .map(ProductMapper::toDTO)
                     .collect(Collectors.toList());
+        } catch (Exception e) {
+            System.err.println("CRITICAL ERROR in Service - getAllProductsForDashboard: " + e.getMessage());
+            e.printStackTrace();
+            throw e; 
         }
     }
 
     @Override
-    public List<CategoryDTO> getAllCategoriesForDashboard() {
+    public List<CustomerBean> getAllCustomersForDashboard() {
         try (EntityManager em = JpaUtil.getEntityManagerFactory().createEntityManager()) {
-            return categoryDAO.findAll(em).stream()
-                    .map(this::mapToCategoryDTO)
+            List<User> customers = userDAO.findByRole(em, UserRole.CUSTOMER);
+            System.out.println("Service DEBUG: Found " + (customers != null ? customers.size() : 0) + " customers");
+            
+            if (customers == null) return new ArrayList<>();
+
+            return customers.stream()
+                    .map(CustomerMapper::toBean)
                     .collect(Collectors.toList());
+        } catch (Exception e) {
+            System.err.println("CRITICAL ERROR in Service - getAllCustomersForDashboard: " + e.getMessage());
+            e.printStackTrace(); 
+            throw e;
         }
     }
 
@@ -54,84 +70,48 @@ public class DashboardServiceImpl implements DashboardService {
         try (EntityManager em = JpaUtil.getEntityManagerFactory().createEntityManager()) {
             List<Order> orders = orderDAO.findAll(em);
             List<OrderBean> orderBeans = new ArrayList<>();
+            
+            System.out.println("Service DEBUG: Processing " + (orders != null ? orders.size() : 0) + " orders");
 
-            for (Order order : orders) {
-                OrderBean bean = mapToOrderBean(order);
-                
-                List<OrderItemBean> itemBeans = orderItemDAO.findByOrderId(em, order.getOrderId())
-                        .stream()
-                        .map(this::mapToOrderItemBean)
-                        .collect(Collectors.toList());
+            if (orders != null) {
+                for (Order order : orders) {
+                    OrderBean bean = OrderMapper.toBean(order);
+                    
+                    List<OrderItemBean> itemBeans = orderItemDAO.findByOrderId(em, order.getOrderId())
+                            .stream()
+                            .map(OrderMapper::toItemBean)
+                            .collect(Collectors.toList());
 
-                bean.setOrderItems(itemBeans);
-                orderBeans.add(bean);
+                    bean.setOrderItems(itemBeans);
+                    orderBeans.add(bean);
+                }
             }
             return orderBeans;
+        } catch (Exception e) {
+            System.err.println("CRITICAL ERROR in Service - getAllOrdersForDashboard: " + e.getMessage());
+            e.printStackTrace();
+            throw e;
         }
     }
 
     @Override
-    public List<CustomerBean> getAllCustomersForDashboard() {
+    public List<CategoryDTO> getAllCategoriesForDashboard() {
         try (EntityManager em = JpaUtil.getEntityManagerFactory().createEntityManager()) {
-            return userDAO.findByRole(em, UserRole.CUSTOMER).stream()
-                    .map(this::mapToCustomerBean)
+            List<Category> categories = categoryDAO.findAll(em);
+            System.out.println("Service DEBUG: Found " + (categories != null ? categories.size() : 0) + " categories");
+
+            return categories.stream()
+                    .map(cat -> {
+                        CategoryDTO dto = new CategoryDTO();
+                        dto.setCategoryId(cat.getCategoryId());
+                        dto.setName(cat.getName());
+                        return dto;
+                    })
                     .collect(Collectors.toList());
+        } catch (Exception e) {
+            System.err.println("CRITICAL ERROR in Service - getAllCategoriesForDashboard: " + e.getMessage());
+            e.printStackTrace();
+            throw e;
         }
-    }
-
-    // --- Private Mapper Methods ---
-
-    private ProductDTO mapToProductDTO(Product entity) {
-        ProductDTO dto = new ProductDTO();
-        dto.setProductId(entity.getProductId());
-        dto.setName(entity.getName());
-        dto.setDescription(entity.getDescription());
-        dto.setPrice(entity.getPrice());
-        dto.setStockQuantity(entity.getStockQuantity());
-        dto.setImageUrl(entity.getImageUrl());
-        if (entity.getCategory() != null) {
-            dto.setCategoryId(entity.getCategory().getCategoryId());
-            dto.setCategoryName(entity.getCategory().getName());
-        }
-        return dto;
-    }
-
-    private CategoryDTO mapToCategoryDTO(Category cat) {
-        CategoryDTO dto = new CategoryDTO();
-        dto.setCategoryId(cat.getCategoryId());
-        dto.setName(cat.getName());
-        return dto;
-    }
-
-    private OrderBean mapToOrderBean(Order order) {
-        OrderBean bean = new OrderBean();
-        bean.setOrderId(order.getOrderId());
-        bean.setTotalPrice(order.getTotalPrice());
-        if (order.getOrderDate() != null) {
-            bean.setOrderDate(java.sql.Timestamp.valueOf(order.getOrderDate()));
-        }
-        if (order.getUser() != null) {
-            bean.setCustomerName(order.getUser().getFullName());
-        }
-        return bean;
-    }
-
-    private OrderItemBean mapToOrderItemBean(OrderItem itemEntity) {
-        OrderItemBean itemBean = new OrderItemBean();
-        itemBean.setProductName(itemEntity.getProduct().getName());
-        itemBean.setQuantity(itemEntity.getQuantity());
-        itemBean.setPrice(itemEntity.getPrice());
-        return itemBean;
-    }
-
-    private CustomerBean mapToCustomerBean(User entity) {
-        CustomerBean bean = new CustomerBean();
-        bean.setUserId(entity.getUserId());
-        bean.setFullName(entity.getFullName());
-        bean.setEmail(entity.getEmail());
-        bean.setPhone(entity.getPhone());
-        bean.setAddress(entity.getAddress());
-        bean.setCreditBalance(entity.getCreditBalance());
-        return bean;
     }
 }
