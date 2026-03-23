@@ -36,6 +36,7 @@ public class AuthController extends HttpServlet {
             session.setAttribute("user",userBean.get());
             if(userBean.get().getRole() == UserRole.ADMIN) {
                 // TODO forward TO admin dashboard
+                resp.sendRedirect("/ecommerce/admin/dashboard");
             }else {
                 int userCartId = CartService.getInstance().getUserCart(userBean.get().getUserId());
                 if (userCartId == -1) {

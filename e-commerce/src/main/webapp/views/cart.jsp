@@ -36,7 +36,7 @@
                                              data-unit-price="${item.unitPrice}">
                                             <div class="d-flex gap-4">
                                                 <div class="flex-shrink-0">
-                                                    <img src="${pageContext.request.contextPath}/static${item.productImage}"
+                                                    <img src="${pageContext.request.contextPath}${item.productImage}"
                                                          alt="${item.productName}"
                                                          class="rounded-3 object-cover"
                                                          style="width: 100px; height: 100px;">
