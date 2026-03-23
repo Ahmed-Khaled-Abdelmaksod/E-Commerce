@@ -1,16 +1,33 @@
 package gov.iti.jets.ecommerce.entity;
 
 import gov.iti.jets.ecommerce.enums.OrderStatus;
+import jakarta.persistence.*;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import org.hibernate.annotations.CreationTimestamp;
 
-
+@Entity
+@Table(name = "orders")
 public class Order {
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "order_id")
     private Integer orderId;
+
+    @ManyToOne
+    @JoinColumn(name = "user_id", nullable = false)
     private User user;
+
+    @Column(name = "total_price", nullable = false)
     private BigDecimal totalPrice;
+
+    @Enumerated(EnumType.STRING)
+    @Column(columnDefinition = "ENUM('pending', 'paid', 'completed', 'cancelled')")
     private OrderStatus status = OrderStatus.PENDING;
+
+    @CreationTimestamp
+    @Column(name = "order_date", updatable = false)
     private LocalDateTime orderDate;
 
     // Getters and Setters
@@ -23,7 +40,4 @@ public class Order {
     public OrderStatus getStatus() { return status; }
     public void setStatus(OrderStatus status) { this.status = status; }
     public LocalDateTime getOrderDate() { return orderDate; }
-    public void setOrderDate(LocalDateTime orderDate) { this.orderDate = orderDate; }
-
-    
 }

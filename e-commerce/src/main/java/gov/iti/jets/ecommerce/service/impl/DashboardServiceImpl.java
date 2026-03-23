@@ -6,9 +6,9 @@ import gov.iti.jets.ecommerce.config.JpaUtil;
 import gov.iti.jets.ecommerce.dao.*;
 import gov.iti.jets.ecommerce.entity.*;
 import gov.iti.jets.ecommerce.enums.UserRole;
+import gov.iti.jets.ecommerce.mappers.*;
 import gov.iti.jets.ecommerce.service.DashboardService;
 import jakarta.persistence.EntityManager;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -19,105 +19,99 @@ public class DashboardServiceImpl implements DashboardService {
     private final OrderDAO orderDAO;
     private final OrderItemDAO orderItemDAO;
     private final UserDAO userDAO;
-    private final CategoryDAO categorieDAO;
+    private final CategoryDAO categoryDAO;
 
     public DashboardServiceImpl(ProductDAO productDAO, OrderDAO orderDAO,
                                 OrderItemDAO orderItemDAO, UserDAO userDAO,
-                                CategoryDAO categorieDAO) {
+                                CategoryDAO categoryDAO) {
         this.productDAO = productDAO;
         this.orderDAO = orderDAO;
         this.orderItemDAO = orderItemDAO;
         this.userDAO = userDAO;
-        this.categorieDAO = categorieDAO;
+        this.categoryDAO = categoryDAO;
     }
 
     @Override
     public List<ProductDTO> getAllProductsForDashboard() {
-        try(EntityManager em = JpaUtil.getEntityManagerFactory().createEntityManager()) {
-            return productDAO.findAll(em).stream()
-                    .map(this::mapToProductDTO)
+        try (EntityManager em = JpaUtil.getEntityManagerFactory().createEntityManager()) {
+            List<Product> products = productDAO.findAll(em);
+            System.out.println("Service DEBUG: Found " + (products != null ? products.size() : 0) + " products");
+            
+            return products.stream()
+                    .map(ProductMapper::toDTO)
                     .collect(Collectors.toList());
+        } catch (Exception e) {
+            System.err.println("CRITICAL ERROR in Service - getAllProductsForDashboard: " + e.getMessage());
+            e.printStackTrace();
+            throw e; 
         }
-
-    }
-
-    @Override
-    public List<CategoryDTO> getAllCategoriesForDashboard() {
-        try(EntityManager em = JpaUtil.getEntityManagerFactory().createEntityManager()){
-            return categorieDAO.findAll(em).stream().map(cat -> {
-                CategoryDTO dto = new CategoryDTO();
-                dto.setCategoryId(cat.getCategoryId());
-                dto.setName(cat.getName());
-                return dto;
-            }).collect(Collectors.toList());
-        }
-    }
-
-    private ProductDTO mapToProductDTO(Product entity) {
-        ProductDTO dto = new ProductDTO();
-        dto.setProductId(entity.getProductId());
-        dto.setName(entity.getName());
-        dto.setDescription(entity.getDescription());
-        dto.setPrice(entity.getPrice());
-        dto.setStockQuantity(entity.getStockQuantity());
-        dto.setImageUrl(entity.getImageUrl());
-        if (entity.getCategory() != null) {
-            dto.setCategoryId(entity.getCategory().getCategoryId());
-            dto.setCategoryName(entity.getCategory().getName());
-        }
-        return dto;
-    }
-
-    @Override
-    public List<OrderBean> getAllOrdersForDashboard() {
-        List<Order> orders = orderDAO.findAll();
-        List<OrderBean> orderBeans = new ArrayList<>();
-
-        for (Order order : orders) {
-            OrderBean bean = new OrderBean();
-            bean.setOrderId(order.getOrderId());
-            bean.setTotalPrice(order.getTotalPrice());
-
-            if (order.getOrderDate() != null) {
-                bean.setOrderDate(java.sql.Timestamp.valueOf(order.getOrderDate()));
-            }
-
-            if (order.getUser() != null) {
-                bean.setCustomerName(order.getUser().getFullName());
-            }
-
-            List<OrderItemBean> itemBeans = orderItemDAO.findByOrderId(order.getOrderId())
-                    .stream()
-                    .map(itemEntity -> {
-                        OrderItemBean itemBean = new OrderItemBean();
-                        itemBean.setProductName(itemEntity.getProduct().getName());
-                        itemBean.setQuantity(itemEntity.getQuantity());
-                        itemBean.setPrice(itemEntity.getPrice());
-                        return itemBean;
-                    }).collect(Collectors.toList());
-
-            bean.setOrderItems(itemBeans);
-            orderBeans.add(bean);
-        }
-        return orderBeans;
     }
 
     @Override
     public List<CustomerBean> getAllCustomersForDashboard() {
-        EntityManager em = JpaUtil.getEntityManagerFactory().createEntityManager();
-        return userDAO.findByRole(em,UserRole.CUSTOMER).stream()
-                .map(this::mapToCustomerBean)
-                .collect(Collectors.toList());
+        try (EntityManager em = JpaUtil.getEntityManagerFactory().createEntityManager()) {
+            List<User> customers = userDAO.findByRole(em, UserRole.CUSTOMER);
+            System.out.println("Service DEBUG: Found " + (customers != null ? customers.size() : 0) + " customers");
+            
+            if (customers == null) return new ArrayList<>();
+
+            return customers.stream()
+                    .map(CustomerMapper::toBean)
+                    .collect(Collectors.toList());
+        } catch (Exception e) {
+            System.err.println("CRITICAL ERROR in Service - getAllCustomersForDashboard: " + e.getMessage());
+            e.printStackTrace(); 
+            throw e;
+        }
     }
 
-    private CustomerBean mapToCustomerBean(User entity) {
-        CustomerBean bean = new CustomerBean();
-        bean.setUserId(entity.getUserId());
-        bean.setFullName(entity.getFullName());
-        bean.setEmail(entity.getEmail());
-        bean.setPhone(entity.getPhone());
-        bean.setAddress(entity.getAddress());
-        bean.setCreditBalance(entity.getCreditBalance());
-        return bean;
+    @Override
+    public List<OrderBean> getAllOrdersForDashboard() {
+        try (EntityManager em = JpaUtil.getEntityManagerFactory().createEntityManager()) {
+            List<Order> orders = orderDAO.findAll(em);
+            List<OrderBean> orderBeans = new ArrayList<>();
+            
+            System.out.println("Service DEBUG: Processing " + (orders != null ? orders.size() : 0) + " orders");
+
+            if (orders != null) {
+                for (Order order : orders) {
+                    OrderBean bean = OrderMapper.toBean(order);
+                    
+                    List<OrderItemBean> itemBeans = orderItemDAO.findByOrderId(em, order.getOrderId())
+                            .stream()
+                            .map(OrderMapper::toItemBean)
+                            .collect(Collectors.toList());
+
+                    bean.setOrderItems(itemBeans);
+                    orderBeans.add(bean);
+                }
+            }
+            return orderBeans;
+        } catch (Exception e) {
+            System.err.println("CRITICAL ERROR in Service - getAllOrdersForDashboard: " + e.getMessage());
+            e.printStackTrace();
+            throw e;
+        }
+    }
+
+    @Override
+    public List<CategoryDTO> getAllCategoriesForDashboard() {
+        try (EntityManager em = JpaUtil.getEntityManagerFactory().createEntityManager()) {
+            List<Category> categories = categoryDAO.findAll(em);
+            System.out.println("Service DEBUG: Found " + (categories != null ? categories.size() : 0) + " categories");
+
+            return categories.stream()
+                    .map(cat -> {
+                        CategoryDTO dto = new CategoryDTO();
+                        dto.setCategoryId(cat.getCategoryId());
+                        dto.setName(cat.getName());
+                        return dto;
+                    })
+                    .collect(Collectors.toList());
+        } catch (Exception e) {
+            System.err.println("CRITICAL ERROR in Service - getAllCategoriesForDashboard: " + e.getMessage());
+            e.printStackTrace();
+            throw e;
+        }
     }
 }
