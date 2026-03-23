@@ -64,7 +64,7 @@
                                         <h3 class="h6 fw-bold text-dark mb-2">${product.categoryName}</h3>
                                         <div class="d-flex align-items-center justify-content-between mt-3">
                                             <span class="h5 fw-bold text-brand mb-0">$${product.price}</span>
-                                            <button class="btn btn-primary bg-brand border-0 btn-sm px-3 d-flex align-items-center rounded-3" data-id="${product.productId}" >
+                                            <button class="add-to-cart-btn btn btn-primary bg-brand border-0 btn-sm px-3 d-flex align-items-center rounded-3" data-id="${product.productId}" >
                                                 <i class="bi bi-cart-plus me-2"></i> Add
                                             </button>
                                         </div>
@@ -77,6 +77,9 @@
             </section>
         </main>
         <%@ include file="/static/html/footer.html"%>
+        <script>
+            const CONTEXT_PATH = '${pageContext.request.contextPath}';
+        </script>
         <script src="${pageContext.request.contextPath}/static/js/bootstrap.js"></script>
         <script src="${pageContext.request.contextPath}/static/js/sweets.js"></script>
     </body>

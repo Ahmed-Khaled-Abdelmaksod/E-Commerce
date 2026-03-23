@@ -43,4 +43,59 @@
     });
 
     searchInput.addEventListener('input', applyFilters);
+    document.querySelectorAll('.add-to-cart-btn').forEach(button => {
+        button.addEventListener('click', function() {
+            // 1. Get the ID from the data attribute
+            const productId = this.getAttribute('data-id');
+
+            // 2. Send it to your Servlet via AJAX (Fetch API)
+            addToCart(productId);
+        });
+    });
+
+    function addToCart(id) {
+        const url = (typeof CONTEXT_PATH !== 'undefined' ? CONTEXT_PATH : '') + '/user/cart/add?productId=' + id;
+        fetch(url, { method: 'POST' })
+            .then(response => {
+                if(!response.ok) {
+                    throw new Error("HTTP error " + response.status);
+                }
+                return response.json();
+            })
+            .then(data => {
+                if(data.status === "ADDED") {
+                    updateCartBadge(data.newCount);
+                    showToast("Delicious choice added!");
+                } else if(data.status === "LOWQUNATITY") {
+                    showToast("Sorry, we're almost out of these!");
+                }
+            })
+            .catch(error => {
+                console.error("Error adding to cart:", error);
+                showToast("Error adding to cart!");
+            });
+    }
+
+    function showToast(message) {
+        const toastEl = document.getElementById('cartToast');
+        const toastMessageEl = document.getElementById('cartToastMessage');
+        if (toastEl && toastMessageEl) {
+            toastMessageEl.textContent = message;
+            // Assuming bootstrap is available globally
+            const toast = new bootstrap.Toast(toastEl);
+            toast.show();
+        }
+    }
+
+    function updateCartBadge(count) {
+        const badge = document.getElementById('cart-badge');
+        if (badge) {
+            if (count > 0) {
+                badge.style.display = 'inline-block';
+                badge.textContent = count;
+            } else {
+                badge.style.display = 'none';
+            }
+        }
+    }
 })();
