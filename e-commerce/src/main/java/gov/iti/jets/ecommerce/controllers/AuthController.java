@@ -38,7 +38,18 @@ public class AuthController extends HttpServlet {
                 // TODO forward TO admin dashboard
             }else {
                 int userCartId = CartService.getInstance().getUserCart(userBean.get().getUserId());
+                if (userCartId == -1) {
+                    userCartId = CartService.getInstance().createCart(userBean.get().getUserId());
+                }
                 session.setAttribute("userCartId",userCartId);
+                int cartCount = 0;
+                if (userCartId != -1) {
+                    cartCount = CartService.getInstance().getCartItems(userCartId)
+                            .stream()
+                            .mapToInt(item -> item.getQuantity() == null ? 0 : item.getQuantity())
+                            .sum();
+                }
+                session.setAttribute("cartCount", cartCount);
                 resp.sendRedirect(req.getContextPath()+"/user/home");
             }
         }else {
