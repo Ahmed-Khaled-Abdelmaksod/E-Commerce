@@ -51,14 +51,14 @@
                                                     <div class="d-flex align-items-center justify-content-between">
                                                         <div class="d-flex align-items-center rounded-3 border" style="width: fit-content;">
                                                             <button class="btn btn-sm border-0 px-2 py-1 text-muted hover-dark"
-                                                                    onclick="updateQuantity(${item.id}, 'minus')">
+                                                                    onclick="updateQuantity(${item.cartItemId}, 'minus')">
                                                                 <i class="bi bi-dash"></i>
                                                             </button>
 
-                                                            <span class="px-3 fw-medium" id="qty-${item.id}">1</span>
+                                                            <span class="px-3 fw-medium" id="qty-${item.cartItemId}">1</span>
 
                                                             <button class="btn btn-sm border-0 px-2 py-1 text-muted hover-dark"
-                                                                    onclick="updateQuantity(${item.id}, 'plus')">
+                                                                    onclick="updateQuantity(${item.cartItemId}, 'plus')">
                                                                 <i class="bi bi-plus"></i>
                                                             </button>
                                                         </div>
