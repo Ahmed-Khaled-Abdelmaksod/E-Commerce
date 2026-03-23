@@ -17,9 +17,9 @@
     </head>
     <body>
         <%@include file="/static/html/header.html"%>
-        <jsp:useBean id="cartProducts" scope="session" class="java.util.ArrayList"/> <%-- TODO this will be adjusted to the real variable and use type instead of class attr--%>
+        <jsp:useBean id="cartItems" scope="request" class="java.util.ArrayList"/> <%-- TODO this will be adjusted to the real variable and use type instead of class attr--%>
         <c:choose>
-            <c:when test="${not empty cartProducts}">
+            <c:when test="${empty cartItems}">
                 <%@include file="/static/html/empty-cart.html"%>
             </c:when>
             <c:otherwise> <%-- TODO adjust functionality and use foreach and so on --%>
@@ -30,12 +30,12 @@
                         <div class="row g-4">
                             <div class="col-lg-8">
                                 <div class="d-flex flex-column gap-3">
-                                    <c:forEach begin="1" end="5" step="1">
+                                    <c:forEach var="item" items="${cartItems}">
                                         <div class="card border rounded-3 p-3 shadow-sm">
                                             <div class="d-flex gap-4">
                                                 <div class="flex-shrink-0">
-                                                    <img src="${pageContext.request.contextPath}/static/images/chocolate-cake.jpg"
-                                                         alt="Chocolate Cake"
+                                                    <img src="${pageContext.request.contextPath}/static${item.productImage}"
+                                                         alt="${item.productName}"
                                                          class="rounded-3 object-cover"
                                                          style="width: 100px; height: 100px;">
                                                 </div>
@@ -43,8 +43,8 @@
                                                 <div class="flex-grow-1 d-flex flex-column justify-content-between">
                                                     <div class="d-flex justify-content-between">
                                                         <div>
-                                                            <a href="#" class="text-decoration-none fw-semibold text-dark hover-brand">Chocolate Cake</a>
-                                                            <p class="text-brand fw-bold mb-0">$24.99</p>
+                                                            <a href="#" class="text-decoration-none fw-semibold text-dark hover-brand">${item.productName}</a>
+                                                            <p class="text-brand fw-bold mb-0">$${item.unitPrice}</p>
                                                         </div>
                                                     </div>
 
@@ -71,32 +71,29 @@
                                             </div>
                                         </div>
                                     </c:forEach>
-
                                 </div>
                             </div>
 
                             <div class="col-lg-4">
                                 <div class="card border rounded-3 p-4 shadow-sm sticky-top custom-sticky-offset" >
                                     <h2 class="h5 fw-semibold mb-4">Order Summary</h2>
-
+                                    <c:set var="grandTotal" value="${0.0}" />
                                     <div class="space-y-3">
-                                        <div class="d-flex justify-content-between small text-muted mb-2">
-                                            <span>Chocolate Cake x1</span>
-                                            <span class="text-dark">$24.99</span>
-                                        </div>
-                                        <div class="d-flex justify-content-between small text-muted mb-2">
-                                            <span>French Macarons x1</span>
-                                            <span class="text-dark">$12.99</span>
-                                        </div>
-
+                                        <c:forEach var="item" items="${cartItems}">
+                                            <div class="d-flex justify-content-between small text-muted mb-2">
+                                                <span>${item.productName} x${item.quantity}</span>
+                                                <span class="text-dark">$${item.unitPrice}</span>
+                                            </div>
+                                            <c:set var="grandTotal" value="${grandTotal + item.lineTotal}" />
+                                        </c:forEach>
                                         <hr class="my-3 border-secondary-subtle">
 
                                         <div class="d-flex justify-content-between align-items-center mb-3">
                                             <span class="fw-semibold">Total</span>
-                                            <span class="h5 fw-bold text-brand mb-0">$42.97</span>
+                                            <span class="h5 fw-bold text-brand mb-0">$${grandTotal}</span>
                                         </div>
-
-                                        <p class="text-xs text-muted mb-4 small">Credit available: $500.00</p>
+                                        <jsp:useBean id="user" class="gov.iti.jets.ecommerce.beans.UserBean"/>
+                                        <p class="text-xs text-muted mb-4 small">Credit available: ${user.creditBalance}</p>
 
                                         <a href="/checkout" class="btn btn-primary bg-brand border-0 w-100 rounded-3 py-2 fw-medium d-flex align-items-center justify-content-center">
                                             Proceed to Checkout
