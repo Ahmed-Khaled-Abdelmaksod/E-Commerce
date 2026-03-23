@@ -10,7 +10,6 @@ import gov.iti.jets.ecommerce.dao.impl.ProductDaoImpl;
 import gov.iti.jets.ecommerce.entity.Category;
 import gov.iti.jets.ecommerce.entity.Product;
 import jakarta.persistence.EntityManager;
-import jakarta.persistence.EntityTransaction;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.MultipartConfig;
 import jakarta.servlet.annotation.WebServlet;
@@ -24,7 +23,6 @@ import java.io.IOException;
 import java.math.BigDecimal;
 import java.nio.file.Paths;
 import java.sql.Timestamp;
-import java.util.jar.JarEntry;
 
 @WebServlet(urlPatterns = {"/addProduct", "/editProduct", "/deleteProduct"})
 @MultipartConfig(
@@ -74,70 +72,49 @@ public class AdminProductController extends HttpServlet {
         product.setCategory(category);
 
         product.setImageUrl(processImageUpload(request.getPart("image")));
-        EntityManager em = JpaUtil.getEntityManagerFactory().createEntityManager();
-        EntityTransaction tx = em.getTransaction();
-        try {
-            tx.begin();
-            productDao.insert(em,product);
-            tx.commit();
-        }catch (Exception e) {
-            if (tx.isActive()) tx.rollback();
-            throw e;
-        }finally {
-            em.close();
-        }
+
+        EntityManager em1 = JpaUtil.getEntityManagerFactory().createEntityManager();
+        productDao.insert(em1, product);
+        em1.close();
+
         response.sendRedirect(request.getContextPath() + "/admin/dashboard?tab=products");
     }
 
     private void handleEditProduct(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
-        EntityManager em = JpaUtil.getEntityManagerFactory().createEntityManager();
-        EntityTransaction tx = em.getTransaction();
-        try {
-            tx.begin();
-            int productId = Integer.parseInt(request.getParameter("productId"));
-            Product product = productDao.findById(em,productId).orElse(new Product());
+        int productId = Integer.parseInt(request.getParameter("productId"));
 
-            product.setName(request.getParameter("name"));
-            product.setDescription(request.getParameter("description"));
-            product.setPrice(new BigDecimal(request.getParameter("price")));
-            product.setStockQuantity(Integer.parseInt(request.getParameter("quantity")));
+        EntityManager em2 = JpaUtil.getEntityManagerFactory().createEntityManager();
+        Product product = productDao.findById(em2, productId).orElse(new Product());
+        em2.close();
 
-            Category category = new Category();
-            category.setCategoryId(Integer.parseInt(request.getParameter("categoryId")));
-            product.setCategory(category);
+        product.setName(request.getParameter("name"));
+        product.setDescription(request.getParameter("description"));
+        product.setPrice(new BigDecimal(request.getParameter("price")));
+        product.setStockQuantity(Integer.parseInt(request.getParameter("quantity")));
 
-            Part imagePart = request.getPart("image");
-            if (imagePart != null && imagePart.getSize() > 0) {
-                product.setImageUrl(processImageUpload(imagePart));
-            }
-            productDao.update(em,product);
-            tx.commit();
+        Category category = new Category();
+        category.setCategoryId(Integer.parseInt(request.getParameter("categoryId")));
+        product.setCategory(category);
 
-        } catch (Exception e) {
-            if (tx.isActive()) tx.rollback();
-            throw e;
-        }finally {
-            em.close();
+        Part imagePart = request.getPart("image");
+        if (imagePart != null && imagePart.getSize() > 0) {
+            product.setImageUrl(processImageUpload(imagePart));
         }
+
+        EntityManager em3 = JpaUtil.getEntityManagerFactory().createEntityManager();
+        productDao.update(em3, product);
+        em3.close();
 
         response.sendRedirect(request.getContextPath() + "/admin/dashboard?tab=products");
     }
 
     private void handleDeleteProduct(HttpServletRequest request, HttpServletResponse response) throws IOException {
         int productId = Integer.parseInt(request.getParameter("productId"));
-        EntityManager em = JpaUtil.getEntityManagerFactory().createEntityManager();
-        EntityTransaction tx = em.getTransaction();
-        boolean isDeleted = false;
-        try {
-            tx.begin();
-            isDeleted = productDao.delete(em,productId);
-            tx.commit();
-        } catch (Exception e) {
-            if (tx.isActive()) tx.rollback();
-            throw e;
-        }finally {
-            em.close();
-        }
+
+        EntityManager em3 = JpaUtil.getEntityManagerFactory().createEntityManager();
+        boolean isDeleted = productDao.delete(em3, productId);
+        em3.close();
+
         response.setContentType("application/json");
         response.setCharacterEncoding("UTF-8");
 
