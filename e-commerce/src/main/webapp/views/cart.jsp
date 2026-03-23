@@ -31,7 +31,9 @@
                             <div class="col-lg-8">
                                 <div class="d-flex flex-column gap-3">
                                     <c:forEach var="item" items="${cartItems}">
-                                        <div class="card border rounded-3 p-3 shadow-sm">
+                                        <div class="card border rounded-3 p-3 shadow-sm"
+                                             id="cart-item-${item.cartItemId}"
+                                             data-unit-price="${item.unitPrice}">
                                             <div class="d-flex gap-4">
                                                 <div class="flex-shrink-0">
                                                     <img src="${pageContext.request.contextPath}/static${item.productImage}"
@@ -44,7 +46,7 @@
                                                     <div class="d-flex justify-content-between">
                                                         <div>
                                                             <a href="#" class="text-decoration-none fw-semibold text-dark hover-brand">${item.productName}</a>
-                                                            <p class="text-brand fw-bold mb-0">$${item.unitPrice}</p>
+                                                            <p class="text-brand fw-bold mb-0">$<span id="line-total-${item.cartItemId}">${item.lineTotal}</span></p>
                                                         </div>
                                                     </div>
 
@@ -55,7 +57,7 @@
                                                                 <i class="bi bi-dash"></i>
                                                             </button>
 
-                                                            <span class="px-3 fw-medium" id="qty-${item.cartItemId}">1</span>
+                                                            <span class="px-3 fw-medium" id="qty-${item.cartItemId}">${item.quantity}</span>
 
                                                             <button class="btn btn-sm border-0 px-2 py-1 text-muted hover-dark"
                                                                     onclick="updateQuantity(${item.cartItemId}, 'plus')">
@@ -63,7 +65,9 @@
                                                             </button>
                                                         </div>
 
-                                                        <button class="btn btn-light btn-sm text-danger rounded-3 p-2 border-0">
+                                                        <button class="btn btn-light btn-sm text-danger rounded-3 p-2 border-0"
+                                                                onclick="deleteCartItem(${item.cartItemId})"
+                                                                aria-label="Remove item">
                                                             <i class="bi bi-trash3 fs-6"></i>
                                                         </button>
                                                     </div>
@@ -80,9 +84,11 @@
                                     <c:set var="grandTotal" value="${0.0}" />
                                     <div class="space-y-3">
                                         <c:forEach var="item" items="${cartItems}">
-                                            <div class="d-flex justify-content-between small text-muted mb-2">
-                                                <span>${item.productName} x${item.quantity}</span>
-                                                <span class="text-dark">$${item.unitPrice}</span>
+                                            <div class="d-flex justify-content-between small text-muted mb-2"
+                                                 id="summary-item-${item.cartItemId}"
+                                                 data-unit-price="${item.unitPrice}">
+                                                <span>${item.productName} x<span id="summary-qty-${item.cartItemId}">${item.quantity}</span></span>
+                                                <span class="text-dark">$<span id="summary-line-${item.cartItemId}">${item.lineTotal}</span></span>
                                             </div>
                                             <c:set var="grandTotal" value="${grandTotal + item.lineTotal}" />
                                         </c:forEach>
@@ -90,7 +96,7 @@
 
                                         <div class="d-flex justify-content-between align-items-center mb-3">
                                             <span class="fw-semibold">Total</span>
-                                            <span class="h5 fw-bold text-brand mb-0">$${grandTotal}</span>
+                                            <span class="h5 fw-bold text-brand mb-0">$<span id="grand-total">${grandTotal}</span></span>
                                         </div>
                                         <jsp:useBean id="user" class="gov.iti.jets.ecommerce.beans.UserBean"/>
                                         <p class="text-xs text-muted mb-4 small">Credit available: ${user.creditBalance}</p>
@@ -108,6 +114,10 @@
             </c:otherwise>
         </c:choose>
         <%@include file="/static/html/footer.html"%>
+        <script>
+            // Used by `static/js/main.js` for cart update requests (context-path safe).
+            const CONTEXT_PATH = '${pageContext.request.contextPath}';
+        </script>
         <script src="${pageContext.request.contextPath}/static/js/bootstrap.js"></script>
         <script src="${pageContext.request.contextPath}/static/js/main.js"></script>
     </body>

@@ -68,6 +68,8 @@
                     showToast("Delicious choice added!");
                 } else if(data.status === "LOWQUNATITY") {
                     showToast("Sorry, we're almost out of these!");
+                } else if (data.status === "INSUFFICIENT_CREDIT") {
+                    showToast("Insufficient credit balance.");
                 }
             })
             .catch(error => {

@@ -4,5 +4,6 @@ public enum CartItemStatus {
     ADDED,
     NOTFOUND,
     LOWQUNATITY,
+    INSUFFICIENT_CREDIT,
     ERROR
 }
