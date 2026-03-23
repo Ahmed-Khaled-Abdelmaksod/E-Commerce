@@ -14,9 +14,14 @@ public interface CartItemDAO {
 
     Optional<CartItem> findById(EntityManager em,int cartItemId);
 
+    Optional<CartItem> findByCartIdAndProductId(EntityManager em,int cartId,int productId);
+
     boolean updateQuantity(EntityManager em,int cartItemId, int quantity);
+    boolean updateQuantityByCartAndProductId(EntityManager em, int cartId,int productId, int quantity);
 
     boolean delete(EntityManager em,int cartItemId);
 
     boolean deleteByCartId(EntityManager em,int cartId);
+
+    boolean deleteByCartIdAndProductId(EntityManager em, int cartId,int productId);
 }
