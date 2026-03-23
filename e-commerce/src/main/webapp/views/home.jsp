@@ -18,7 +18,7 @@
 </head>
 <body class="d-flex flex-column min-vh-100">
 
-    <%@include file="/static/html/outer-header.html"%>
+    <%@include file="/static/html/outer-header.jsp"%>
 
     <main class="flex-grow-1">
         <%@include file="/static/html/home/hero.html"%>
