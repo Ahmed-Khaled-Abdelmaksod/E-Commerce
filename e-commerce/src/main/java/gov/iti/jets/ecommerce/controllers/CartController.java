@@ -20,15 +20,33 @@ import java.util.Map;
 
 @WebServlet(urlPatterns = {"/user/cart" , "/user/cart/add" , "/user/cart/remove" , "/user/cart/update"})
 public class CartController extends HttpServlet {
+    private int refreshSessionCartCount(HttpSession session, int cartId) {
+        int count = 0;
+        if (cartId != -1) {
+            count = CartService.getInstance().getCartItems(cartId)
+                    .stream()
+                    .mapToInt(item -> item.getQuantity() == null ? 0 : item.getQuantity())
+                    .sum();
+        }
+        if (session != null) {
+            session.setAttribute("cartCount", count);
+        }
+        return count;
+    }
+
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        int cartId = (int)req.getSession(false).getAttribute("userCartId");
+        HttpSession session = req.getSession(false);
+        int cartId = (int) session.getAttribute("userCartId");
         List<CartItemDTO> cartItemDTOS = new ArrayList<>();
         if(cartId != -1 ) {
             cartItemDTOS = CartService.getInstance().getCartItems(cartId);
+            refreshSessionCartCount(session, cartId);
         }else {
-            UserBean user = (UserBean) req.getSession(false).getAttribute("user");
-            CartService.getInstance().createCart(user.getUserId());
+            UserBean user = (UserBean) session.getAttribute("user");
+            int newCartId = CartService.getInstance().createCart(user.getUserId());
+            session.setAttribute("userCartId", newCartId);
+            refreshSessionCartCount(session, newCartId);
         }
         req.setAttribute("cartItems",cartItemDTOS);
         req.getRequestDispatcher("/views/cart.jsp").forward(req,resp);
@@ -58,8 +76,7 @@ public class CartController extends HttpServlet {
             case ADDED -> {
                 result.put("status", status.toString());
                 result.put("message", "Item added successfully!");
-                List<CartItemDTO> items = CartService.getInstance().getCartItems(cartId);
-                int newCount = items.stream().mapToInt(CartItemDTO::getQuantity).sum();
+                int newCount = refreshSessionCartCount(req.getSession(false), cartId);
                 result.put("newCount", newCount);
             }
             case LOWQUNATITY -> {
@@ -130,8 +147,7 @@ public class CartController extends HttpServlet {
         int productId = targetItem.getProductId();
         boolean removed = CartService.getInstance().removeFromCart(cartId, productId);
 
-        List<CartItemDTO> items = CartService.getInstance().getCartItems(cartId);
-        int newCount = items.stream().mapToInt(CartItemDTO::getQuantity).sum();
+        int newCount = refreshSessionCartCount(session, cartId);
 
         result.put("status", removed ? "REMOVED" : "ERROR");
         result.put("cartCount", newCount);
@@ -225,7 +241,7 @@ public class CartController extends HttpServlet {
         }
 
         List<CartItemDTO> items = CartService.getInstance().getCartItems(cartId);
-        int newCount = items.stream().mapToInt(CartItemDTO::getQuantity).sum();
+        int newCount = refreshSessionCartCount(session, cartId);
 
         int updatedQty = 0;
         for (CartItemDTO dto : items) {

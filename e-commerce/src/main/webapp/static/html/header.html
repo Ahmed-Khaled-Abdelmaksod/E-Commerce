@@ -4,13 +4,19 @@
 <%
     int cartCount = 0;
     jakarta.servlet.http.HttpSession s = request.getSession(false);
-    if (s != null && s.getAttribute("userCartId") != null) {
-        Object cartIdObj = s.getAttribute("userCartId");
-        if (cartIdObj instanceof Integer) {
-            int cartId = (Integer) cartIdObj;
+
+    if (s != null) {
+        Object countObj = s.getAttribute("cartCount");
+        if (countObj instanceof Integer) {
+            // Session-first: avoid DB hit when count is already known.
+            cartCount = (Integer) countObj;
+        } else if (s.getAttribute("userCartId") instanceof Integer) {
+            // Fallback: hydrate once from DB if session count is missing.
+            int cartId = (Integer) s.getAttribute("userCartId");
             if (cartId != -1) {
                 List<CartItemDTO> items = CartService.getInstance().getCartItems(cartId);
                 cartCount = items.stream().mapToInt(CartItemDTO::getQuantity).sum();
+                s.setAttribute("cartCount", cartCount);
             }
         }
     }
