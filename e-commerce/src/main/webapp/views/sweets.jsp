@@ -52,7 +52,7 @@
                             <div class="col product-item" data-category="${product.categoryName}">
                                 <div class="card h-100 border-0 shadow-sm rounded-4 product-card overflow-hidden transition-all">
                                     <div class="position-relative overflow-hidden aspect-square bg-light">
-                                        <img src="${pageContext.request.contextPath}/static${product.imageUrl}"
+                                        <img src="${pageContext.request.contextPath}${product.imageUrl}"
                                              class="card-img-top object-cover h-100 w-100 transition-transform zoom-hover"
                                              alt="${product.name}">
                                         <div class="position-absolute top-0 start-0 m-3">

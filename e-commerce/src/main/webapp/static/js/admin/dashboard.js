@@ -4,7 +4,17 @@ document.addEventListener("DOMContentLoaded", function() {
     loadTab(initialTab);
 });
 
+function setActiveTab(tabName) {
+    document.querySelectorAll('.custom-tab').forEach(tab => tab.classList.remove('active'));
+    const activeTab = document.getElementById('tab-' + tabName);
+    if (activeTab) {
+        activeTab.classList.add('active');
+    }
+}
+
 function loadTab(tabName) {
+    setActiveTab(tabName);
+
     const contentDiv = document.getElementById('dashboard-content');
     if (!contentDiv) return;
     contentDiv.innerHTML = '<div class="text-center mt-5"><div class="spinner-border"></div></div>';
@@ -20,6 +30,10 @@ function loadTab(tabName) {
             // Update URL without refresh
             const newUrl = window.location.pathname + '?tab=' + tabName;
             window.history.pushState({path: newUrl}, '', newUrl);
+        } else if (xhr.readyState === 4) {
+            // On failure, keep the UI consistent with currently loaded URL tab.
+            const urlParams = new URLSearchParams(window.location.search);
+            setActiveTab(urlParams.get('tab') || 'products');
         }
     };
     xhr.send();

@@ -40,7 +40,7 @@
           <a class="nav-link text-muted hover-dark font-medium small" href="../user/products">Shop</a> <!-- TODO add link-->
         </li>
         <li class="nav-item d-md-none">
-          <a class="nav-link text-muted hover-dark font-medium small" href="#">Logout</a> <!-- TODO add link-->
+          <a class="nav-link text-muted hover-dark font-medium small" href="${pageContext.request.contextPath}/auth/logout">Logout</a>
         </li>
       </ul>
     </div>
@@ -61,10 +61,10 @@
         <span class="visually-hidden">Profile</span>
       </a>
 
-      <button class="btn btn-icon d-none d-md-inline-flex">
+      <a href="${pageContext.request.contextPath}/auth/logout" class="btn btn-icon d-none d-md-inline-flex">
         <i class="bi bi-box-arrow-right fs-5"></i>
         <span class="visually-hidden">Log out</span>
-      </button>
+      </a>
 
       <button class="navbar-toggler btn-icon border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
         <i class="bi bi-list fs-4"></i>
