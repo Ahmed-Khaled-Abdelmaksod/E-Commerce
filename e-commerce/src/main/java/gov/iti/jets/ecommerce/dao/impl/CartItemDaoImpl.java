@@ -7,17 +7,10 @@ import jakarta.persistence.EntityManager;
 import java.util.List;
 import java.util.Optional;
 
-public final class CartItemDaoImpl implements CartItemDAO {
-    static private final CartItemDaoImpl instance;
+public class CartItemDaoImpl implements CartItemDAO {
 
-    static {
-        instance = new CartItemDaoImpl();
+    public CartItemDaoImpl() {
     }
-
-    private CartItemDaoImpl() {
-
-    }
-
 
     @Override
     public CartItem insert(EntityManager em, CartItem cartItem) {
@@ -64,9 +57,5 @@ public final class CartItemDaoImpl implements CartItemDAO {
                 .setParameter("cartId", cartId)
                 .executeUpdate();
         return deletedCount > 0;
-    }
-
-    public static CartItemDaoImpl getInstance() {
-        return instance;
     }
 }
