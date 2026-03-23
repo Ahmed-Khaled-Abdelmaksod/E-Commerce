@@ -17,9 +17,9 @@
     </head>
     <body>
         <%@include file="/static/html/header.html"%>
-        <jsp:useBean id="cartProducts" scope="session" class="java.util.ArrayList"/> <%-- TODO this will be adjusted to the real variable and use type instead of class attr--%>
+        <jsp:useBean id="cartItems" scope="request" class="java.util.ArrayList"/> <%-- TODO this will be adjusted to the real variable and use type instead of class attr--%>
         <c:choose>
-            <c:when test="${not empty cartProducts}">
+            <c:when test="${empty cartItems}">
                 <%@include file="/static/html/empty-cart.html"%>
             </c:when>
             <c:otherwise> <%-- TODO adjust functionality and use foreach and so on --%>
@@ -30,12 +30,14 @@
                         <div class="row g-4">
                             <div class="col-lg-8">
                                 <div class="d-flex flex-column gap-3">
-                                    <c:forEach begin="1" end="5" step="1">
-                                        <div class="card border rounded-3 p-3 shadow-sm">
+                                    <c:forEach var="item" items="${cartItems}">
+                                        <div class="card border rounded-3 p-3 shadow-sm"
+                                             id="cart-item-${item.cartItemId}"
+                                             data-unit-price="${item.unitPrice}">
                                             <div class="d-flex gap-4">
                                                 <div class="flex-shrink-0">
-                                                    <img src="${pageContext.request.contextPath}/static/images/chocolate-cake.jpg"
-                                                         alt="Chocolate Cake"
+                                                    <img src="${pageContext.request.contextPath}${item.productImage}"
+                                                         alt="${item.productName}"
                                                          class="rounded-3 object-cover"
                                                          style="width: 100px; height: 100px;">
                                                 </div>
@@ -43,27 +45,29 @@
                                                 <div class="flex-grow-1 d-flex flex-column justify-content-between">
                                                     <div class="d-flex justify-content-between">
                                                         <div>
-                                                            <a href="#" class="text-decoration-none fw-semibold text-dark hover-brand">Chocolate Cake</a>
-                                                            <p class="text-brand fw-bold mb-0">$24.99</p>
+                                                            <a href="#" class="text-decoration-none fw-semibold text-dark hover-brand">${item.productName}</a>
+                                                            <p class="text-brand fw-bold mb-0">$<span id="line-total-${item.cartItemId}">${item.lineTotal}</span></p>
                                                         </div>
                                                     </div>
 
                                                     <div class="d-flex align-items-center justify-content-between">
                                                         <div class="d-flex align-items-center rounded-3 border" style="width: fit-content;">
                                                             <button class="btn btn-sm border-0 px-2 py-1 text-muted hover-dark"
-                                                                    onclick="updateQuantity(${item.id}, 'minus')">
+                                                                    onclick="updateQuantity(${item.cartItemId}, 'minus')">
                                                                 <i class="bi bi-dash"></i>
                                                             </button>
 
-                                                            <span class="px-3 fw-medium" id="qty-${item.id}">1</span>
+                                                            <span class="px-3 fw-medium" id="qty-${item.cartItemId}">${item.quantity}</span>
 
                                                             <button class="btn btn-sm border-0 px-2 py-1 text-muted hover-dark"
-                                                                    onclick="updateQuantity(${item.id}, 'plus')">
+                                                                    onclick="updateQuantity(${item.cartItemId}, 'plus')">
                                                                 <i class="bi bi-plus"></i>
                                                             </button>
                                                         </div>
 
-                                                        <button class="btn btn-light btn-sm text-danger rounded-3 p-2 border-0">
+                                                        <button class="btn btn-light btn-sm text-danger rounded-3 p-2 border-0"
+                                                                onclick="deleteCartItem(${item.cartItemId})"
+                                                                aria-label="Remove item">
                                                             <i class="bi bi-trash3 fs-6"></i>
                                                         </button>
                                                     </div>
@@ -71,32 +75,31 @@
                                             </div>
                                         </div>
                                     </c:forEach>
-
                                 </div>
                             </div>
 
                             <div class="col-lg-4">
                                 <div class="card border rounded-3 p-4 shadow-sm sticky-top custom-sticky-offset" >
                                     <h2 class="h5 fw-semibold mb-4">Order Summary</h2>
-
+                                    <c:set var="grandTotal" value="${0.0}" />
                                     <div class="space-y-3">
-                                        <div class="d-flex justify-content-between small text-muted mb-2">
-                                            <span>Chocolate Cake x1</span>
-                                            <span class="text-dark">$24.99</span>
-                                        </div>
-                                        <div class="d-flex justify-content-between small text-muted mb-2">
-                                            <span>French Macarons x1</span>
-                                            <span class="text-dark">$12.99</span>
-                                        </div>
-
+                                        <c:forEach var="item" items="${cartItems}">
+                                            <div class="d-flex justify-content-between small text-muted mb-2"
+                                                 id="summary-item-${item.cartItemId}"
+                                                 data-unit-price="${item.unitPrice}">
+                                                <span>${item.productName} x<span id="summary-qty-${item.cartItemId}">${item.quantity}</span></span>
+                                                <span class="text-dark">$<span id="summary-line-${item.cartItemId}">${item.lineTotal}</span></span>
+                                            </div>
+                                            <c:set var="grandTotal" value="${grandTotal + item.lineTotal}" />
+                                        </c:forEach>
                                         <hr class="my-3 border-secondary-subtle">
 
                                         <div class="d-flex justify-content-between align-items-center mb-3">
                                             <span class="fw-semibold">Total</span>
-                                            <span class="h5 fw-bold text-brand mb-0">$42.97</span>
+                                            <span class="h5 fw-bold text-brand mb-0">$<span id="grand-total">${grandTotal}</span></span>
                                         </div>
-
-                                        <p class="text-xs text-muted mb-4 small">Credit available: $500.00</p>
+                                        <jsp:useBean id="user" class="gov.iti.jets.ecommerce.beans.UserBean"/>
+                                        <p class="text-xs text-muted mb-4 small">Credit available: ${user.creditBalance}</p>
 
                                         <a href="/checkout" class="btn btn-primary bg-brand border-0 w-100 rounded-3 py-2 fw-medium d-flex align-items-center justify-content-center">
                                             Proceed to Checkout
@@ -111,6 +114,10 @@
             </c:otherwise>
         </c:choose>
         <%@include file="/static/html/footer.html"%>
+        <script>
+            // Used by `static/js/main.js` for cart update requests (context-path safe).
+            const CONTEXT_PATH = '${pageContext.request.contextPath}';
+        </script>
         <script src="${pageContext.request.contextPath}/static/js/bootstrap.js"></script>
         <script src="${pageContext.request.contextPath}/static/js/main.js"></script>
     </body>
