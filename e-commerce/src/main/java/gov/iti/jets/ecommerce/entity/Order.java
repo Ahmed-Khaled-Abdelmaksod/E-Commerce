@@ -1,6 +1,7 @@
 package gov.iti.jets.ecommerce.entity;
 
 import gov.iti.jets.ecommerce.enums.OrderStatus;
+import gov.iti.jets.ecommerce.enums.OrderStatusConverter;
 import jakarta.persistence.*;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -22,7 +23,7 @@ public class Order {
     @Column(name = "total_price", nullable = false)
     private BigDecimal totalPrice;
 
-    @Enumerated(EnumType.STRING)
+    @Convert(converter = OrderStatusConverter.class) // solves the strange problem suddenly occuring of the db , added by salah only this line
     @Column(columnDefinition = "ENUM('pending', 'paid', 'completed', 'cancelled')")
     private OrderStatus status = OrderStatus.PENDING;
 
