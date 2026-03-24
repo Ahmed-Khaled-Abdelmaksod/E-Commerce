@@ -54,14 +54,14 @@
                                     <div class="position-relative overflow-hidden aspect-square bg-light">
                                         <img src="${pageContext.request.contextPath}${product.imageUrl}"
                                              class="card-img-top object-cover h-100 w-100 transition-transform zoom-hover"
-                                             alt="${product.name}">
+                                             alt="${product.categoryName}">
                                         <div class="position-absolute top-0 start-0 m-3">
                                             <span class="badge bg-white text-muted fw-medium py-2 px-3 rounded-pill shadow-sm small border">${product.categoryName}</span>
                                         </div>
                                     </div>
 
                                     <div class="card-body p-4">
-                                        <h3 class="h6 fw-bold text-dark mb-2">${product.categoryName}</h3>
+                                        <h3 class="h6 fw-bold text-dark mb-2">${product.name}</h3>
                                         <div class="d-flex align-items-center justify-content-between mt-3">
                                             <span class="h5 fw-bold text-brand mb-0">$${product.price}</span>
                                             <button class="add-to-cart-btn btn btn-primary bg-brand border-0 btn-sm px-3 d-flex align-items-center rounded-3" data-id="${product.productId}" >
