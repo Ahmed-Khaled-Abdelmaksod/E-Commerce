@@ -1,11 +1,11 @@
 package gov.iti.jets.ecommerce.mappers;
 
+import gov.iti.jets.ecommerce.beans.dashboard.ProductBean;
 import gov.iti.jets.ecommerce.DTO.ProductDTO;
 import gov.iti.jets.ecommerce.entity.Product;
 import gov.iti.jets.ecommerce.entity.Category;
 
 import java.sql.Timestamp;
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -72,5 +72,44 @@ public class ProductMapper {
                 .stream()
                 .map(ProductMapper::toEntity)
                 .collect(Collectors.toList());
+    }
+
+
+    public static ProductBean toBean(Product entity) {
+        if (entity == null) return null;
+        ProductBean bean = new ProductBean();
+        bean.setProductId(entity.getProductId());
+        bean.setName(entity.getName());
+        bean.setDescription(entity.getDescription());
+        bean.setPrice(entity.getPrice());
+        bean.setStockQuantity(entity.getStockQuantity());
+        bean.setImageUrl(entity.getImageUrl());
+        bean.setHighlighted(entity.isHighlighted());
+        
+        if (entity.getCategory() != null) {
+            bean.setCategoryId(entity.getCategory().getCategoryId());
+            bean.setCategoryName(entity.getCategory().getName());
+        }
+        return bean;
+    }
+
+    public static Product toEntity(ProductBean bean) {
+        if (bean == null) return null;
+        Product entity = new Product();
+        
+        entity.setProductId(bean.getProductId() != null ? bean.getProductId() : 0);
+        entity.setName(bean.getName());
+        entity.setDescription(bean.getDescription());
+        entity.setPrice(bean.getPrice());
+        entity.setStockQuantity(bean.getStockQuantity());
+        entity.setImageUrl(bean.getImageUrl());
+        entity.setHighlighted(bean.isHighlighted());
+        
+        if (bean.getCategoryId() != null) {
+            Category category = new Category();
+            category.setCategoryId(bean.getCategoryId());
+            entity.setCategory(category);
+        }
+        return entity;
     }
 }

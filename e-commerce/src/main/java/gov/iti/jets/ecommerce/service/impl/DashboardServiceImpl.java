@@ -32,13 +32,64 @@ public class DashboardServiceImpl implements DashboardService {
     }
 
     @Override
-    public List<ProductDTO> getAllProductsForDashboard() {
+    public void saveProduct(ProductBean bean) {
+        try (EntityManager em = JpaUtil.getEntityManagerFactory().createEntityManager()) {
+            em.getTransaction().begin();
+            
+            Product product;
+            if (bean.getProductId() != null && bean.getProductId() > 0) {
+                // Edit
+                product = productDAO.findById(em, bean.getProductId())
+                        .orElseThrow(() -> new RuntimeException("Product not found"));
+            } else {
+                // Add
+                product = new Product();
+            }
+
+            product.setName(bean.getName());
+            product.setDescription(bean.getDescription());
+            product.setPrice(bean.getPrice());
+            product.setStockQuantity(bean.getStockQuantity());
+            product.setImageUrl(bean.getImageUrl());
+            product.setHighlighted(bean.isHighlighted());
+
+            if (bean.getCategoryId() != null) {
+                Category category = em.find(Category.class, bean.getCategoryId());
+                product.setCategory(category);
+            }
+
+            if (product.getProductId() == 0) {
+                productDAO.insert(em, product);
+            } else {
+                productDAO.update(em, product);
+            }
+
+            em.getTransaction().commit();
+        } catch (Exception e) {
+            System.err.println("Error saving product: " + e.getMessage());
+            throw e;
+        }
+    }
+
+    @Override
+    public boolean deleteProduct(int productId) {
+        try (EntityManager em = JpaUtil.getEntityManagerFactory().createEntityManager()) {
+            em.getTransaction().begin();
+            boolean deleted = productDAO.delete(em, productId);
+            em.getTransaction().commit();
+            return deleted;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    @Override
+    public List<ProductBean> getAllProductsForDashboard() {
         try (EntityManager em = JpaUtil.getEntityManagerFactory().createEntityManager()) {
             List<Product> products = productDAO.findAll(em);
-            System.out.println("Service DEBUG: Found " + (products != null ? products.size() : 0) + " products");
-            
             return products.stream()
-                    .map(ProductMapper::toDTO)
+                    .map(ProductMapper::toBean) 
                     .collect(Collectors.toList());
         } catch (Exception e) {
             System.err.println("CRITICAL ERROR in Service - getAllProductsForDashboard: " + e.getMessage());
