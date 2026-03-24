@@ -68,12 +68,6 @@ public class ServiceLocator {
         );
     }
 
-    // --- Dao Getters (should be removed) ---
-
-    public ProductDAO getProductDAO() {
-        return productDAO;
-    }
-
     // --- Service Getters ---
     
     /**
