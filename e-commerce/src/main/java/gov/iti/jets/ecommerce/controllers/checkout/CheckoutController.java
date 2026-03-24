@@ -51,6 +51,9 @@ public class CheckoutController extends HttpServlet {
         // --- Modification here: Check success status first before checking the cart ---
         String status = request.getParameter("status");
         if ("success".equals(status)) {
+            if (session != null) {
+                session.setAttribute("cartCount", 0);
+            }
             // Forward the user to the new success page
             request.getRequestDispatcher("/views/checkout/success.jsp").forward(request, response);
             return;
@@ -82,6 +85,10 @@ public class CheckoutController extends HttpServlet {
         boolean isSuccess = checkoutService.processCheckout(userId);
 
         if (isSuccess) {
+            // Keep UI cart state in sync on all pages after successful checkout.
+            if (session != null) {
+                session.setAttribute("cartCount", 0);
+            }
             response.sendRedirect(request.getContextPath() + "/checkout?status=success");
         } else {
             response.sendRedirect(request.getContextPath() + "/checkout?error=failed");
