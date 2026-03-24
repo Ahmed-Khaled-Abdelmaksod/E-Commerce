@@ -7,10 +7,17 @@ import jakarta.persistence.EntityManager;
 import java.util.List;
 import java.util.Optional;
 
-public class CartItemDaoImpl implements CartItemDAO {
+public final class CartItemDaoImpl implements CartItemDAO {
+    static private final CartItemDaoImpl instance;
 
-    public CartItemDaoImpl() {
+    static {
+        instance = new CartItemDaoImpl();
     }
+
+    private CartItemDaoImpl() {
+
+    }
+
 
     @Override
     public CartItem insert(EntityManager em, CartItem cartItem) {
@@ -43,6 +50,17 @@ public class CartItemDaoImpl implements CartItemDAO {
     }
 
     @Override
+    public boolean updateQuantityByCartAndProductId(EntityManager em, int cartId,int productId, int quantity) {
+        int updated = em.createQuery(
+                        "UPDATE CartItem ci SET ci.quantity = :quantity WHERE ci.cart.cartId = :cartId and ci.product.productId =:productId")
+                .setParameter("quantity", quantity)
+                .setParameter("cartId",cartId)
+                .setParameter("productId", productId)
+                .executeUpdate();
+        return updated > 0;
+    }
+
+    @Override
     public boolean delete(EntityManager em, int cartItemId) {
         int deletedCount = em.createQuery("DELETE FROM CartItem ci WHERE ci.cartItemId = :cartItemId")
                 .setParameter("cartItemId", cartItemId)
@@ -57,5 +75,28 @@ public class CartItemDaoImpl implements CartItemDAO {
                 .setParameter("cartId", cartId)
                 .executeUpdate();
         return deletedCount > 0;
+    }
+
+    @Override
+    public boolean deleteByCartIdAndProductId(EntityManager em, int cartId,int productId) {
+        int deletedCount = em.createQuery(
+                        "DELETE FROM CartItem ci WHERE ci.cart.cartId = :cartId and ci.product.productId = :productId")
+                .setParameter("cartId", cartId)
+                .setParameter("productId",productId)
+                .executeUpdate();
+        return deletedCount > 0;
+    }
+
+    @Override
+    public Optional<CartItem> findByCartIdAndProductId(EntityManager em,int cartId,int productId) {
+        return em.createQuery(
+                        "from CartItem ci where ci.cart.cartId = :cartId and ci.product.productId = :productId", CartItem.class)
+                .setParameter("cartId", cartId)
+                .setParameter("productId",productId)
+                .getResultStream().findFirst();
+    }
+
+    public static CartItemDaoImpl getInstance() {
+        return instance;
     }
 }

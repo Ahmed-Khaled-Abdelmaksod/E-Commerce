@@ -26,7 +26,7 @@
 <body class="bg-white">
 
     <!--Include Header-->
-    <jsp:include page="/static/html/header.html" />
+    <jsp:include page="/static/html/admin-header.html" />
 
     <!-- Header Section (Beige Background) -->
     <div class="dash-header-bg py-5">

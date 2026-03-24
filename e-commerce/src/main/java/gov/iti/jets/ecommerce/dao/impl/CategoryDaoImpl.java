@@ -2,15 +2,13 @@ package gov.iti.jets.ecommerce.dao.impl;
 
 import gov.iti.jets.ecommerce.dao.CategoryDAO;
 import gov.iti.jets.ecommerce.entity.Category;
+import gov.iti.jets.ecommerce.entity.User;
 import jakarta.persistence.EntityManager;
+
 import java.util.List;
 import java.util.Optional;
 
 public class CategoryDaoImpl implements CategoryDAO {
-
-    public CategoryDaoImpl() {
-    }
-
     @Override
     public Category insert(EntityManager em, Category category) {
         em.persist(category);
@@ -19,39 +17,34 @@ public class CategoryDaoImpl implements CategoryDAO {
 
     @Override
     public List<Category> findAll(EntityManager em) {
-        return em.createQuery("SELECT c FROM Category c", Category.class).getResultList();
+        return em.createQuery("from Category c", Category.class).getResultList();
     }
 
     @Override
     public Optional<Category> findById(EntityManager em, int id) {
-        Category category = em.find(Category.class, id);
+        Category category = em.find(Category.class,id);
         return Optional.ofNullable(category);
     }
 
     @Override
     public boolean update(EntityManager em, Category category) {
-        if (category != null && category.getCategoryId() != 0) {
-            em.merge(category);
-            return true;
+        if (category == null) {
+            return false;
         }
-        return false;
+        Category merged = em.merge(category);
+        return merged != null;
     }
 
     @Override
     public boolean delete(EntityManager em, int id) {
-        Category category = em.find(Category.class, id);
-        if (category != null) {
-            em.remove(category);
-            return true;
-        }
-        return false;
+        int deletedCount = em.createQuery("DELETE FROM Category c WHERE c.categoryId = :id")
+                .setParameter("id", id)
+                .executeUpdate();
+        return deletedCount > 0;
     }
 
     @Override
     public boolean existsByName(EntityManager em, String name) {
-        Long count = em.createQuery("SELECT COUNT(c) FROM Category c WHERE c.name = :name", Long.class)
-                .setParameter("name", name)
-                .getSingleResult();
-        return count > 0;
+        return false;
     }
 }
