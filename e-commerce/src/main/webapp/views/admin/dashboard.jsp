@@ -62,5 +62,39 @@
     <!-- AJAX JS -->
     <script src="${pageContext.request.contextPath}/static/js/admin/dashboard.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        function ajaxAddCategory() {
+            const name = document.getElementById('newCategoryName').value;
+            const desc = document.getElementById('newCategoryDesc').value;
+            const ctx = "${pageContext.request.contextPath}";
+
+            if(!name.trim()) { alert("Name required"); return; }
+
+            fetch(ctx + '/addCategory', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                body: 'categoryName=' + encodeURIComponent(name) + '&categoryDesc=' + encodeURIComponent(desc)
+            })
+                .then(res => res.json())
+                .then(data => {
+                    if(data.status === 'success') {
+                        // Update ALL dropdowns in the UI
+                        document.querySelectorAll('.category-dropdown').forEach(dropdown => {
+                            const option = new Option(data.name, data.id);
+                            dropdown.add(option);
+                        });
+
+                        // Hide Category Modal
+                        const catModalEl = document.getElementById('addCategoryModal');
+                        bootstrap.Modal.getOrCreateInstance(catModalEl).hide();
+
+                        // Reset inputs
+                        document.getElementById('newCategoryName').value = '';
+                        document.getElementById('newCategoryDesc').value = '';
+                    }
+                })
+                .catch(err => console.error(err));
+        }
+    </script>
 </body>
 </html>
