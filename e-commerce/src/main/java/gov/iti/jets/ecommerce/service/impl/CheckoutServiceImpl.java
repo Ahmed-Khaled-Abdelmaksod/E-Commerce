@@ -36,9 +36,22 @@ public class CheckoutServiceImpl implements CheckoutService {
     @Override
     public CheckoutBean getCheckoutDetails(int userId) {
         try (EntityManager em = JpaUtil.getEntityManagerFactory().createEntityManager()) {
+
+            // 1. Fetch User's Cart first (If no cart or empty, return null)
+            Optional<Cart> cartOpt = cartDAO.findCartByUserId(em, userId);
+            if (cartOpt.isEmpty()) {
+                return null; // No cart found
+            }
+
+            Cart cart = cartOpt.get();
+            List<CartItem> cartItems = cartItemDAO.findByCartId(em, cart.getCartId());
+            if (cartItems == null || cartItems.isEmpty()) {
+                return null; // Cart is empty
+            }
+
             CheckoutBean bean = new CheckoutBean();
 
-            // 1. Fetch User details
+            // 2. Fetch User details
             Optional<User> userOpt = userDAO.findById(em, userId);
             if (userOpt.isPresent()) {
                 User user = userOpt.get();
@@ -49,22 +62,14 @@ public class CheckoutServiceImpl implements CheckoutService {
                 bean.setUserCredit(user.getCreditBalance());
             }
 
-            // 2. Fetch User's Cart
-            Optional<Cart> cartOpt = cartDAO.findCartByUserId(em, userId);
-            
             List<CheckoutItemBean> itemBeans = new ArrayList<>();
             BigDecimal subtotal = BigDecimal.ZERO;
 
-            // 3. Fetch Cart Items if Cart exists
-            if (cartOpt.isPresent()) {
-                Cart cart = cartOpt.get();
-                List<CartItem> cartItems = cartItemDAO.findByCartId(em, cart.getCartId()); // Assuming Cart entity has getCartId()
-
-                for (CartItem item : cartItems) {
-                    CheckoutItemBean itemBean = mapToCheckoutItemBean(item);
-                    itemBeans.add(itemBean);
-                    subtotal = subtotal.add(itemBean.getLineTotal());
-                }
+            // 3. Map Cart Items to DTOs and calculate subtotal
+            for (CartItem item : cartItems) {
+                CheckoutItemBean itemBean = mapToCheckoutItemBean(item);
+                itemBeans.add(itemBean);
+                subtotal = subtotal.add(itemBean.getLineTotal());
             }
 
             // 4. Set Payment Summary
@@ -148,7 +153,7 @@ public class CheckoutServiceImpl implements CheckoutService {
                 orderItem.setProduct(cartItem.getProduct());
                 orderItem.setQuantity(cartItem.getQuantity());
                 orderItem.setPrice(cartItem.getProduct().getPrice()); // Snapshot the price at checkout
-                
+
                 orderItemDAO.insert(em, orderItem); // Save OrderItem to DB
             }
 
