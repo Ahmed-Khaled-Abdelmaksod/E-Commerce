@@ -65,6 +65,11 @@ CREATE TABLE products (
     
     category_id INT NOT NULL,
     
+    -- ==========================================
+    -- الكولمن الجديد الخاص بتمميز المنتج
+    -- ==========================================
+    is_highlighted BOOLEAN DEFAULT FALSE,
+    
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     
     FOREIGN KEY (category_id)
@@ -187,13 +192,14 @@ VALUES
 ('Admin User','admin@sweetdelights.com','hashedpassword','5551111','Admin Address','admin',0),
 ('Jane Doe','jane@example.com','hashedpassword','5550200','456 Dessert Lane','customer',500);
 
-INSERT INTO products (name,description,price,stock_quantity,image_url,category_id)
+-- تمت إضافة is_highlighted هنا لتوفير داتا تجريبية جاهزة للمنتجات المميزة
+INSERT INTO products (name,description,price,stock_quantity,image_url,category_id, is_highlighted)
 VALUES
-('Strawberry Cupcake','Fresh strawberry cupcake',4.99,50,'/images/cupcake.jpg',1),
-('French Macarons','Colorful macarons',12.99,30,'/images/macarons.jpg',4),
-('Chocolate Cake','Rich chocolate cake',24.99,15,'/images/cake.jpg',2),
-('Chocolate Chip Cookies','Crispy cookies',8.99,40,'/images/cookies.jpg',3),
-('Strawberry Donut','Sweet donut',3.49,60,'/images/donut.jpg',5);
+('Strawberry Cupcake','Fresh strawberry cupcake',4.99,50,'/images/cupcake.jpg',1, TRUE),
+('French Macarons','Colorful macarons',12.99,30,'/images/macarons.jpg',4, FALSE),
+('Chocolate Cake','Rich chocolate cake',24.99,15,'/images/cake.jpg',2, TRUE),
+('Chocolate Chip Cookies','Crispy cookies',8.99,40,'/images/cookies.jpg',3, FALSE),
+('Strawberry Donut','Sweet donut',3.49,60,'/images/donut.jpg',5, FALSE);
 
 -- ======================================================
 -- CREATE CART FOR SAMPLE CUSTOMER

@@ -1,4 +1,62 @@
-/* Navbar Styling */
+/* =========================================================
+   Global Fonts Import
+========================================================= */
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&family=DM+Serif+Display:ital@0;1&display=swap');
+
+/* =========================================================
+   Global Theme Variables
+========================================================= */
+:root {
+  --background: oklch(0.98 0.005 60);
+  --foreground: oklch(0.25 0.02 50);
+  --card: oklch(1 0 0);
+  --card-foreground: oklch(0.25 0.02 50);
+  --popover: oklch(1 0 0);
+  --popover-foreground: oklch(0.25 0.02 50);
+  --primary: oklch(0.65 0.15 10);
+  --primary-foreground: oklch(1 0 0);
+  --secondary: oklch(0.94 0.01 60);
+  --secondary-foreground: oklch(0.35 0.03 50);
+  --muted: oklch(0.95 0.008 60);
+  --muted-foreground: oklch(0.50 0.02 50);
+  --accent: oklch(0.55 0.10 40);
+  --accent-foreground: oklch(1 0 0);
+  --destructive: oklch(0.577 0.245 27.325);
+  --destructive-foreground: oklch(1 0 0);
+  --border: oklch(0.90 0.015 60);
+  --input: oklch(0.90 0.015 60);
+  --ring: oklch(0.65 0.15 10);
+  --radius: 0.75rem;
+  --font-sans: 'DM Sans', sans-serif;
+  --font-serif: 'DM Serif Display', serif;
+}
+
+/* =========================================================
+   Base
+========================================================= */
+body {
+    background-color: var(--background);
+    color: var(--foreground);
+    font-family: var(--font-sans);
+}
+
+.font-sans { font-family: var(--font-sans) !important; }
+.font-serif { font-family: var(--font-serif) !important; }
+.text-primary { color: var(--primary) !important; }
+.bg-primary { background-color: var(--primary) !important; color: var(--primary-foreground) !important; }
+.bg-primary-soft { background-color: rgba(228, 105, 125, 0.1) !important; color: var(--primary) !important; }
+.text-muted-custom { color: var(--muted-foreground) !important; }
+.bg-muted-custom { background-color: var(--muted) !important; }
+.border-custom { border-color: var(--border) !important; }
+
+/* Dashboard Header */
+.dash-header-bg {
+    background-color: #F3EFEA;
+}
+
+/* =========================================================
+   Navbar
+========================================================= */
 .navbar-brand-logo {
     width: 35px;
     height: 35px;
@@ -18,7 +76,9 @@
     font-weight: 500;
 }
 
-/* Custom Tabs (Not standard bootstrap pills) */
+/* =========================================================
+   Custom Tabs
+========================================================= */
 .custom-tabs-container {
     border-bottom: 1px solid var(--border);
     margin-bottom: 2rem;
@@ -34,6 +94,8 @@
     cursor: pointer;
     border-bottom: 2px solid transparent;
     transition: all 0.3s ease;
+    font-family: var(--font-sans);
+    font-size: 0.95rem;
 }
 
 .custom-tab:hover {
@@ -45,56 +107,239 @@
     border-bottom: 2px solid var(--primary);
 }
 
-/* Buttons */
-.btn-primary-custom {
-    background-color: #df6c7f; /* Match the exact button pink */
+/* =========================================================
+   Add Product Button
+========================================================= */
+.btn-primary-custom,
+.btn-add-product {
+    background-color: var(--primary);
     color: white;
     border: none;
     border-radius: var(--radius);
-    padding: 8px 16px;
+    padding: 9px 20px;
     font-weight: 500;
+    font-family: var(--font-sans);
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.9rem;
+    transition: background-color 0.2s ease;
 }
-.btn-primary-custom:hover {
-    background-color: #c95c6f;
+
+.btn-primary-custom:hover,
+.btn-add-product:hover {
+    background-color: oklch(0.58 0.15 10);
     color: white;
 }
 
-/* Tables */
-.table-custom th {
+/* =========================================================
+   Products Table
+========================================================= */
+table.products-table {
+    border-collapse: collapse;
+    width: 100%;
+    table-layout: auto;
+}
+
+/* thead */
+table.products-table thead th {
     font-weight: 500;
     color: var(--muted-foreground);
+    font-size: 0.875rem;
+    letter-spacing: 0.01em;
+    padding: 0 16px 14px 0;
     border-bottom: 1px solid var(--border);
-    padding-bottom: 10px;
+    white-space: nowrap;
 }
-.table-custom td {
+
+table.products-table thead th:first-child { padding-left: 0; }
+table.products-table thead th:last-child  { padding-right: 0; }
+
+/* tbody rows */
+table.products-table tbody tr {
+    border-bottom: 1px solid var(--border);
+}
+
+table.products-table tbody td {
     vertical-align: middle;
-    border-bottom: 1px solid var(--border);
-    padding: 15px 0;
+    padding: 14px 16px 14px 0;
+    font-size: 0.92rem;
+    color: var(--foreground);
+    border: none;
 }
-.product-img {
-    width: 40px;
-    height: 40px;
+
+table.products-table tbody td:first-child { padding-left: 0; }
+table.products-table tbody td:last-child  { padding-right: 0; }
+
+/* Product thumbnail */
+.product-thumb {
+    width: 42px;
+    height: 42px;
     border-radius: 8px;
     object-fit: cover;
-    margin-right: 15px;
+    flex-shrink: 0;
+    background-color: var(--muted);
+    display: block;
+}
+
+/* Product name */
+.product-name {
+    font-weight: 500;
+    color: var(--foreground);
+    font-size: 0.93rem;
+}
+
+/* Category & muted cells */
+.cell-muted {
+    color: var(--muted-foreground) !important;
+}
+
+/* Price cell */
+.cell-price {
+    font-weight: 500;
+    color: var(--foreground);
+    white-space: nowrap;
+}
+
+/* Stock badge pill */
+.stock-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 34px;
+    height: 26px;
+    padding: 0 10px;
+    border-radius: 999px;
+    background-color: rgba(228, 105, 125, 0.13);
+    color: var(--primary);
+    font-size: 0.83rem;
+    font-weight: 600;
+    white-space: nowrap;
+}
+
+/* Action buttons */
+.action-btn {
+    background: none;
+    border: none;
+    padding: 5px 7px;
+    border-radius: 6px;
+    color: var(--muted-foreground);
+    font-size: 0.95rem;
+    cursor: pointer;
+    transition: color 0.18s, background-color 0.18s;
+    line-height: 1;
+    margin-left: 2px;
+}
+
+.action-btn:hover {
+    color: var(--foreground);
     background-color: var(--muted);
 }
-.action-icon {
+
+.action-btn-delete { color: var(--muted-foreground); }
+.action-btn-delete:hover { color: #e05c6b; background-color: rgba(224, 92, 107, 0.08); }
+.action-btn-delete .bi-trash { color: inherit; }
+
+/* Legacy fallback (keep for any old markup) */
+.action-icon { color: var(--muted-foreground); cursor: pointer; margin-left: 10px; transition: color 0.2s; }
+.action-icon:hover { color: var(--foreground); }
+
+/* =========================================================
+   Inline Product Form
+========================================================= */
+#productFormContainer {
+    border: 1px solid var(--border) !important;
+    border-radius: var(--radius);
+    background: var(--card);
+    transition: all 0.3s ease;
+}
+
+#productFormContainer .card-body {
+    padding: 28px 32px;
+}
+
+#productFormContainer .form-label {
+    font-size: 0.85rem;
+    font-weight: 500;
+    color: var(--foreground);
+    margin-bottom: 6px;
+}
+
+#productFormContainer .form-control,
+#productFormContainer .form-select {
+    background-color: var(--muted);
+    border: 1px solid var(--border);
+    border-radius: 0.5rem;
+    color: var(--foreground);
+    font-family: var(--font-sans);
+    font-size: 0.9rem;
+    padding: 10px 14px;
+    transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+#productFormContainer .form-control:focus,
+#productFormContainer .form-select:focus {
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px rgba(228, 105, 125, 0.15);
+    background-color: var(--card);
+    outline: none;
+}
+
+#productFormContainer .form-control::placeholder {
     color: var(--muted-foreground);
+}
+
+/* Form close button */
+#productFormContainer .btn-close-form {
+    background: none;
+    border: none;
+    color: var(--muted-foreground);
+    font-size: 1.1rem;
     cursor: pointer;
-    margin-left: 10px;
+    padding: 4px;
     transition: color 0.2s;
 }
-.action-icon:hover {
+#productFormContainer .btn-close-form:hover {
     color: var(--foreground);
 }
 
-/* Cards (Customers & Orders) */
+/* Submit button inside form */
+#productFormContainer .btn-submit-form {
+    background-color: var(--primary);
+    color: white;
+    border: none;
+    border-radius: 0.5rem;
+    padding: 10px 24px;
+    font-weight: 500;
+    font-family: var(--font-sans);
+    font-size: 0.9rem;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    transition: background-color 0.2s;
+}
+
+#productFormContainer .btn-submit-form:hover {
+    background-color: oklch(0.58 0.15 10);
+    color: white;
+}
+
+/* Form title */
+#formTitle {
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: var(--foreground);
+    margin-bottom: 0;
+}
+
+/* =========================================================
+   Cards (Orders & Customers)
+========================================================= */
 .custom-card {
     background: var(--card);
     border: 1px solid var(--border);
     border-radius: var(--radius);
-    padding: 20px;
+    padding: 20px 24px;
     box-shadow: 0 1px 3px rgba(0,0,0,0.02);
 }
 
@@ -105,20 +350,143 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    background-color: rgba(228, 105, 125, 0.1); /* light pink */
+    background-color: rgba(228, 105, 125, 0.10);
     color: var(--primary);
     font-size: 1.2rem;
+    flex-shrink: 0;
 }
 
-/* Pills for order items */
+/* =========================================================
+   Order item pills
+========================================================= */
 .order-item-pill {
-    background-color: #f3f4f6;
+    background-color: oklch(0.93 0.008 60);
     color: var(--foreground);
-    padding: 6px 12px;
+    padding: 6px 14px;
     border-radius: 20px;
-    font-size: 0.85rem;
-    font-weight: 500;
+    font-size: 0.84rem;
+    font-weight: 400;
     display: inline-block;
     margin-right: 8px;
     margin-bottom: 8px;
+    border: 1px solid var(--border);
+}
+
+/* =========================================================
+   Image Input: URL / Upload toggle
+========================================================= */
+
+/* Tab switcher */
+.img-input-tabs {
+    display: inline-flex;
+    gap: 4px;
+    background-color: var(--muted);
+    border-radius: 8px;
+    padding: 3px;
+}
+
+.img-tab {
+    background: none;
+    border: none;
+    border-radius: 6px;
+    padding: 5px 14px;
+    font-size: 0.82rem;
+    font-weight: 500;
+    font-family: var(--font-sans);
+    color: var(--muted-foreground);
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    transition: background-color 0.18s, color 0.18s;
+}
+
+.img-tab.active {
+    background-color: var(--card);
+    color: var(--foreground);
+    box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+}
+
+.img-tab:hover:not(.active) {
+    color: var(--foreground);
+}
+
+/* Drag & drop upload zone */
+.img-upload-zone {
+    border: 1.5px dashed var(--border);
+    border-radius: 0.5rem;
+    background-color: var(--muted);
+    padding: 24px 16px;
+    text-align: center;
+    cursor: pointer;
+    transition: border-color 0.2s, background-color 0.2s;
+    user-select: none;
+}
+
+.img-upload-zone:hover,
+.img-upload-zone.dragging {
+    border-color: var(--primary);
+    background-color: rgba(228, 105, 125, 0.05);
+}
+
+.img-upload-zone.has-file {
+    border-style: solid;
+    border-color: var(--primary);
+}
+
+/* Preview clear button */
+.img-clear-btn {
+    background: none;
+    border: none;
+    padding: 0;
+    font-size: 0.8rem;
+    color: var(--muted-foreground);
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    margin-top: 3px;
+    font-family: var(--font-sans);
+    transition: color 0.18s;
+}
+
+.img-clear-btn:hover { color: #e05c6b; }
+
+
+.custom-toast-success {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    background-color: #ecfdf5;
+    color: #059669;
+    border: 1px solid #10b981;
+    padding: 12px 24px;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    z-index: 9999;
+    transform: translateY(100px);
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    opacity: 0;
+}
+.custom-toast-success.show {
+    transform: translateY(0);
+    opacity: 1;
+}
+
+/* =========================================================
+   Modal overrides
+========================================================= */
+.modal-content {
+    border-radius: var(--radius) !important;
+    border: none !important;
+    font-family: var(--font-sans);
+}
+
+.modal-content .form-control,
+.modal-content .form-select {
+    background-color: var(--muted);
+    border: 1px solid var(--border);
+    border-radius: 0.5rem;
+    font-family: var(--font-sans);
+    font-size: 0.9rem;
 }

@@ -2,7 +2,7 @@ package gov.iti.jets.ecommerce.controllers.admin;
 
 import gov.iti.jets.ecommerce.context.ServiceLocator;
 import gov.iti.jets.ecommerce.service.DashboardService;
-import gov.iti.jets.ecommerce.DTO.ProductDTO;
+import gov.iti.jets.ecommerce.beans.dashboard.ProductBean;
 import gov.iti.jets.ecommerce.DTO.CategoryDTO;
 import gov.iti.jets.ecommerce.beans.dashboard.CustomerBean;
 import gov.iti.jets.ecommerce.beans.dashboard.OrderBean;
@@ -62,12 +62,11 @@ public class AdminDashboardServlet extends HttpServlet {
     private void loadProductsTab(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         try {
-            List<ProductDTO> products = dashboardService.getAllProductsForDashboard();
+            List<ProductBean> products = dashboardService.getAllProductsForDashboard();
             List<CategoryDTO> categories = dashboardService.getAllCategoriesForDashboard();
 
-            // Checking data in Console
-            System.out.println("DEBUG: Products retrieved: " + (products != null ? products.size() : "NULL"));
-            System.out.println("DEBUG: Categories retrieved: " + (categories != null ? categories.size() : "NULL"));
+            // Debugging
+            System.out.println("Service DEBUG: Found " + (products != null ? products.size() : 0) + " products");
 
             request.setAttribute("products", products);
             request.setAttribute("categories", categories);
@@ -84,16 +83,10 @@ public class AdminDashboardServlet extends HttpServlet {
             throws ServletException, IOException {
         try {
             List<CustomerBean> customers = dashboardService.getAllCustomersForDashboard();
-            
-            // Checking data in Console
-            System.out.println("DEBUG: Customers retrieved: " + (customers != null ? customers.size() : "NULL"));
-
             request.setAttribute("customers", customers);
             request.getRequestDispatcher("/views/admin/fragments/customers-tab.jsp").forward(request, response);
-
         } catch (Exception e) {
             System.err.println("CRITICAL ERROR in loadCustomersTab: " + e.getMessage());
-            e.printStackTrace();
             response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Error fetching customer data.");
         }
     }
@@ -102,16 +95,10 @@ public class AdminDashboardServlet extends HttpServlet {
             throws ServletException, IOException {
         try {
             List<OrderBean> orders = dashboardService.getAllOrdersForDashboard();
-            
-            // Checking data in Console
-            System.out.println("DEBUG: Orders retrieved: " + (orders != null ? orders.size() : "NULL"));
-
             request.setAttribute("orders", orders);
             request.getRequestDispatcher("/views/admin/fragments/orders-tab.jsp").forward(request, response);
-
         } catch (Exception e) {
             System.err.println("CRITICAL ERROR in loadOrdersTab: " + e.getMessage());
-            e.printStackTrace();
             response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Error fetching order data.");
         }
     }
