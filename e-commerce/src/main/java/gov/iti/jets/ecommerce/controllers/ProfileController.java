@@ -2,6 +2,7 @@ package gov.iti.jets.ecommerce.controllers;
 
 import gov.iti.jets.ecommerce.beans.UserBean;
 import gov.iti.jets.ecommerce.service.AuthService;
+import gov.iti.jets.ecommerce.service.ProfileService;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -61,7 +62,7 @@ public class ProfileController extends HttpServlet {
             updatedBean.setBirthday(currentUser.getBirthday());
         }
 
-        Optional<UserBean> result = AuthService.getInstance().updateProfile(updatedBean);
+        Optional<UserBean> result = ProfileService.getInstance().updateProfile(updatedBean);
         if (result.isPresent()) {
             session.setAttribute("user", result.get());
             resp.sendRedirect(req.getContextPath() + "/user/profile?updated=true");
