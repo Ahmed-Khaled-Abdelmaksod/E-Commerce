@@ -98,10 +98,46 @@
             <div class="col-lg-5">
                 <div class="card border-0 shadow-sm p-4 rounded-4 mb-4">
                     <h3 class="h5 fw-bold mb-2"><i class="bi bi-wallet2 me-2"></i> Credit Balance</h3>
-                    <div class="display-6 fw-bold text-success">$${sessionScope.user.creditBalance}</div>
+                    <div class="display-6 fw-bold text-success">$${remainingCredit}</div>
+                    <p class="text-muted small mb-0 mt-1">(Original: $${sessionScope.user.creditBalance})</p>
                 </div>
-                <div class="card border-0 shadow-sm p-4 rounded-4 text-center py-5">
-                    <p class="text-muted mb-0">No order history available.</p>
+                <div class="card border-0 shadow-sm p-3 rounded-4">
+                    <h3 class="h5 fw-bold mb-3"><i class="bi bi-receipt me-2"></i>Order History</h3>
+                    <c:choose>
+                        <c:when test="${empty orders}">
+                            <div class="text-center py-4">
+                                <i class="bi bi-bag-x fs-1 text-muted"></i>
+                                <p class="text-muted mt-2 mb-0 small">No orders placed yet.</p>
+                            </div>
+                        </c:when>
+                        <c:otherwise>
+                            <div class="d-flex flex-column gap-2">
+                                <c:forEach var="order" items="${orders}">
+                                    <div class="d-flex justify-content-between align-items-center border rounded-3 px-3 py-2">
+                                        <div>
+                                            <div class="fw-semibold small">#${order.orderId}</div>
+                                            <div class="text-muted" style="font-size:0.75rem;">${order.orderDate}</div>
+                                        </div>
+                                        <div class="fw-bold text-success small">$${order.totalPrice}</div>
+                                        <c:choose>
+                                            <c:when test="${order.status == 'COMPLETED'}">
+                                                <span class="badge bg-success rounded-pill">${order.status}</span>
+                                            </c:when>
+                                            <c:when test="${order.status == 'PENDING'}">
+                                                <span class="badge bg-warning text-dark rounded-pill">${order.status}</span>
+                                            </c:when>
+                                            <c:when test="${order.status == 'CANCELLED'}">
+                                                <span class="badge bg-danger rounded-pill">${order.status}</span>
+                                            </c:when>
+                                            <c:otherwise>
+                                                <span class="badge bg-info rounded-pill">${order.status}</span>
+                                            </c:otherwise>
+                                        </c:choose>
+                                    </div>
+                                </c:forEach>
+                            </div>
+                        </c:otherwise>
+                    </c:choose>
                 </div>
             </div>
         </div>

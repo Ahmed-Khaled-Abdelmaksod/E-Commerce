@@ -2,74 +2,74 @@
 <%@ page import="gov.iti.jets.ecommerce.DTO.CartItemDTO" %>
 <%@ page import="java.util.List" %>
 <%
-    int cartCount = 0;
-    jakarta.servlet.http.HttpSession s = request.getSession(false);
+int cartCount = 0;
+jakarta.servlet.http.HttpSession s = request.getSession(false);
 
-    if (s != null) {
-        Object countObj = s.getAttribute("cartCount");
-        if (countObj instanceof Integer) {
-            // Session-first: avoid DB hit when count is already known.
-            cartCount = (Integer) countObj;
-        } else if (s.getAttribute("userCartId") instanceof Integer) {
-            // Fallback: hydrate once from DB if session count is missing.
-            int cartId = (Integer) s.getAttribute("userCartId");
-            if (cartId != -1) {
-                List<CartItemDTO> items = CartService.getInstance().getCartItems(cartId);
-                cartCount = items.stream().mapToInt(CartItemDTO::getQuantity).sum();
-                s.setAttribute("cartCount", cartCount);
-            }
-        }
+if (s != null) {
+Object countObj = s.getAttribute("cartCount");
+if (countObj instanceof Integer) {
+// Session-first: avoid DB hit when count is already known.
+cartCount = (Integer) countObj;
+} else if (s.getAttribute("userCartId") instanceof Integer) {
+// Fallback: hydrate once from DB if session count is missing.
+int cartId = (Integer) s.getAttribute("userCartId");
+if (cartId != -1) {
+List<CartItemDTO> items = CartService.getInstance().getCartItems(cartId);
+    cartCount = items.stream().mapToInt(CartItemDTO::getQuantity).sum();
+    s.setAttribute("cartCount", cartCount);
     }
-%>
-<header class="navbar navbar-expand-md sticky-top bg-card-glass border-bottom px-lg-4">
-  <div class="container-fluid max-w-7xl d-flex align-items-center">
+    }
+    }
+    %>
+    <header class="navbar navbar-expand-md sticky-top bg-card-glass border-bottom px-lg-4">
+        <div class="container-fluid max-w-7xl d-flex align-items-center">
 
-    <a class="navbar-brand d-flex align-items-center gap-2" href="#"> <!-- TODO add link-->
-      <div class="brand-logo-circle">
-        <span class="font-serif">S</span>
-      </div>
-      <span class="brand-text font-serif fw-bold h4 mb-0">Sweet Delights</span>
-    </a>
+            <a class="navbar-brand d-flex align-items-center gap-2" href="#"> <!-- TODO add link-->
+                <div class="brand-logo-circle">
+                    <span class="font-serif">S</span>
+                </div>
+                <span class="brand-text font-serif fw-bold h4 mb-0">Sweet Delights</span>
+            </a>
 
-    <div class="collapse navbar-collapse justify-content-center order-3 order-md-2" id="navbarNav">
-      <ul class="navbar-nav gap-md-4 py-3 py-md-0 text-center text-md-start">
-        <li class="nav-item">
-          <a class="nav-link text-muted hover-dark font-medium small" href="#">Home</a> <!-- TODO add link-->
-        </li>
-        <li class="nav-item">
-          <a class="nav-link text-muted hover-dark font-medium small" href="../user/products">Shop</a> <!-- TODO add link-->
-        </li>
-        <li class="nav-item d-md-none">
-          <a class="nav-link text-muted hover-dark font-medium small" href="${pageContext.request.contextPath}/auth/logout">Logout</a>
-        </li>
-      </ul>
-    </div>
+            <div class="collapse navbar-collapse justify-content-center order-3 order-md-2" id="navbarNav">
+                <ul class="navbar-nav gap-md-4 py-3 py-md-0 text-center text-md-start">
+                    <li class="nav-item">
+                        <a class="nav-link text-muted hover-dark font-medium small" href="#">Home</a> <!-- TODO add link-->
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link text-muted hover-dark font-medium small" href="../user/products">Shop</a> <!-- TODO add link-->
+                    </li>
+                    <li class="nav-item d-md-none">
+                        <a class="nav-link text-muted hover-dark font-medium small" href="${pageContext.request.contextPath}/auth/logout">Logout</a>
+                    </li>
+                </ul>
+            </div>
 
-    <div class="d-flex align-items-center gap-2 ms-auto order-2 order-md-3">
-      <a href="${pageContext.request.contextPath}/user/cart" class="btn btn-icon position-relative">
-        <i class="bi bi-cart3 fs-5"></i>
-        <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger"
-              id="cart-badge"
-              style="font-size: 0.65em; display: <%= cartCount > 0 ? "inline-block" : "none" %>;">
-          <%= cartCount %>
-        </span>
-        <span class="visually-hidden">Shopping cart</span>
-      </a>
+            <div class="d-flex align-items-center gap-2 ms-auto order-2 order-md-3">
+                <a href="${pageContext.request.contextPath}/user/cart" class="btn btn-icon position-relative">
+                    <i class="bi bi-cart3 fs-5"></i>
+                    <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger"
+                          id="cart-badge"
+                          style="font-size: 0.65em; display: <%= cartCount > 0 ? "inline-block" : "none" %>;">
+                    <%= cartCount %>
+                    </span>
+                    <span class="visually-hidden">Shopping cart</span>
+                </a>
 
-      <a href="${pageContext.request.contextPath}/user/profile" class="btn btn-icon">
-        <i class="bi bi-person fs-5"></i>
-        <span class="visually-hidden">Profile</span>
-      </a>
+                <a href="${pageContext.request.contextPath}/user/profile" class="btn btn-icon">
+                    <i class="bi bi-person fs-5"></i>
+                    <span class="visually-hidden">Profile</span>
+                </a>
 
-      <a href="${pageContext.request.contextPath}/auth/logout" class="btn btn-icon d-none d-md-inline-flex">
-        <i class="bi bi-box-arrow-right fs-5"></i>
-        <span class="visually-hidden">Log out</span>
-      </a>
+                <a href="${pageContext.request.contextPath}/auth/logout" class="btn btn-icon d-none d-md-inline-flex">
+                    <i class="bi bi-box-arrow-right fs-5"></i>
+                    <span class="visually-hidden">Log out</span>
+                </a>
 
-      <button class="navbar-toggler btn-icon border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-        <i class="bi bi-list fs-4"></i>
-      </button>
-    </div>
+                <button class="navbar-toggler btn-icon border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                    <i class="bi bi-list fs-4"></i>
+                </button>
+            </div>
 
-  </div>
-</header>
+        </div>
+    </header>

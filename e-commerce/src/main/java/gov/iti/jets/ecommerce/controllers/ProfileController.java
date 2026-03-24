@@ -1,7 +1,7 @@
 package gov.iti.jets.ecommerce.controllers;
 
 import gov.iti.jets.ecommerce.beans.UserBean;
-import gov.iti.jets.ecommerce.service.AuthService;
+import gov.iti.jets.ecommerce.entity.Order;
 import gov.iti.jets.ecommerce.service.ProfileService;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -12,7 +12,7 @@ import jakarta.servlet.http.HttpSession;
 
 import java.io.IOException;
 import java.time.LocalDate;
-import java.util.Optional;
+import java.util.List;
 
 @WebServlet("/user/profile")
 public class ProfileController extends HttpServlet {
@@ -20,19 +20,21 @@ public class ProfileController extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         HttpSession session = req.getSession(false);
-
-        if (session != null && session.getAttribute("user") != null) {
-            req.getRequestDispatcher("/views/main.jsp").forward(req, resp);
-        } else {
+        if (session == null || session.getAttribute("user") == null) {
             resp.sendRedirect(req.getContextPath() + "/auth/login");
+            return;
         }
+        UserBean user = (UserBean) session.getAttribute("user");
+        List<Order> orders = ProfileService.getInstance().getOrdersByUserId(user.getUserId());
+        req.setAttribute("orders", orders);
+        req.setAttribute("remainingCredit",
+                ProfileService.getInstance().getRemainingCredit(user.getCreditBalance(), orders));
+        req.getRequestDispatcher("/views/main.jsp").forward(req, resp);
     }
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         HttpSession session = req.getSession(false);
-
-        // Guard: must be logged in
         if (session == null || session.getAttribute("user") == null) {
             resp.sendRedirect(req.getContextPath() + "/auth/login");
             return;
@@ -43,9 +45,9 @@ public class ProfileController extends HttpServlet {
         UserBean updatedBean = new UserBean();
         updatedBean.setUserId(currentUser.getUserId());
 
-        String fullName = req.getParameter("fullName");
-        String phone = req.getParameter("phone");
-        String address = req.getParameter("address");
+        String fullName    = req.getParameter("fullName");
+        String phone       = req.getParameter("phone");
+        String address     = req.getParameter("address");
         String birthdayStr = req.getParameter("birthday");
 
         updatedBean.setFullName(fullName);
@@ -53,21 +55,24 @@ public class ProfileController extends HttpServlet {
         updatedBean.setAddress(address);
 
         if (birthdayStr != null && !birthdayStr.isBlank()) {
-            try {
-                updatedBean.setBirthday(LocalDate.parse(birthdayStr));
-            } catch (Exception e) {
-                updatedBean.setBirthday(currentUser.getBirthday());
-            }
+            try { updatedBean.setBirthday(LocalDate.parse(birthdayStr)); }
+            catch (Exception e) { updatedBean.setBirthday(currentUser.getBirthday()); }
         } else {
             updatedBean.setBirthday(currentUser.getBirthday());
         }
 
-        Optional<UserBean> result = ProfileService.getInstance().updateProfile(updatedBean);
-        if (result.isPresent()) {
-            session.setAttribute("user", result.get());
+        ProfileService.ProfileResult result = ProfileService.getInstance().updateProfile(updatedBean);
+        if (result.isSuccess()) {
+            session.setAttribute("user", result.getUser());
             resp.sendRedirect(req.getContextPath() + "/user/profile?updated=true");
         } else {
-            req.setAttribute("errorMessage", "Could not update profile. Please try again.");
+            req.setAttribute("errorMessage", result.getErrorMessage());
+
+            // ISA Last bug !
+            List<Order> orders = ProfileService.getInstance().getOrdersByUserId(currentUser.getUserId());
+            req.setAttribute("orders", orders);
+            req.setAttribute("remainingCredit",
+                    ProfileService.getInstance().getRemainingCredit(currentUser.getCreditBalance(), orders));
             req.getRequestDispatcher("/views/main.jsp").forward(req, resp);
         }
     }
