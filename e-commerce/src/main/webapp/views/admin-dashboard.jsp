@@ -38,8 +38,8 @@
         </div>
         <div class="d-flex align-items-center gap-3">
             <a href="#" class="text-dark"><i class="bi bi-cart fs-5"></i></a>
-            <a href="#" class="text-dark"><i class="bi bi-person fs-5"></i></a>
-            <a href="logout" class="text-dark"><i class="bi bi-box-arrow-right fs-5"></i></a>
+            <a href="${pageContext.request.contextPath}/admin/profile" class="text-dark"><i class="bi bi-person fs-5"></i></a>
+            <a href="${pageContext.request.contextPath}/auth/logout" class="text-dark"><i class="bi bi-box-arrow-right fs-5"></i></a>
         </div>
     </div>
 </nav>
