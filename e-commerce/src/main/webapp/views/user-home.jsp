@@ -18,18 +18,18 @@
 </head>
 <body class="d-flex flex-column min-vh-100">
 
-    <%@include file="/static/html/outer-header.html"%>
+<%@include file="/static/html/header.html"%>
 
-    <main class="flex-grow-1">
-        <%@include file="/static/html/home/hero.html"%>
-        <%@include file="/static/html/home/featured-products.html"%>
-        <%@include file="/static/html/home/categories.html"%>
-        <%@include file="/static/html/home/why-us.html"%>
-    </main>
+<main class="flex-grow-1">
+    <%@include file="/static/html/home/hero.html"%>
+    <%@include file="/static/html/home/featured-products.html"%>
+    <%@include file="/static/html/home/categories.html"%>
+    <%@include file="/static/html/home/why-us.html"%>
+</main>
 
-    <%@include file="/static/html/footer.html"%>
+<%@include file="/static/html/footer.html"%>
 
-    <script src="${pageContext.request.contextPath}/static/js/bootstrap.js"></script>
-    <script src="${pageContext.request.contextPath}/static/js/main.js"></script>
+<script src="${pageContext.request.contextPath}/static/js/bootstrap.js"></script>
+<script src="${pageContext.request.contextPath}/static/js/main.js"></script>
 </body>
 </html>
