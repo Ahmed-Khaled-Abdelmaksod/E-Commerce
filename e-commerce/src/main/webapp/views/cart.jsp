@@ -101,7 +101,7 @@
                                         <jsp:useBean id="user" class="gov.iti.jets.ecommerce.beans.UserBean"/>
                                         <p class="text-xs text-muted mb-4 small">Credit available: ${user.creditBalance}</p>
 
-                                        <a href="/checkout" class="btn btn-primary bg-brand border-0 w-100 rounded-3 py-2 fw-medium d-flex align-items-center justify-content-center">
+                                        <a href="${pageContext.request.contextPath}/checkout" class="btn btn-primary bg-brand border-0 w-100 rounded-3 py-2 fw-medium d-flex align-items-center justify-content-center">
                                             Proceed to Checkout
                                             <i class="bi bi-arrow-right ms-2"></i>
                                         </a>

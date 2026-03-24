@@ -5,8 +5,8 @@ import gov.iti.jets.ecommerce.dao.*;
 import gov.iti.jets.ecommerce.dao.impl.*;
 
 // --- Service Imports ---
-import gov.iti.jets.ecommerce.service.DashboardService;
-import gov.iti.jets.ecommerce.service.impl.DashboardServiceImpl;
+import gov.iti.jets.ecommerce.service.*;
+import gov.iti.jets.ecommerce.service.impl.*;
 
 /**
  * ServiceLocator follows the Singleton pattern to provide centralized 
@@ -18,6 +18,7 @@ public class ServiceLocator {
 
     // Services (The only entry points for the Web Layer)
     private final DashboardService dashboardService;
+    private final CheckoutService checkoutService; 
 
     // DAOs (Internal dependencies for Services, no public getters)
     private final ProductDAO productDAO;
@@ -25,6 +26,8 @@ public class ServiceLocator {
     private final OrderDAO orderDAO;
     private final OrderItemDAO orderItemDAO;
     private final UserDAO userDAO;
+    private final CartDAO cartDAO;        
+    private final CartItemDAO cartItemDAO; 
 
     public static ServiceLocator getInstance() {
         if (instance == null) {
@@ -44,7 +47,8 @@ public class ServiceLocator {
         this.orderDAO = new OrderDaoImpl();
         this.orderItemDAO = new OrderItemDaoImpl();
         this.userDAO = new UserDaoImpl();
-
+        this.cartDAO = new CartDaoImpl();       
+        this.cartItemDAO = new CartItemDaoImpl(); 
         // 2. Inject DAOs into Services
         this.dashboardService = new DashboardServiceImpl(
                 productDAO,
@@ -52,6 +56,15 @@ public class ServiceLocator {
                 orderItemDAO,
                 userDAO,
                 categoryDAO
+        );
+
+        this.checkoutService = new CheckoutServiceImpl(
+                userDAO,
+                cartDAO,
+                cartItemDAO,
+                productDAO,
+                orderDAO,
+                orderItemDAO
         );
     }
 
@@ -68,6 +81,13 @@ public class ServiceLocator {
      */
     public DashboardService getDashboardService() {
         return dashboardService;
+    }
+
+    /**
+     * @return The singleton instance of CheckoutService
+     */
+    public CheckoutService getCheckoutService() {
+        return checkoutService;
     }
 
     // Note: DAOs are kept private to enforce using the Service Layer 
