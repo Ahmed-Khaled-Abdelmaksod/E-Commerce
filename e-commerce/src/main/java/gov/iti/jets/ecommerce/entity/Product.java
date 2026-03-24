@@ -28,38 +28,35 @@ public class Product {
     @Column(name = "image_url")
     private String imageUrl;
 
+    @Column(name = "is_highlighted")
+    private boolean isHighlighted = false;
+
     @Column(name = "created_at", insertable = false, updatable = false)
     private Timestamp createdAt;
 
-    // ORM Relationship: Many Products belong to One Category
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "category_id")
     private Category category;
 
-    public Product() {
-    }
+    public Product() {}
 
+    // Getters and Setters
     public int getProductId() { return productId; }
     public void setProductId(int productId) { this.productId = productId; }
-
     public String getName() { return name; }
     public void setName(String name) { this.name = name; }
-
     public String getDescription() { return description; }
     public void setDescription(String description) { this.description = description; }
-
     public BigDecimal getPrice() { return price; }
     public void setPrice(BigDecimal price) { this.price = price; }
-
     public int getStockQuantity() { return stockQuantity; }
     public void setStockQuantity(int stockQuantity) { this.stockQuantity = stockQuantity; }
-
     public String getImageUrl() { return imageUrl; }
     public void setImageUrl(String imageUrl) { this.imageUrl = imageUrl; }
-
+    public boolean isHighlighted() { return isHighlighted; }
+    public void setHighlighted(boolean highlighted) { isHighlighted = highlighted; }
     public Timestamp getCreatedAt() { return createdAt; }
     public void setCreatedAt(Timestamp createdAt) { this.createdAt = createdAt; }
-
     public Category getCategory() { return category; }
     public void setCategory(Category category) { this.category = category; }
 }
