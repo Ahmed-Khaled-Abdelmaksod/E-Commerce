@@ -1,5 +1,6 @@
 package gov.iti.jets.ecommerce.controllers.checkout;
 
+import gov.iti.jets.ecommerce.beans.UserBean;
 import gov.iti.jets.ecommerce.beans.checkout.CheckoutBean;
 import gov.iti.jets.ecommerce.context.ServiceLocator;
 import gov.iti.jets.ecommerce.service.CheckoutService;
@@ -19,53 +20,70 @@ public class CheckoutController extends HttpServlet {
 
     @Override
     public void init() throws ServletException {
-        // الحصول على الخدمة من الـ ServiceLocator
         this.checkoutService = ServiceLocator.getInstance().getCheckoutService();
     }
 
+    private Integer getUserIdFromSession(HttpSession session) {
+        if (session == null) return null;
+        Object userIdObj = session.getAttribute("userId");
+        if (userIdObj != null) {
+            return (Integer) userIdObj;
+        }
+        UserBean user = (UserBean) session.getAttribute("user");
+        if (user != null) {
+            return user.getUserId();
+        }
+        return null;
+    }
+
     @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response) 
+    protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        
-        // // 1. التحقق من وجود مستخدم مسجل الدخول
-        // HttpSession session = request.getSession(false);
-        // if (session == null || session.getAttribute("userId") == null) {
-        //     response.sendRedirect(request.getContextPath() + "/login");
-        //     return;
-        // }
 
-        // int userId = (Integer) session.getAttribute("userId");
+        HttpSession session = request.getSession(false);
+        Integer userId = getUserIdFromSession(session);
 
-        // 2. جلب بيانات الدفع من الـ Service
-        CheckoutBean checkoutBean = checkoutService.getCheckoutDetails(1);
+        if (userId == null) {
+            response.sendRedirect(request.getContextPath() + "/login");
+            return;
+        }
 
-        // 3. تمرير البيانات للـ JSP وعرض الصفحة
+        // --- Modification here: Check success status first before checking the cart ---
+        String status = request.getParameter("status");
+        if ("success".equals(status)) {
+            // Forward the user to the new success page
+            request.getRequestDispatcher("/views/checkout/success.jsp").forward(request, response);
+            return;
+        }
+
+        CheckoutBean checkoutBean = checkoutService.getCheckoutDetails(userId);
+
+        if (checkoutBean == null) {
+            response.sendRedirect(request.getContextPath() + "/user/cart");
+            return;
+        }
+
         request.setAttribute("checkoutData", checkoutBean);
         request.getRequestDispatcher("/views/checkout/checkout.jsp").forward(request, response);
     }
 
     @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response) 
+    protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        
-        // 1. التحقق من وجود مستخدم مسجل الدخول
+
         HttpSession session = request.getSession(false);
-        if (session == null || session.getAttribute("userId") == null) {
+        Integer userId = getUserIdFromSession(session);
+
+        if (userId == null) {
             response.sendRedirect(request.getContextPath() + "/login");
             return;
         }
 
-        int userId = (Integer) session.getAttribute("userId");
-
-        // 2. محاولة تنفيذ عملية الدفع
         boolean isSuccess = checkoutService.processCheckout(userId);
 
-        // 3. التوجيه بناءً على النتيجة
         if (isSuccess) {
-            // توجيه لصفحة نجاح أو صفحة الطلبات الخاصة بالمستخدم
             response.sendRedirect(request.getContextPath() + "/checkout?status=success");
         } else {
-            // العودة لصفحة الدفع مع رسالة خطأ (رصيد غير كافٍ أو منتج نفذ من المخزون)
             response.sendRedirect(request.getContextPath() + "/checkout?error=failed");
         }
     }

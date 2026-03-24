@@ -14,7 +14,7 @@ public final class CartItemDaoImpl implements CartItemDAO {
         instance = new CartItemDaoImpl();
     }
 
-    private CartItemDaoImpl() {
+    public CartItemDaoImpl() {
 
     }
 
