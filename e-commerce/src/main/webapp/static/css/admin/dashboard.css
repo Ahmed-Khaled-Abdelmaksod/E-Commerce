@@ -122,3 +122,30 @@
     margin-right: 8px;
     margin-bottom: 8px;
 }
+
+/* رسالة النجاح الخضراء (Toast) */
+.custom-toast-success {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    background-color: #ecfdf5;
+    color: #059669;
+    border: 1px solid #10b981;
+    padding: 12px 24px;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    z-index: 9999;
+    transform: translateY(100px);
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    opacity: 0;
+}
+.custom-toast-success.show {
+    transform: translateY(0);
+    opacity: 1;
+}
+
+/* تحسينات الـ Inline Form */
+#productFormContainer {
+    border: 1px solid var(--border);
+    transition: all 0.3s ease;
+}

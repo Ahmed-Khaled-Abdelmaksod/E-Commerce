@@ -1,215 +1,174 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib uri="jakarta.tags.core" prefix="c" %>
 
-<div class="d-flex justify-content-between align-items-center mb-4 mt-3">
-    <h4 class="text-brand fw-bold mb-0">Products</h4>
-    <button class="btn btn-brand" data-bs-toggle="modal" data-bs-target="#addProductModal">
-        <i class="bi bi-plus-lg me-1"></i> Add Product
-    </button>
-</div>
+<div class="container-fluid px-0">
+    <div class="d-flex justify-content-between align-items-center mb-4 mt-3">
+        <h4 class="font-serif fw-bold mb-0" style="color: var(--foreground); font-size: 1.5rem;">
+            Products (${products.size()})
+        </h4>
+        <button class="btn btn-primary d-flex align-items-center gap-2 px-4 py-2" 
+                style="background-color: #df6c7f; border: none; border-radius: var(--radius); font-weight: 500;"
+                onclick="toggleProductForm()">
+            <i class="bi bi-plus-lg"></i> Add Product
+        </button>
+    </div>
 
-<div class="table-responsive">
-    <table class="table table-custom table-borderless">
-        <thead class="text-muted small border-bottom">
-        <tr>
-            <th>Product</th>
-            <th>Category</th>
-            <th>Price</th>
-            <th>Quantity</th>
-            <th class="text-end">Actions</th>
-        </tr>
-        </thead>
-        <tbody>
-        <c:forEach var="product" items="${products}">
-            <tr id="product-row-${product.productId}">
-                <td>
-                    <div class="d-flex align-items-center gap-3">
-                        <img src="${pageContext.request.contextPath}${product.imageUrl}" class="rounded product-img-thumbnail" style="width: 50px; height: 50px; object-fit: cover;">
-                        <span class="fw-medium">${product.name}</span>
-                    </div>
-                </td>
-                <td class="text-muted">${product.categoryName}</td>
-                <td class="fw-medium">$${product.price}</td>
-                <td><span class="stock-badge">${product.stockQuantity}</span></td>
-                <td class="text-end">
-                    <button class="btn btn-sm btn-light me-1" data-bs-toggle="modal" data-bs-target="#editProductModal${product.productId}">
-                        <i class="bi bi-pencil"></i>
-                    </button>
-                    <button class="btn btn-sm btn-light text-danger" onclick="confirmDelete('${product.productId}', '${product.name}')" data-bs-toggle="modal" data-bs-target="#deleteProductModal">
-                        <i class="bi bi-trash"></i>
-                    </button>
-                </td>
-            </tr>
-        </c:forEach>
-        </tbody>
-    </table>
-</div>
-
-<div class="modal fade" id="addProductModal" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title fw-bold text-brand">Add New Product</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+    <div id="productFormContainer" class="card border-0 shadow-sm mb-4 d-none" 
+         style="border-radius: var(--radius); background-color: var(--card);">
+        <div class="card-body p-4">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h5 id="formTitle" class="fw-bold mb-0">New Product</h5>
+                <button type="button" class="btn-close" onclick="toggleProductForm()"></button>
             </div>
-            <div class="modal-body">
-                <form action="${pageContext.request.contextPath}/addProduct" method="POST" enctype="multipart/form-data">
-                    <div class="mb-3">
-                        <label class="form-label small fw-medium">Product Name</label>
-                        <input type="text" class="form-control" name="name" required>
+            
+            <form id="productActionForm" action="${pageContext.request.contextPath}/addProduct" method="POST" enctype="multipart/form-data">
+                <input type="hidden" name="productId" id="formProductId">
+                
+                <div class="row g-3">
+                    <div class="col-md-6">
+                        <label class="form-label small fw-medium text-muted-custom">Name</label>
+                        <input type="text" class="form-control bg-light border-0 py-2" name="name" id="formName" required 
+                               style="border-radius: 0.5rem;">
                     </div>
-                    <div class="mb-3">
-                        <label class="form-label small fw-medium">Description</label>
-                        <textarea class="form-control" name="description" rows="2" required></textarea>
+                    <div class="col-md-6">
+                        <label class="form-label small fw-medium text-muted-custom">Category</label>
+                        <select class="form-select bg-light border-0 py-2 category-dropdown" name="categoryId" id="formCategory" required
+                                style="border-radius: 0.5rem;">
+                            <option value="" disabled selected>e.g., Cupcakes, Cakes</option>
+                            <c:forEach var="cat" items="${categories}">
+                                <option value="${cat.categoryId}">${cat.name}</option>
+                            </c:forEach>
+                        </select>
                     </div>
-                    <div class="row mb-3">
-                        <div class="col-6">
-                            <label class="form-label small fw-medium">Price ($)</label>
-                            <input type="number" step="0.01" class="form-control" name="price" required>
+                    <div class="col-md-6">
+                        <label class="form-label small fw-medium text-muted-custom">Price ($)</label>
+                        <input type="number" step="0.01" class="form-control bg-light border-0 py-2" name="price" id="formPrice" required
+                               style="border-radius: 0.5rem;">
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label small fw-medium text-muted-custom">Quantity</label>
+                        <input type="number" class="form-control bg-light border-0 py-2" name="quantity" id="formQuantity" required
+                               style="border-radius: 0.5rem;">
+                    </div>
+                    <div class="col-12">
+                        <label class="form-label small fw-medium text-muted-custom">Image URL</label>
+                        <input type="text" class="form-control bg-light border-0 py-2" placeholder="/static/images/cupcake.jpg" readonly
+                               style="border-radius: 0.5rem; color: #a1a1a1;">
+                        <input type="file" class="form-control mt-2" name="image" accept="image/*">
+                    </div>
+                    <div class="col-12">
+                        <label class="form-label small fw-medium text-muted-custom">Description</label>
+                        <textarea class="form-control bg-light border-0 py-2" name="description" id="formDescription" rows="3" required
+                                  style="border-radius: 0.5rem;"></textarea>
+                    </div>
+                    <div class="col-12 mt-3">
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" name="highlighted" id="formHighlighted">
+                            <label class="form-check-label small text-muted-custom" for="formHighlighted">
+                                Highlight this product on customer dashboard
+                            </label>
                         </div>
-                        <div class="col-6">
-                            <label class="form-label small fw-medium">Quantity</label>
-                            <input type="number" class="form-control" name="quantity" required>
-                        </div>
                     </div>
-                    <div class="mb-3">
-                        <label class="form-label small fw-medium">Category</label>
-                        <div class="input-group">
-                            <select class="form-select category-dropdown" name="categoryId" required>
-                                <option value="" disabled selected>Select Category</option>
-                                <c:forEach var="cat" items="${categories}">
-                                    <option value="${cat.categoryId}">${cat.name}</option>
-                                </c:forEach>
-                            </select>
-                            <button class="btn btn-outline-brand" type="button" data-bs-toggle="modal" data-bs-target="#addCategoryModal">
-                                <i class="bi bi-plus-lg"></i>
+                </div>
+                
+                <div class="d-flex justify-content-end mt-4">
+                    <button type="submit" class="btn btn-primary px-4 py-2 d-flex align-items-center gap-2" 
+                            style="background-color: #df6c7f; border: none; border-radius: 0.5rem;">
+                        <i class="bi bi-save"></i> <span id="submitBtnText">Add Product</span>
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div class="table-responsive">
+        <table class="table table-hover align-middle border-0" style="--bs-table-hover-bg: #fdfaf7;">
+            <thead class="text-muted-custom small border-bottom">
+                <tr style="border-bottom: 1px solid var(--border);">
+                    <th class="py-3 border-0 fw-medium">Product</th>
+                    <th class="py-3 border-0 fw-medium">Category</th>
+                    <th class="py-3 border-0 fw-medium">Price</th>
+                    <th class="py-3 border-0 fw-medium">Stock</th>
+                    <th class="py-3 border-0 fw-medium text-end">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                <c:forEach var="product" items="${products}">
+                    <tr id="product-row-${product.productId}" class="border-bottom">
+                        <td class="py-3 border-0">
+                            <div class="d-flex align-items-center gap-3">
+                                <img src="${pageContext.request.contextPath}${product.imageUrl}" 
+                                     class="rounded" style="width: 42px; height: 42px; object-fit: cover;">
+                                <span class="fw-medium" style="color: var(--foreground);">${product.name}</span>
+                            </div>
+                        </td>
+                        <td class="py-3 border-0 text-muted-custom">${product.categoryName}</td>
+                        <td class="py-3 border-0 fw-bold" style="color: var(--foreground);">$${product.price}</td>
+                        <td class="py-3 border-0">
+                            <span class="badge rounded-pill px-2 py-1" 
+                                  style="background-color: #fce7eb; color: #df6c7f; font-weight: 500;">
+                                ${product.stockQuantity}
+                            </span>
+                        </td>
+                        <td class="py-3 border-0 text-end">
+                            <button class="btn btn-link text-muted-custom p-1 me-2" 
+                                    onclick="editProductInline(${product.productId}, '${product.name}', \`${product.description}\`, ${product.price}, ${product.stockQuantity}, ${product.categoryId}, ${product.highlighted})">
+                                <i class="bi bi-pencil"></i>
                             </button>
-                        </div>
-                    </div>
-                    <div class="mb-4">
-                        <label class="form-label small fw-medium">Product Image</label>
-                        <input type="file" class="form-control" name="image" accept="image/*" required>
-                    </div>
-                    <div class="d-flex justify-content-end gap-2">
-                        <button type="button" class="btn btn-light" data-bs-dismiss="modal">Cancel</button>
-                        <button type="submit" class="btn btn-brand">Save Product</button>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </div>
-</div>
-
-<c:forEach var="product" items="${products}">
-    <div class="modal fade" id="editProductModal${product.productId}" tabindex="-1" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title fw-bold text-brand">Edit ${product.name}</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                </div>
-                <div class="modal-body">
-                    <form action="${pageContext.request.contextPath}/editProduct" method="POST" enctype="multipart/form-data">
-                        <input type="hidden" name="productId" value="${product.productId}">
-                        <div class="mb-3">
-                            <label class="form-label small fw-medium">Product Name</label>
-                            <input type="text" class="form-control" name="name" value="${product.name}" required>
-                        </div>
-                        <div class="mb-3">
-                            <label class="form-label small fw-medium">Description</label>
-                            <textarea class="form-control" name="description" rows="2" required>${product.description}</textarea>
-                        </div>
-                        <div class="row mb-3">
-                            <div class="col-6">
-                                <label class="form-label small fw-medium">Price ($)</label>
-                                <input type="number" step="0.01" class="form-control" name="price" value="${product.price}" required>
-                            </div>
-                            <div class="col-6">
-                                <label class="form-label small fw-medium">Quantity</label>
-                                <input type="number" class="form-control" name="quantity" value="${product.stockQuantity}" required>
-                            </div>
-                        </div>
-                        <div class="mb-3">
-                            <label class="form-label small fw-medium">Category</label>
-                            <select class="form-select category-dropdown" name="categoryId" required>
-                                <c:forEach var="cat" items="${categories}">
-                                    <option value="${cat.categoryId}" ${cat.categoryId == product.categoryId ? 'selected' : ''}>${cat.name}</option>
-                                </c:forEach>
-                            </select>
-                        </div>
-                        <div class="mb-4">
-                            <label class="form-label small fw-medium">Update Image (Optional)</label>
-                            <input type="file" class="form-control" name="image" accept="image/*">
-                        </div>
-                        <div class="d-flex justify-content-end gap-2">
-                            <button type="button" class="btn btn-light" data-bs-dismiss="modal">Cancel</button>
-                            <button type="submit" class="btn btn-brand">Update Product</button>
-                        </div>
-                    </form>
-                </div>
-            </div>
-        </div>
-    </div>
-</c:forEach>
-
-<div class="modal fade" id="addCategoryModal" tabindex="-1" style="z-index: 1070;">
-    <div class="modal-dialog modal-sm modal-dialog-centered">
-        <div class="modal-content shadow-lg">
-            <div class="modal-header border-0">
-                <h6 class="modal-title fw-bold">New Category</h6>
-                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-            </div>
-            <div class="modal-body">
-                <input type="text" id="newCategoryName" class="form-control mb-2" placeholder="Name">
-                <textarea id="newCategoryDesc" class="form-control form-control-sm" placeholder="Description"></textarea>
-            </div>
-            <div class="modal-footer border-0">
-                <button type="button" class="btn btn-brand btn-sm w-100" onclick="ajaxAddCategory()">Save Category</button>
-            </div>
-        </div>
-    </div>
-</div>
-
-<div class="modal fade" id="deleteProductModal" tabindex="-1">
-    <div class="modal-dialog modal-dialog-centered modal-sm">
-        <div class="modal-content text-center p-3">
-            <div class="modal-body">
-                <i class="bi bi-exclamation-circle text-danger fs-1 mb-3"></i>
-                <h5 class="fw-bold mb-2">Delete Product?</h5>
-                <p class="text-muted small mb-4">Are you sure about <strong id="deleteProductName"></strong>?</p>
-                <form id="deleteForm" onsubmit="executeDeleteAjax(event)">
-                    <input type="hidden" id="deleteProductId">
-                    <div class="d-flex justify-content-center gap-2">
-                        <button type="button" class="btn btn-light w-50" data-bs-dismiss="modal">No</button>
-                        <button type="submit" class="btn btn-danger w-50">Yes, Delete</button>
-                    </div>
-                </form>
-            </div>
-        </div>
+                            <button class="btn btn-link text-muted-custom p-1" 
+                                    onclick="confirmDelete('${product.productId}', '${product.name}')" 
+                                    data-bs-toggle="modal" data-bs-target="#deleteProductModal">
+                                <i class="bi bi-trash"></i>
+                            </button>
+                        </td>
+                    </tr>
+                </c:forEach>
+            </tbody>
+        </table>
     </div>
 </div>
 
 <script>
-    function confirmDelete(id, name) {
-        document.getElementById('deleteProductName').innerText = name;
-        document.getElementById('deleteProductId').value = id;
+    /**
+     * إظهار/إخفاء نموذج إضافة المنتج المدمج
+     */
+    function toggleProductForm() {
+        const container = document.getElementById('productFormContainer');
+        container.classList.toggle('d-none');
+        if (container.classList.contains('d-none')) {
+            resetForm();
+        }
     }
 
-    function executeDeleteAjax(event) {
-        event.preventDefault();
-        const id = document.getElementById('deleteProductId').value;
-        const ctx = "${pageContext.request.contextPath}";
+    /**
+     * إعادة ضبط النموذج للحالة الافتراضية (Add Mode)
+     */
+    function resetForm() {
+        document.getElementById('productActionForm').reset();
+        document.getElementById('productActionForm').action = "${pageContext.request.contextPath}/addProduct";
+        document.getElementById('formTitle').innerText = "New Product";
+        document.getElementById('submitBtnText').innerText = "Add Product";
+        document.getElementById('formProductId').value = "";
+    }
 
-        fetch(ctx + '/deleteProduct', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-            body: 'productId=' + encodeURIComponent(id)
-        })
-            .then(res => res.json())
-            .then(data => {
-                if (data.status === 'success') {
-                    location.reload();
-                }
-            });
+    /**
+     * ملء النموذج ببيانات المنتج الحالي لتحويله لوضع التعديل (Edit Mode)
+     */
+    function editProductInline(id, name, desc, price, stock, catId, highlighted) {
+        const container = document.getElementById('productFormContainer');
+        container.classList.remove('d-none');
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+
+        document.getElementById('formTitle').innerText = "Edit Product";
+        document.getElementById('submitBtnText').innerText = "Update Product";
+        document.getElementById('productActionForm').action = "${pageContext.request.contextPath}/editProduct";
+        
+        document.getElementById('formProductId').value = id;
+        document.getElementById('formName').value = name;
+        document.getElementById('formDescription').value = desc;
+        document.getElementById('formPrice').value = price;
+        document.getElementById('formQuantity').value = stock;
+        document.getElementById('formCategory').value = catId;
+        document.getElementById('formHighlighted').checked = highlighted;
     }
 </script>
