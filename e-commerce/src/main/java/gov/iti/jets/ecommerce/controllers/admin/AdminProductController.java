@@ -28,7 +28,6 @@ public class AdminProductController extends HttpServlet {
 
     @Override
     public void init() throws ServletException {
-        // الوصول للخدمة حصرياً عبر ServiceLocator
         this.dashboardService = ServiceLocator.getInstance().getDashboardService();
     }
 
@@ -36,26 +35,21 @@ public class AdminProductController extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String action = request.getServletPath();
 
-        switch (action) {
-            case "/addProduct":
-            case "/editProduct":
-                handleSaveProduct(request, response);
-                break;
-            case "/deleteProduct":
-                handleDeleteProduct(request, response);
-                break;
-            default:
-                response.sendRedirect(request.getContextPath() + "/admin/dashboard?tab=products");
+        if ("/deleteProduct".equals(action)) {
+            handleDeleteProduct(request, response);
+        } else {
+            handleSaveProduct(request, response);
         }
     }
 
     private void handleSaveProduct(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
         try {
             ProductBean bean = new ProductBean();
-            
-            // في حالة التعديل سيكون هناك ID، وفي حالة الإضافة سيكون null أو 0
+
             String idParam = request.getParameter("productId");
-            if (idParam != null && !idParam.isEmpty()) {
+            boolean isEdit = idParam != null && !idParam.isEmpty();
+
+            if (isEdit) {
                 bean.setProductId(Integer.parseInt(idParam));
             }
 
@@ -64,37 +58,74 @@ public class AdminProductController extends HttpServlet {
             bean.setPrice(new BigDecimal(request.getParameter("price")));
             bean.setStockQuantity(Integer.parseInt(request.getParameter("quantity")));
             bean.setCategoryId(Integer.parseInt(request.getParameter("categoryId")));
-            
-            // التعامل مع الخيار الجديد "Highlight this product"
             bean.setHighlighted(request.getParameter("highlighted") != null);
 
-            // معالجة الصورة
-            Part imagePart = request.getPart("image");
-            if (imagePart != null && imagePart.getSize() > 0) {
-                bean.setImageUrl(processImageUpload(imagePart));
-            } else if (bean.getProductId() == null) {
-                // صورة افتراضية للمنتجات الجديدة فقط
-                bean.setImageUrl("/static/images/default.jpg");
+            // ── Image Handling Logic ───────────────────────────────────────────
+            //
+            // Priority:
+            // 1. If user uploads a new file → use it
+            // 2. If user provides a new URL → use it
+            // 3. If editing and no new image → keep current image from hidden field
+            // 4. If adding new product without image → use default image
+
+            String resolvedImageUrl = null;
+
+            // 1. Check if a file was uploaded
+            try {
+                Part imagePart = request.getPart("image");
+                if (imagePart != null && imagePart.getSize() > 0) {
+                    resolvedImageUrl = processImageUpload(imagePart);
+                }
+            } catch (Exception imgEx) {
+                System.err.println("Image upload failed: " + imgEx.getMessage());
             }
 
-            // تنفيذ الحفظ (إضافة أو تعديل) عبر السيرفس
+            // 2. If no file, check if a URL was provided
+            if (resolvedImageUrl == null) {
+                String imageUrlParam = request.getParameter("imageUrl");
+                if (imageUrlParam != null && !imageUrlParam.trim().isEmpty()) {
+                    resolvedImageUrl = imageUrlParam.trim();
+                }
+            }
+
+            // 3. If editing and still null, keep existing image
+            if (resolvedImageUrl == null && isEdit) {
+                String currentImageUrl = request.getParameter("currentImageUrl");
+                if (currentImageUrl != null && !currentImageUrl.trim().isEmpty()) {
+                    resolvedImageUrl = currentImageUrl.trim();
+                }
+            }
+
+            // 4. Fallback to default image
+            if (resolvedImageUrl == null) {
+                resolvedImageUrl = "/static/images/default.jpg";
+            }
+
+            bean.setImageUrl(resolvedImageUrl);
+
             dashboardService.saveProduct(bean);
 
         } catch (Exception e) {
             e.printStackTrace();
-            // يمكن إضافة رسالة خطأ هنا في الـ session لتظهر للمستخدم
         }
+
+        // Always redirect back to products tab after saving
         response.sendRedirect(request.getContextPath() + "/admin/dashboard?tab=products");
     }
 
     private void handleDeleteProduct(HttpServletRequest request, HttpServletResponse response) throws IOException {
         response.setContentType("application/json");
+        response.setCharacterEncoding("UTF-8");
         try {
-            int id = Integer.parseInt(request.getParameter("productId"));
+            String idStr = request.getParameter("productId");
+            if (idStr == null || idStr.isEmpty()) {
+                response.getWriter().write("{\"status\":\"error\", \"message\":\"No ID provided\"}");
+                return;
+            }
+            int id = Integer.parseInt(idStr);
             boolean deleted = dashboardService.deleteProduct(id);
             response.getWriter().write(deleted ? "{\"status\":\"success\"}" : "{\"status\":\"error\"}");
         } catch (Exception e) {
-            e.printStackTrace();
             response.setStatus(500);
             response.getWriter().write("{\"status\":\"error\", \"message\":\"" + e.getMessage() + "\"}");
         }
@@ -102,13 +133,13 @@ public class AdminProductController extends HttpServlet {
 
     private String processImageUpload(Part part) throws IOException {
         String fileName = Paths.get(part.getSubmittedFileName()).getFileName().toString();
-        // توليد اسم فريد للملف لتجنب التكرار إذا أردت، أو استخدامه كما هو
+        String uniqueFileName = System.currentTimeMillis() + "_" + fileName;
+
         String uploadPath = getServletContext().getRealPath("") + File.separator + "static" + File.separator + "images";
-        
         File dir = new File(uploadPath);
         if (!dir.exists()) dir.mkdirs();
-        
-        part.write(uploadPath + File.separator + fileName);
-        return "/static/images/" + fileName;
+
+        part.write(uploadPath + File.separator + uniqueFileName);
+        return "/static/images/" + uniqueFileName;
     }
 }
