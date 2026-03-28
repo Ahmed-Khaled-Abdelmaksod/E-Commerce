@@ -23,6 +23,7 @@ public class ProductMapper {
         dto.setStockQuantity(product.getStockQuantity());
         dto.setImageUrl(product.getImageUrl());
 
+
         if (product.getCreatedAt() != null) {
             dto.setCreatedAt(product.getCreatedAt().toLocalDateTime());
         }
@@ -91,6 +92,12 @@ public class ProductMapper {
             bean.setCategoryName(entity.getCategory().getName());
         }
         return bean;
+    }
+    public static List<ProductBean> toBeanList(List<Product> products) {
+        return products
+                .stream()
+                .map(ProductMapper::toBean)
+                .collect(Collectors.toList());
     }
 
     public static Product toEntity(ProductBean bean) {

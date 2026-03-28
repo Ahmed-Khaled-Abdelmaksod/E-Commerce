@@ -1,6 +1,7 @@
 package gov.iti.jets.ecommerce.service;
 
 import gov.iti.jets.ecommerce.DTO.ProductDTO;
+import gov.iti.jets.ecommerce.beans.dashboard.ProductBean;
 import gov.iti.jets.ecommerce.config.JpaUtil;
 import gov.iti.jets.ecommerce.dao.ProductDAO;
 import gov.iti.jets.ecommerce.dao.impl.ProductDaoImpl;
@@ -24,6 +25,14 @@ public class ProductService {
         try(EntityManager em = JpaUtil.getEntityManagerFactory().createEntityManager()) {
             List<Product> products = productDAO.findAll(em);
             return ProductMapper.toDTOList(products);
+        }
+    }
+
+    public List<ProductBean> getAllFeaturedProducts() {
+        ProductDAO productDAO = new ProductDaoImpl();
+        try(EntityManager em = JpaUtil.getEntityManagerFactory().createEntityManager()) {
+            List<Product> products = productDAO.findAllFeaturedProducts(em);
+            return ProductMapper.toBeanList(products);
         }
     }
 
