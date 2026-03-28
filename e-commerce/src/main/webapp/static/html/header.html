@@ -24,7 +24,7 @@ List<CartItemDTO> items = CartService.getInstance().getCartItems(cartId);
     <header class="navbar navbar-expand-md sticky-top bg-card-glass border-bottom px-lg-4">
         <div class="container-fluid max-w-7xl d-flex align-items-center">
 
-            <a class="navbar-brand d-flex align-items-center gap-2" href="#"> <!-- TODO add link-->
+            <a class="navbar-brand d-flex align-items-center gap-2" href="${pageContext.request.contextPath}/user/home">
                 <div class="brand-logo-circle">
                     <span class="font-serif">S</span>
                 </div>
@@ -34,10 +34,10 @@ List<CartItemDTO> items = CartService.getInstance().getCartItems(cartId);
             <div class="collapse navbar-collapse justify-content-center order-3 order-md-2" id="navbarNav">
                 <ul class="navbar-nav gap-md-4 py-3 py-md-0 text-center text-md-start">
                     <li class="nav-item">
-                        <a class="nav-link text-muted hover-dark font-medium small" href="#">Home</a> <!-- TODO add link-->
+                        <a class="nav-link text-muted hover-dark font-medium small" href="${pageContext.request.contextPath}/user/home">Home</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link text-muted hover-dark font-medium small" href="../user/products">Shop</a> <!-- TODO add link-->
+                        <a class="nav-link text-muted hover-dark font-medium small" href="${pageContext.request.contextPath}/user/products">Shop</a>
                     </li>
                     <li class="nav-item d-md-none">
                         <a class="nav-link text-muted hover-dark font-medium small" href="${pageContext.request.contextPath}/auth/logout">Logout</a>
