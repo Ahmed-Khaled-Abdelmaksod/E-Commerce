@@ -24,6 +24,9 @@
                         </c:if>
                     </div>
                     <form action="${pageContext.request.contextPath}/auth/register" method="POST" onsubmit="return validate()">
+                        <c:if test="${not empty requestScope.checkout}">
+                            <input type="hidden" name="checkout" value="true">
+                        </c:if>
 
                         <h6 class="text-brand border-bottom pb-2 mb-3">Personal Information</h6>
                         <div class="row">
@@ -96,7 +99,7 @@
                     </form>
 
                     <div class="text-center mt-4 pt-2">
-                        <p class="small text-muted mb-0">Already have an account? <a href="${pageContext.request.contextPath}/auth/login" class="link-brand">Sign in</a></p>
+                        <p class="small text-muted mb-0">Already have an account? <a href="${pageContext.request.contextPath}/auth/login${not empty requestScope.checkout ? '?checkout=true' : ''}" class="link-brand">Sign in</a></p>
                     </div>
                 </div>
             </div>

@@ -1,7 +1,5 @@
 package gov.iti.jets.ecommerce.controllers;
 
-import gov.iti.jets.ecommerce.beans.dashboard.ProductBean;
-import gov.iti.jets.ecommerce.service.ProductService;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -10,10 +8,9 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 
 import java.io.IOException;
-import java.util.List;
 
-@WebServlet(urlPatterns = {"", "/home"})
-public class HomeController extends HttpServlet {
+@WebServlet("/cart")
+public class GuestCartController extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
@@ -21,11 +18,10 @@ public class HomeController extends HttpServlet {
         boolean isLoggedIn = (session != null && "true".equals(session.getAttribute("loggedIn")));
 
         if (isLoggedIn) {
-            resp.sendRedirect(req.getContextPath() + "/user/home");
+            // Logged-in users go to the real cart
+            resp.sendRedirect(req.getContextPath() + "/user/cart");
         } else {
-            List<ProductBean> featuredProducts = ProductService.getInstance().getAllFeaturedProducts();
-            req.setAttribute("featuredProducts", featuredProducts);
-            req.getRequestDispatcher("/views/home.jsp").forward(req, resp);
+            req.getRequestDispatcher("/views/guest-cart.jsp").forward(req, resp);
         }
     }
 }

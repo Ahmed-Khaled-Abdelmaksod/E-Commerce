@@ -19,6 +19,11 @@ import java.util.Optional;
 public class AuthController extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        // Pass checkout param to the JSP so the form can forward it
+        String checkout = req.getParameter("checkout");
+        if ("true".equals(checkout)) {
+            req.setAttribute("checkout", "true");
+        }
         RequestDispatcher rd = req.getRequestDispatcher("/views/signin.jsp");
         rd.forward(req,resp);
     }
@@ -51,7 +56,14 @@ public class AuthController extends HttpServlet {
                             .sum();
                 }
                 session.setAttribute("cartCount", cartCount);
-                resp.sendRedirect(req.getContextPath()+"/user/home");
+
+                // Build redirect URL with merge params
+                String redirect = req.getContextPath() + "/user/home?mergeCart=true";
+                String checkout = req.getParameter("checkout");
+                if ("true".equals(checkout)) {
+                    redirect += "&checkout=true";
+                }
+                resp.sendRedirect(redirect);
             }
         }else {
             req.setAttribute("errorMessage","Invalid email or password.");

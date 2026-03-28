@@ -23,12 +23,20 @@
                             Registration successful! Please log in to start shopping.
                         </div>
                     </c:if>
+                    <c:if test="${not empty requestScope.checkout}">
+                        <div class="alert alert-info small py-2">
+                            <i class="bi bi-info-circle me-1"></i> Please sign in to complete your checkout. Your cart items will be saved.
+                        </div>
+                    </c:if>
                     <div id="error-container" class="alert alert-danger ${empty requestScope.errorMessage ? 'd-none' : ''} small py-2" role="alert">
                         <c:if test="${not empty requestScope.errorMessage}">
                             ${requestScope.errorMessage}
                         </c:if>
                     </div>
                     <form action="${pageContext.request.contextPath}/auth/login" method="POST">
+                        <c:if test="${not empty requestScope.checkout}">
+                            <input type="hidden" name="checkout" value="true">
+                        </c:if>
                         <div class="mb-3">
                             <label for="email" class="form-label small fw-medium text-brand">Email</label>
                             <input type="email" class="form-control form-control-sm py-2" id="email" name="email" placeholder="you@example.com" required>
