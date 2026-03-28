@@ -24,7 +24,11 @@
                             <h3 class="product-title">${product.name}</h3>
                             <div class="product-footer">
                                 <p class="product-price">$${product.price}</p>
-                                <button class="btn-add add-to-cart-btn" data-id="${product.productId}">
+                                <button class="btn-add add-to-cart-btn"
+                                        data-id="${product.productId}"
+                                        data-name="${product.name}"
+                                        data-price="${product.price}"
+                                        data-image="${product.imageUrl}">
                                     <i class="bi bi-cart3"></i> Add
                                 </button>
                             </div>

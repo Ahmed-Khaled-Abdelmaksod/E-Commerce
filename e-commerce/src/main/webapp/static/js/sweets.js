@@ -21,7 +21,7 @@
     }
 
     function applyFilters() {
-        const keyword = searchInput.value.trim().toLowerCase();
+        const keyword = searchInput ? searchInput.value.trim().toLowerCase() : '';
 
         items.forEach(item => {
             const category = item.dataset.category?.toLowerCase() ?? '';
@@ -42,7 +42,10 @@
         });
     });
 
-    searchInput.addEventListener('input', applyFilters);
+    if (searchInput) {
+        searchInput.addEventListener('input', applyFilters);
+    }
+
     document.querySelectorAll('.add-to-cart-btn').forEach(button => {
         button.addEventListener('click', function() {
             // 1. Get the ID from the data attribute
