@@ -11,19 +11,18 @@
     <link rel="stylesheet" href="${pageContext.request.contextPath}/static/css/globals.css">
     <link rel="stylesheet" href="${pageContext.request.contextPath}/static/css/home/hero.css">
     <link rel="stylesheet" href="${pageContext.request.contextPath}/static/css/home/categories.css">
-    <link rel="stylesheet" href="${pageContext.request.contextPath}/static/css/home/featured-products.css">
+
     <link rel="stylesheet" href="${pageContext.request.contextPath}/static/css/home/why-us.css">
 
 
 </head>
 <body class="d-flex flex-column min-vh-100">
 
-    <%@include file="/static/html/outer-header.jsp"%>
+    <%@include file="/static/html/guest-header.html"%>
 
     <main class="flex-grow-1">
         <%@include file="/static/html/home/hero.html"%>
-        <%@include file="/static/html/home/featured-products.html"%>
-        <%@include file="/static/html/home/categories.html"%>
+<%--        <%@include file="/static/html/home/categories.html"%>--%>
         <%@include file="/static/html/home/why-us.html"%>
     </main>
 
