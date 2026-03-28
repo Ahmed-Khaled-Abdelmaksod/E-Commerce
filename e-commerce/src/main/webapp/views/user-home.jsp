@@ -29,7 +29,11 @@
 
 <%@include file="/static/html/footer.html"%>
 
+<script>
+    const CONTEXT_PATH = '${pageContext.request.contextPath}';
+</script>
 <script src="${pageContext.request.contextPath}/static/js/bootstrap.js"></script>
 <script src="${pageContext.request.contextPath}/static/js/main.js"></script>
+<script src="${pageContext.request.contextPath}/static/js/login-merge.js"></script>
 </body>
 </html>

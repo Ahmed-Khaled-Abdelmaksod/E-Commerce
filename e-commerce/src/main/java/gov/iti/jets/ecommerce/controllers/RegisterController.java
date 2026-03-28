@@ -1,23 +1,32 @@
 package gov.iti.jets.ecommerce.controllers;
 
 import gov.iti.jets.ecommerce.beans.SignUpBean;
+import gov.iti.jets.ecommerce.beans.UserBean;
 import gov.iti.jets.ecommerce.enums.UserRole;
 import gov.iti.jets.ecommerce.service.AuthService;
+import gov.iti.jets.ecommerce.service.CartService;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.Optional;
 
 @WebServlet("/auth/register")
 public class RegisterController extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        request.getRequestDispatcher("/views/signup.jsp").forward(request,response);
+        // Pass checkout param so the form can forward it
+        String checkout = request.getParameter("checkout");
+        if ("true".equals(checkout)) {
+            request.setAttribute("checkout", "true");
+        }
+        request.getRequestDispatcher("/views/signup.jsp").forward(request, response);
     }
 
     @Override
@@ -48,12 +57,37 @@ public class RegisterController extends HttpServlet {
         signUpBean.setPhone(phone);
         signUpBean.setFullName(fullName);
         signUpBean.setPassword(password);
-        String errorMessage =AuthService.getInstance().signUp(signUpBean);
+        String errorMessage = AuthService.getInstance().signUp(signUpBean);
         if(errorMessage == null) { // success
-            resp.sendRedirect(req.getContextPath() + "/auth/login?success=accountCreated");
+            // Auto-login the new user
+            Optional<UserBean> userBean = AuthService.getInstance().login(email, password);
+            if (userBean.isPresent()) {
+                HttpSession session = req.getSession(true);
+                session.setAttribute("loggedIn", "true");
+                session.setAttribute("user", userBean.get());
+
+                int userCartId = CartService.getInstance().getUserCart(userBean.get().getUserId());
+                if (userCartId == -1) {
+                    userCartId = CartService.getInstance().createCart(userBean.get().getUserId());
+                }
+                session.setAttribute("userCartId", userCartId);
+                session.setAttribute("cartCount", 0);
+
+                // Redirect with merge params
+                String redirect = req.getContextPath() + "/user/home?mergeCart=true";
+                String checkout = req.getParameter("checkout");
+                if ("true".equals(checkout)) {
+                    redirect += "&checkout=true";
+                }
+                resp.sendRedirect(redirect);
+            } else {
+                // Fallback — shouldn't happen since we just created the user
+                resp.sendRedirect(req.getContextPath() + "/auth/login?success=accountCreated");
+            }
         }else {
-            req.setAttribute("validationErrorMessage",errorMessage);
+            req.setAttribute("validationErrorMessage", errorMessage);
             req.getRequestDispatcher("/views/signup.jsp").forward(req, resp);
         }
     }
 }
+
