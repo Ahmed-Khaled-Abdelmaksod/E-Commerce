@@ -47,6 +47,12 @@ public class ProductDaoImpl implements ProductDAO {
     }
 
     @Override
+    public List<Product> findAllFeaturedProducts(EntityManager em) {
+        return  em.createQuery("SELECT p From Product p where p.isHighlighted = true", Product.class)
+                .getResultList();
+    }
+
+    @Override
     public boolean update(EntityManager em, Product product) {
         if (product != null) {
             em.merge(product);

@@ -16,6 +16,7 @@ public interface ProductDAO {
     List<Product> findByCategoryId(EntityManager em, int categoryId);
 
     List<Product> searchByName(EntityManager em, String name);
+    List<Product> findAllFeaturedProducts(EntityManager em);
 
     boolean update(EntityManager em, Product product);
 

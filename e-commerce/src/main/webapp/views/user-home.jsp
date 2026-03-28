@@ -21,9 +21,9 @@
 <%@include file="/static/html/header.html"%>
 
 <main class="flex-grow-1">
-    <%@include file="/static/html/home/hero.html"%>
-    <%@include file="/static/html/home/featured-products.html"%>
-    <%@include file="/static/html/home/categories.html"%>
+<%--    <%@include file="/static/html/home/hero.html"%>--%>
+    <%@include file="/views/featured-products.jsp"%>
+<%--    <%@include file="/static/html/home/categories.html"%>--%>
     <%@include file="/static/html/home/why-us.html"%>
 </main>
 
