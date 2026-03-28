@@ -16,8 +16,16 @@
 
     </head>
     <body>
-        <%@ include file="/static/html/header.html"%>
-<%--        TODO adjust the view content with data from data base and adjust links--%>
+        <jsp:useBean id="role" scope="request" class="java.lang.String"/>
+        <c:choose>
+            <c:when test="${not empty role}">
+                <%@ include file="/static/html/admin-header.html"%>
+            </c:when>
+            <c:otherwise>
+                <%@ include file="/static/html/header.html"%>
+            </c:otherwise>
+        </c:choose>
+
         <main class="flex-grow-1">
             <section class="bg-light py-5 border-bottom">
                 <div class="container py-2">
@@ -64,9 +72,11 @@
                                         <h3 class="h6 fw-bold text-dark mb-2">${product.name}</h3>
                                         <div class="d-flex align-items-center justify-content-between mt-3">
                                             <span class="h5 fw-bold text-brand mb-0">$${product.price}</span>
-                                            <button class="add-to-cart-btn btn btn-primary bg-brand border-0 btn-sm px-3 d-flex align-items-center rounded-3" data-id="${product.productId}" >
-                                                <i class="bi bi-cart-plus me-2"></i> Add
-                                            </button>
+                                            <c:if test="${empty role}">
+                                                <button class="add-to-cart-btn btn btn-primary bg-brand border-0 btn-sm px-3 d-flex align-items-center rounded-3" data-id="${product.productId}" >
+                                                    <i class="bi bi-cart-plus me-2"></i> Add
+                                                </button>
+                                            </c:if>
                                         </div>
                                     </div>
                                 </div>
