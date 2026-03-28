@@ -29,11 +29,22 @@
 
 <%@include file="/static/html/footer.html"%>
 
+<!-- Toast for cart notifications -->
+<div class="toast-container position-fixed bottom-0 end-0 p-3" style="z-index: 1090;">
+    <div id="cartToast" class="toast align-items-center text-bg-success border-0" role="alert">
+        <div class="d-flex">
+            <div class="toast-body" id="cartToastMessage">Item added to cart!</div>
+            <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
+        </div>
+    </div>
+</div>
+
 <script>
     const CONTEXT_PATH = '${pageContext.request.contextPath}';
 </script>
 <script src="${pageContext.request.contextPath}/static/js/bootstrap.js"></script>
 <script src="${pageContext.request.contextPath}/static/js/main.js"></script>
+<script src="${pageContext.request.contextPath}/static/js/sweets.js"></script>
 <script src="${pageContext.request.contextPath}/static/js/login-merge.js"></script>
 </body>
 </html>
