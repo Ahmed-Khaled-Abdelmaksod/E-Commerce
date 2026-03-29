@@ -22,14 +22,26 @@ public class AuthFilter extends HttpFilter {
             return;
         }
         
-        // Check if accessing admin paths
+        // Get user role
+        UserRole userRole = (UserRole) session.getAttribute("userRole");
         String requestPath = request.getRequestURI();
+        
+        // Check if accessing admin paths
         if (requestPath.contains("/admin/")) {
             // Verify user has ADMIN role
-            UserRole userRole = (UserRole) session.getAttribute("userRole");
             if (userRole != UserRole.ADMIN) {
-                // User is logged in but not an admin - redirect to home
+                // User is logged in but not an admin - redirect to user home
                 response.sendRedirect(request.getContextPath() + "/user/home");
+                return;
+            }
+        }
+        
+        // Check if accessing user paths
+        if (requestPath.contains("/user/")) {
+            // Verify user has CUSTOMER role
+            if (userRole == UserRole.ADMIN) {
+                // Admin trying to access customer pages - redirect to admin dashboard
+                response.sendRedirect(request.getContextPath() + "/admin/dashboard");
                 return;
             }
         }
