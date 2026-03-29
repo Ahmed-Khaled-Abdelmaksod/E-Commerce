@@ -309,11 +309,10 @@ mvn test
 
 ## 👥 Contributors
 
-1- Ahmed Khaled Abdelmaksod
-2- Mohamed Ashour
-3- Mohamed Salah
+- Ahmed Khaled Abdelmaksod
+- Mohamed Ashour
+- Mohamed Salah
 
-> **Note**: Update this section with actual team member information
 
 ## 📝 Additional Resources
 
