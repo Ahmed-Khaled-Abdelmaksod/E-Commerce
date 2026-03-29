@@ -19,6 +19,7 @@ public class ServiceLocator {
     // Services (The only entry points for the Web Layer)
     private final DashboardService dashboardService;
     private final CheckoutService checkoutService; 
+    private final ProductDetailsService productDetailsService;
 
     // DAOs (Internal dependencies for Services, no public getters)
     private final ProductDAO productDAO;
@@ -49,6 +50,7 @@ public class ServiceLocator {
         this.userDAO = new UserDaoImpl();
         this.cartDAO = new CartDaoImpl();       
         this.cartItemDAO = new CartItemDaoImpl(); 
+
         // 2. Inject DAOs into Services
         this.dashboardService = new DashboardServiceImpl(
                 productDAO,
@@ -66,6 +68,13 @@ public class ServiceLocator {
                 orderDAO,
                 orderItemDAO
         );
+
+        this.productDetailsService = new ProductDetailsServiceImpl(
+                productDAO,
+                cartDAO,
+                cartItemDAO,
+                userDAO
+        );
     }
 
     // --- Service Getters ---
@@ -82,6 +91,13 @@ public class ServiceLocator {
      */
     public CheckoutService getCheckoutService() {
         return checkoutService;
+    }
+
+    /**
+     * @return The singleton instance of ProductDetailsService
+     */
+    public ProductDetailsService getProductDetailsService() {
+        return productDetailsService;
     }
 
     // Note: DAOs are kept private to enforce using the Service Layer 
