@@ -23,7 +23,7 @@
 <main class="flex-grow-1">
 
     <%@include file="/views/featured-products.jsp"%>
-    <%@include file="/static/html/home/categories.html"%>
+<%--    <%@include file="/static/html/home/categories.html"%>--%>
     <%@include file="/static/html/home/why-us.html"%>
 </main>
 
