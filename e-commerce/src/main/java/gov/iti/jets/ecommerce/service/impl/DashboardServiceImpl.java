@@ -117,6 +117,31 @@ public class DashboardServiceImpl implements DashboardService {
     }
 
     @Override
+    public CategoryBean addCategory(String name, String description) {
+        try (EntityManager em = JpaUtil.getEntityManagerFactory().createEntityManager()) {
+            em.getTransaction().begin();
+
+            Category category = new Category();
+            category.setName(name);
+            category.setDescription(description);
+
+            categoryDAO.insert(em, category);
+
+            em.getTransaction().commit();
+
+            CategoryBean dto = new CategoryBean();
+            dto.setCategoryId(category.getCategoryId());
+            dto.setName(category.getName());
+            return dto;
+
+        } catch (Exception e) {
+            System.err.println("Error adding category: " + e.getMessage());
+            e.printStackTrace();
+            throw e;
+        }
+    }
+
+    @Override
     public List<OrderBean> getAllOrdersForDashboard() {
         try (EntityManager em = JpaUtil.getEntityManagerFactory().createEntityManager()) {
             List<Order> orders = orderDAO.findAll(em);
