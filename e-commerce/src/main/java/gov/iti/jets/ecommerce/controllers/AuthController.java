@@ -39,6 +39,7 @@ public class AuthController extends HttpServlet {
             HttpSession session = req.getSession(true);
             session.setAttribute("loggedIn",new String("true"));
             session.setAttribute("user",userBean.get());
+            session.setAttribute("userRole", userBean.get().getRole());
             if(userBean.get().getRole() == UserRole.ADMIN) {
                 // TODO forward TO admin dashboard
                 resp.sendRedirect("/ecommerce/admin/dashboard");
