@@ -3,6 +3,7 @@ package gov.iti.jets.ecommerce.controllers.admin;
 import gov.iti.jets.ecommerce.context.ServiceLocator;
 import gov.iti.jets.ecommerce.service.DashboardService;
 import gov.iti.jets.ecommerce.beans.dashboard.ProductBean;
+import gov.iti.jets.ecommerce.beans.dashboard.CategoryBean;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.MultipartConfig;
 import jakarta.servlet.annotation.WebServlet;
@@ -16,7 +17,7 @@ import java.io.IOException;
 import java.math.BigDecimal;
 import java.nio.file.Paths;
 
-@WebServlet(urlPatterns = {"/addProduct", "/editProduct", "/deleteProduct"})
+@WebServlet(urlPatterns = {"/addProduct", "/editProduct", "/deleteProduct", "/addCategory"})
 @MultipartConfig(
         fileSizeThreshold = 1024 * 1024 * 2,
         maxFileSize = 1024 * 1024 * 10,
@@ -35,10 +36,15 @@ public class AdminProductController extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String action = request.getServletPath();
 
-        if ("/deleteProduct".equals(action)) {
-            handleDeleteProduct(request, response);
-        } else {
-            handleSaveProduct(request, response);
+        switch (action) {
+            case "/deleteProduct":
+                handleDeleteProduct(request, response);
+                break;
+            case "/addCategory":
+                handleAddCategory(request, response);
+                break;
+            default:
+                handleSaveProduct(request, response);
         }
     }
 
@@ -61,13 +67,6 @@ public class AdminProductController extends HttpServlet {
             bean.setHighlighted(request.getParameter("highlighted") != null);
 
             // ── Image Handling Logic ───────────────────────────────────────────
-            //
-            // Priority:
-            // 1. If user uploads a new file → use it
-            // 2. If user provides a new URL → use it
-            // 3. If editing and no new image → keep current image from hidden field
-            // 4. If adding new product without image → use default image
-
             String resolvedImageUrl = null;
 
             // 1. Check if a file was uploaded
@@ -109,7 +108,6 @@ public class AdminProductController extends HttpServlet {
             e.printStackTrace();
         }
 
-        // Always redirect back to products tab after saving
         response.sendRedirect(request.getContextPath() + "/admin/dashboard?tab=products");
     }
 
@@ -131,6 +129,31 @@ public class AdminProductController extends HttpServlet {
         }
     }
 
+
+    private void handleAddCategory(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        response.setContentType("application/json");
+        response.setCharacterEncoding("UTF-8");
+        try {
+            String name = request.getParameter("categoryName");
+            String desc = request.getParameter("categoryDesc");
+
+            if (name == null || name.trim().isEmpty()) {
+                response.getWriter().write("{\"status\":\"error\", \"message\":\"Category name is required\"}");
+                return;
+            }
+
+            CategoryBean saved = dashboardService.addCategory(name.trim(), desc != null ? desc.trim() : "");
+
+            response.getWriter().write(
+                    "{\"status\":\"success\", \"id\":" + saved.getCategoryId() + ", \"name\":\"" + escapeJson(saved.getName()) + "\"}"
+            );
+
+        } catch (Exception e) {
+            response.setStatus(500);
+            response.getWriter().write("{\"status\":\"error\", \"message\":\"" + escapeJson(e.getMessage()) + "\"}");
+        }
+    }
+
     private String processImageUpload(Part part) throws IOException {
         String fileName = Paths.get(part.getSubmittedFileName()).getFileName().toString();
         String uniqueFileName = System.currentTimeMillis() + "_" + fileName;
@@ -141,5 +164,9 @@ public class AdminProductController extends HttpServlet {
 
         part.write(uploadPath + File.separator + uniqueFileName);
         return "/static/images/" + uniqueFileName;
+    }
+    private String escapeJson(String s) {
+        if (s == null) return "";
+        return s.replace("\\", "\\\\").replace("\"", "\\\"");
     }
 }
