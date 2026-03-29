@@ -33,7 +33,6 @@
                   method="POST"
                   enctype="multipart/form-data">
                 <input type="hidden" name="productId" id="formProductId">
-                <%-- ✅ FIX: حفظ الصورة الحالية عشان لو المستخدم معدلش الصورة منحدفهاش --%>
                 <input type="hidden" name="currentImageUrl" id="formCurrentImageUrl">
 
                 <div class="row g-3">
@@ -43,14 +42,17 @@
                         <input type="text" class="form-control" name="name" id="formName" required>
                     </div>
 
-                    <%-- Category (dropdown from DB) --%>
+                    <%-- Category (dropdown + New Category option) --%>
                     <div class="col-md-6">
                         <label class="form-label" for="formCategorySelect">Category</label>
-                        <select class="form-select category-dropdown" name="categoryId" id="formCategorySelect" required>
+                        <select class="form-select category-dropdown" name="categoryId" id="formCategorySelect" required
+                                onchange="handleCategoryChange(this)">
                             <option value="" disabled selected>e.g., Cupcakes, Cakes</option>
                             <c:forEach var="cat" items="${categories}">
                                 <option value="${cat.categoryId}">${cat.name}</option>
                             </c:forEach>
+                            <%-- ── هذا الـ option هو اللي بيفتح modal إضافة category جديدة ── --%>
+                            <option value="__new__">➕ New Category...</option>
                         </select>
                     </div>
 
@@ -164,7 +166,7 @@
                 <th>Category</th>
                 <th>Price</th>
                 <th>Stock</th>
-                <th class="text-end">Actions</th>
+                <th></th>
             </tr>
         </thead>
         <tbody>
@@ -247,6 +249,20 @@
         document.getElementById('formProductId').value       = "";
         document.getElementById('formCurrentImageUrl').value = "";
         clearImgPreview();
+    }
+
+    /**
+     * لو المستخدم اختار "➕ New Category..."
+     * بيفتح الـ modal ويرجع الـ select للقيمة الفاضية
+     */
+    function handleCategoryChange(select) {
+        if (select.value === '__new__') {
+            // ارجع للـ placeholder عشان متبقاش __new__ مختارة
+            select.value = '';
+            bootstrap.Modal.getOrCreateInstance(
+                document.getElementById('addCategoryModal')
+            ).show();
+        }
     }
 
     /* ── Image input: URL ↔ Upload toggle ── */
