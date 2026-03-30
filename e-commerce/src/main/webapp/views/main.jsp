@@ -97,9 +97,9 @@
 
             <div class="col-lg-5">
                 <div class="card border-0 shadow-sm p-4 rounded-4 mb-4">
-                    <h3 class="h5 fw-bold mb-2"><i class="bi bi-wallet2 me-2"></i> Credit Balance</h3>
-                    <div class="display-6 fw-bold text-success">$${remainingCredit}</div>
-                    <p class="text-muted small mb-0 mt-1">(Original: $${sessionScope.user.creditBalance})</p>
+                    <h3 class="h5 fw-bold mb-2"><i class="bi bi-wallet2 me-2"></i> Credit Limit</h3>
+                    <div class="display-6 fw-bold text-success">$${sessionScope.user.creditBalance}</div>
+                    <p class="text-muted small mb-0 mt-1">Available balance for purchases</p>
                 </div>
                 <div class="card border-0 shadow-sm p-3 rounded-4">
                     <h3 class="h5 fw-bold mb-3"><i class="bi bi-receipt me-2"></i>Order History</h3>
