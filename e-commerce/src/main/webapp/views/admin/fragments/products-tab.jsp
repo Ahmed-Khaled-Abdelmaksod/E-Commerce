@@ -175,12 +175,14 @@
 
                     <%-- Product: image + name --%>
                     <td>
-                        <div class="d-flex align-items-center gap-3">
-                            <img src="${pageContext.request.contextPath}${p.imageUrl}"
-                                 alt="${p.name}"
-                                 class="product-thumb">
-                            <span class="product-name">${p.name}</span>
-                        </div>
+                        <a href="${pageContext.request.contextPath}/product/details?productId=${p.productId}" style="text-decoration: none; color: inherit;">
+                            <div class="d-flex align-items-center gap-3">
+                                <img src="${pageContext.request.contextPath}${p.imageUrl}"
+                                     alt="${p.name}"
+                                     class="product-thumb">
+                                <span class="product-name">${p.name}</span>
+                            </div>
+                        </a>
                     </td>
 
                     <%-- Category --%>

@@ -166,13 +166,17 @@
                 <div class="card border rounded-3 p-3 shadow-sm" data-product-id="${item.productId}">
                     <div class="d-flex gap-4">
                         <div class="flex-shrink-0">
-                            <img src="${ctx}${item.image}" alt="${item.name}"
-                                 class="rounded-3 object-cover" style="width: 100px; height: 100px;">
+                            <a href="${ctx}/product/details?productId=${item.productId}" style="text-decoration: none; color: inherit;">
+                                <img src="${ctx}${item.image}" alt="${item.name}"
+                                     class="rounded-3 object-cover" style="width: 100px; height: 100px;">
+                            </a>
                         </div>
                         <div class="flex-grow-1 d-flex flex-column justify-content-between">
                             <div class="d-flex justify-content-between">
                                 <div>
-                                    <span class="fw-semibold text-dark">${item.name}</span>
+                                    <a href="${ctx}/product/details?productId=${item.productId}" style="text-decoration: none; color: inherit;">
+                                        <span class="fw-semibold text-dark">${item.name}</span>
+                                    </a>
                                     <p class="text-brand fw-bold mb-0">$${lineTotal}</p>
                                 </div>
                             </div>

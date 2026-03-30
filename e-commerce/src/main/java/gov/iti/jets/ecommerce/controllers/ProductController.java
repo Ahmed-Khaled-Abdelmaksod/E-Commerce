@@ -27,10 +27,7 @@ public class ProductController extends HttpServlet {
         List<CategoryDTO> categories = categoryService.getAllCatigories();
         req.setAttribute("products",products);
         req.setAttribute("categories",categories);
-        UserBean userBean = (UserBean) req.getSession(false).getAttribute("user");
-        if(userBean.getRole() == UserRole.ADMIN) {
-            req.setAttribute("role","admin");
-        }
+
         req.getRequestDispatcher("/views/sweets.jsp").forward(req,resp);
     }
 }

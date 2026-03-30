@@ -23,7 +23,7 @@
 <body class="bg-white d-flex flex-column min-vh-100">
 
 <!-- Include Admin Header -->
-<jsp:include page="/static/html/admin-header.html" />
+<jsp:include page="/static/html/admin-header.jsp" />
 
 
 <div class="dash-header-bg py-5">
