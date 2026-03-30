@@ -36,16 +36,18 @@
                                              data-unit-price="${item.unitPrice}">
                                             <div class="d-flex gap-4">
                                                 <div class="flex-shrink-0">
-                                                    <img src="${pageContext.request.contextPath}${item.productImage}"
-                                                         alt="${item.productName}"
-                                                         class="rounded-3 object-cover"
-                                                         style="width: 100px; height: 100px;">
+                                                    <a href="${pageContext.request.contextPath}/product/details?productId=${item.productId}" style="text-decoration: none; color: inherit;">
+                                                        <img src="${pageContext.request.contextPath}${item.productImage}"
+                                                             alt="${item.productName}"
+                                                             class="rounded-3 object-cover"
+                                                             style="width: 100px; height: 100px;">
+                                                    </a>
                                                 </div>
 
                                                 <div class="flex-grow-1 d-flex flex-column justify-content-between">
                                                     <div class="d-flex justify-content-between">
                                                         <div>
-                                                            <a href="#" class="text-decoration-none fw-semibold text-dark hover-brand">${item.productName}</a>
+                                                            <a href="${pageContext.request.contextPath}/product/details?productId=${item.productId}" class="text-decoration-none fw-semibold text-dark hover-brand">${item.productName}</a>
                                                             <p class="text-brand fw-bold mb-0">$<span id="line-total-${item.cartItemId}">${item.lineTotal}</span></p>
                                                         </div>
                                                     </div>

@@ -19,7 +19,7 @@
 </head>
 <body>
 
-    <jsp:include page="/static/html/admin-header.html" />
+    <jsp:include page="/static/html/admin-header.jsp" />
 
     <%-- Dashboard Header --%>
     <div class="dash-header-bg py-5">

@@ -18,10 +18,12 @@
                     <div class="product-card">
                         <div class="product-img-wrapper">
                             <span class="product-badge">${product.categoryName}</span>
-                            <img src="${pageContext.request.contextPath}${product.imageUrl}" alt="${product.name}" class="product-img">
+                            <a href="${pageContext.request.contextPath}/product/details?productId=${product.productId}" style="text-decoration: none; color: inherit;">
+                                <img src="${pageContext.request.contextPath}${product.imageUrl}" alt="${product.name}" class="product-img">
+                            </a>
                         </div>
                         <div class="product-info">
-                            <h3 class="product-title">${product.name}</h3>
+                            <h3 class="product-title"><a href="${pageContext.request.contextPath}/product/details?productId=${product.productId}" style="text-decoration: none; color: inherit;">${product.name}</a></h3>
                             <div class="product-footer">
                                 <p class="product-price">$${product.price}</p>
                                 <button class="btn-add guest-add-btn"

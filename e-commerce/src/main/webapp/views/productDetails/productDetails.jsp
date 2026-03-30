@@ -109,14 +109,23 @@
     </style>
 </head>
 <body class="d-flex flex-column min-vh-100">
-
-    <%@include file="/static/html/header.html"%>
-
+    <jsp:useBean id="role" scope="request" class="java.lang.String"/>
+    <c:choose>
+        <c:when test="${role == 'admin'}">
+            <%@ include file="/static/html/admin-header.jsp"%>
+        </c:when>
+        <c:when test="${role == 'customer'}">
+            <%@include file="/static/html/header.html"%>
+        </c:when>
+        <c:otherwise>
+            <%@ include file="/static/html/guest-header.html"%>
+        </c:otherwise>
+    </c:choose>
     <main class="flex-grow-1 py-5">
         <div class="container" style="max-width: 1100px;">
 
             <%-- Back link --%>
-            <a href="${pageContext.request.contextPath}/user/products" class="back-link mb-4 d-inline-flex">
+            <a href="javascript:history.back();" class="back-link mb-4 d-inline-flex">
                 <i class="bi bi-arrow-left"></i> Back to Shop
             </a>
 

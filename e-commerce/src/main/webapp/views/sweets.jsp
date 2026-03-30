@@ -19,7 +19,7 @@
         <jsp:useBean id="role" scope="request" class="java.lang.String"/>
         <c:choose>
             <c:when test="${not empty role}">
-                <%@ include file="/static/html/admin-header.html"%>
+                <%@ include file="/static/html/admin-header.jsp"%>
             </c:when>
             <c:otherwise>
                 <%@ include file="/static/html/header.html"%>
@@ -60,16 +60,18 @@
                             <div class="col product-item" data-category="${product.categoryName}">
                                 <div class="card h-100 border-0 shadow-sm rounded-4 product-card overflow-hidden transition-all">
                                     <div class="position-relative overflow-hidden aspect-square bg-light">
-                                        <img src="${pageContext.request.contextPath}${product.imageUrl}"
-                                             class="card-img-top object-cover h-100 w-100 transition-transform zoom-hover"
-                                             alt="${product.categoryName}">
+                                        <a href="${pageContext.request.contextPath}/product/details?productId=${product.productId}" style="text-decoration: none; color: inherit;">
+                                            <img src="${pageContext.request.contextPath}${product.imageUrl}"
+                                                 class="card-img-top object-cover h-100 w-100 transition-transform zoom-hover"
+                                                 alt="${product.categoryName}">
+                                        </a>
                                         <div class="position-absolute top-0 start-0 m-3">
                                             <span class="badge bg-white text-muted fw-medium py-2 px-3 rounded-pill shadow-sm small border">${product.categoryName}</span>
                                         </div>
                                     </div>
 
                                     <div class="card-body p-4">
-                                        <h3 class="h6 fw-bold text-dark mb-2">${product.name}</h3>
+                                        <h3 class="h6 fw-bold text-dark mb-2"><a href="${pageContext.request.contextPath}/product/details?productId=${product.productId}" style="text-decoration: none; color: inherit;">${product.name}</a></h3>
                                         <div class="d-flex align-items-center justify-content-between mt-3">
                                             <span class="h5 fw-bold text-brand mb-0">$${product.price}</span>
                                             <c:if test="${empty role}">

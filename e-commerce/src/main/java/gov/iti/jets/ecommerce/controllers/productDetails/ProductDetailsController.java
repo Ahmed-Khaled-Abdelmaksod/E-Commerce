@@ -1,7 +1,9 @@
 package gov.iti.jets.ecommerce.controllers.productDetails;
 
+import gov.iti.jets.ecommerce.beans.UserBean;
 import gov.iti.jets.ecommerce.beans.productDetails.ProductDetailsBean;
 import gov.iti.jets.ecommerce.context.ServiceLocator;
+import gov.iti.jets.ecommerce.enums.UserRole;
 import gov.iti.jets.ecommerce.service.ProductDetailsService;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -54,6 +56,12 @@ public class ProductDetailsController extends HttpServlet {
 
         // 6. Pass the bean to the JSP and forward
         request.setAttribute("product", productDetails);
+
+        // 7. check if the admin hit the product details
+        UserBean userBean = (UserBean) request.getSession(false).getAttribute("user");
+        if (userBean != null) {
+            request.setAttribute("role", userBean.getRole().name().toLowerCase());
+        }
         request.getRequestDispatcher("/views/productDetails/productDetails.jsp")
                .forward(request, response);
     }
