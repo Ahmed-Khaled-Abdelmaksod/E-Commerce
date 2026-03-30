@@ -1,5 +1,7 @@
 package gov.iti.jets.ecommerce.service;
 
+import java.math.BigDecimal;
+
 import gov.iti.jets.ecommerce.beans.checkout.CheckoutBean;
 
 public interface CheckoutService {
@@ -18,4 +20,11 @@ public interface CheckoutService {
      * @return boolean indicating whether the checkout process was successful.
      */
     boolean processCheckout(int userId);
+    
+    /**
+     * Retrieves the user's current credit balance after checkout.
+     * @param userId The ID of the user.
+     * @return The updated credit balance of the user.
+     */
+    BigDecimal getUserBalanceAfterCheckout(int userId);
 }

@@ -176,6 +176,20 @@ public class CheckoutServiceImpl implements CheckoutService {
         }
     }
 
+    @Override
+    public BigDecimal getUserBalanceAfterCheckout(int userId) {
+        try (EntityManager em = JpaUtil.getEntityManagerFactory().createEntityManager()) {
+            Optional<User> userOpt = userDAO.findById(em, userId);
+            if (userOpt.isPresent()) {
+                BigDecimal balance = userOpt.get().getCreditBalance();
+                return balance != null ? balance : BigDecimal.ZERO;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return BigDecimal.ZERO;
+    }
+
     // --- Private Helper & Mapper Methods ---
 
     private CheckoutItemBean mapToCheckoutItemBean(CartItem itemEntity) {
