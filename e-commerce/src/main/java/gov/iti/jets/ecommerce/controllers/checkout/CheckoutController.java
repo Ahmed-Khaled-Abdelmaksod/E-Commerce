@@ -12,6 +12,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 
 import java.io.IOException;
+import java.math.BigDecimal;
 
 @WebServlet("/checkout")
 public class CheckoutController extends HttpServlet {
@@ -88,6 +89,14 @@ public class CheckoutController extends HttpServlet {
             // Keep UI cart state in sync on all pages after successful checkout.
             if (session != null) {
                 session.setAttribute("cartCount", 0);
+
+                UserBean sessionUser = (UserBean) session.getAttribute("user");
+                if (sessionUser != null) {
+                    
+                    BigDecimal newBalance = checkoutService.getUserBalanceAfterCheckout(userId);
+                    sessionUser.setCreditBalance(newBalance);
+                    session.setAttribute("user", sessionUser);
+                }
             }
             response.sendRedirect(request.getContextPath() + "/checkout?status=success");
         } else {
