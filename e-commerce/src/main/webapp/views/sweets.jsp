@@ -75,8 +75,11 @@
                                         <div class="d-flex align-items-center justify-content-between mt-3">
                                             <span class="h5 fw-bold text-brand mb-0">$${product.price}</span>
                                             <c:if test="${empty role}">
-                                                <button class="add-to-cart-btn btn btn-primary bg-brand border-0 btn-sm px-3 d-flex align-items-center rounded-3" data-id="${product.productId}" >
-                                                    <i class="bi bi-cart-plus me-2"></i> Add
+                                                <button class="add-to-cart-btn btn btn-primary bg-brand border-0 btn-sm px-3 d-flex align-items-center rounded-3" 
+                                                        data-id="${product.productId}"
+                                                        data-stock="${product.stockQuantity}"
+                                                        <c:if test="${product.stockQuantity <= 0}">disabled</c:if>>
+                                                    <i class="bi bi-cart-plus me-2"></i> <c:choose><c:when test="${product.stockQuantity <= 0}">Out of Stock</c:when><c:otherwise>Add</c:otherwise></c:choose>
                                                 </button>
                                             </c:if>
                                         </div>

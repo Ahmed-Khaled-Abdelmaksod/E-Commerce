@@ -48,10 +48,23 @@
 
     document.querySelectorAll('.add-to-cart-btn').forEach(button => {
         button.addEventListener('click', function() {
+            // Check if button is disabled (out of stock)
+            if (this.disabled) {
+                showToast("Sorry, this product is out of stock!");
+                return;
+            }
+            
             // 1. Get the ID from the data attribute
             const productId = this.getAttribute('data-id');
+            const stock = parseInt(this.getAttribute('data-stock') || '0');
 
-            // 2. Send it to your Servlet via AJAX (Fetch API)
+            // 2. Check stock availability
+            if (stock <= 0) {
+                showToast("Sorry, this product is out of stock!");
+                return;
+            }
+
+            // 3. Send it to your Servlet via AJAX (Fetch API)
             addToCart(productId);
         });
     });

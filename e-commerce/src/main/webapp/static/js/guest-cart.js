@@ -105,7 +105,21 @@
 
     document.querySelectorAll('.guest-add-btn').forEach(btn => {
         btn.addEventListener('click', function () {
+            // Check if button is disabled (out of stock)
+            if (this.disabled) {
+                showToast('Sorry, this product is out of stock!');
+                return;
+            }
+
             const id = parseInt(this.dataset.id);
+            const stock = parseInt(this.dataset.stock || '0');
+            
+            // Check stock availability
+            if (stock <= 0) {
+                showToast('Sorry, this product is out of stock!');
+                return;
+            }
+
             const name = this.dataset.name;
             const price = this.dataset.price;
             const image = this.dataset.image;
@@ -117,7 +131,21 @@
 
     document.querySelectorAll('.guest-add-to-cart-btn').forEach(btn => {
         btn.addEventListener('click', function () {
+            // Check if button is disabled (out of stock)
+            if (this.disabled) {
+                showToast('Sorry, this product is out of stock!');
+                return;
+            }
+
             const id = parseInt(this.dataset.id);
+            const stock = parseInt(this.dataset.stock || '0');
+            
+            // Check stock availability
+            if (stock <= 0) {
+                showToast('Sorry, this product is out of stock!');
+                return;
+            }
+
             const name = this.dataset.name;
             const price = this.dataset.price;
             const image = this.dataset.image;

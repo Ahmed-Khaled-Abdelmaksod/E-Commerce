@@ -71,8 +71,10 @@
                                                         data-id="${product.productId}"
                                                         data-name="${product.name}"
                                                         data-price="${product.price}"
-                                                        data-image="${product.imageUrl}">
-                                                    <i class="bi bi-cart-plus me-2"></i> Add
+                                                        data-image="${product.imageUrl}"
+                                                        data-stock="${product.stockQuantity}"
+                                                        <c:if test="${product.stockQuantity <= 0}">disabled</c:if>>
+                                                    <i class="bi bi-cart-plus me-2"></i> <c:choose><c:when test="${product.stockQuantity <= 0}">Out of Stock</c:when><c:otherwise>Add</c:otherwise></c:choose>
                                                 </button>
                                             </c:if>
                                         </div>
