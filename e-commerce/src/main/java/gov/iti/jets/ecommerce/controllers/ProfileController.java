@@ -27,8 +27,8 @@ public class ProfileController extends HttpServlet {
         UserBean user = (UserBean) session.getAttribute("user");
         List<Order> orders = ProfileService.getInstance().getOrdersByUserId(user.getUserId());
         req.setAttribute("orders", orders);
-        req.setAttribute("remainingCredit",
-                ProfileService.getInstance().getRemainingCredit(user.getCreditBalance(), orders));
+//        req.setAttribute("remainingCredit",
+//                ProfileService.getInstance().getRemainingCredit(user.getCreditBalance(), orders));
         req.getRequestDispatcher("/views/main.jsp").forward(req, resp);
     }
 
