@@ -124,15 +124,24 @@ public class CheckoutServiceImpl implements CheckoutService {
                 return false; // Insufficient funds
             }
 
-            // 5. Check Availability and Update Stock
+            // 5. Check Availability and Update Stock (Atomic Update to prevent Race Condition)
             for (CartItem item : cartItems) {
-                Product product = item.getProduct();
-                if (product.getStockQuantity() < item.getQuantity()) {
+                int productId = item.getProduct().getProductId();
+                int qtyNeeded = item.getQuantity();
+
+                // Execute the atomic update directly in the database
+                int updatedRows = em.createQuery(
+                        "UPDATE Product p SET p.stockQuantity = p.stockQuantity - :qty WHERE p.productId = :id AND p.stockQuantity >= :qty")
+                        .setParameter("qty", qtyNeeded)
+                        .setParameter("id", productId)
+                        .executeUpdate();
+
+                // If the result is 0, it means the quantity is insufficient or was just bought by another user at the exact same time
+                if (updatedRows == 0) {
                     em.getTransaction().rollback();
-                    return false; // Product is out of stock
+                    System.out.println("Sorry, the product quantity is unavailable or was just purchased.");
+                    return false; 
                 }
-                product.setStockQuantity(product.getStockQuantity() - item.getQuantity());
-                productDAO.update(em, product);
             }
 
             // 6. Deduct User Balance
